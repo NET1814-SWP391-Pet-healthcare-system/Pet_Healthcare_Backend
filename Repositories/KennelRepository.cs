@@ -3,19 +3,19 @@ using Entities;
 
 namespace Repositories
 {
-    public class HospitalizationRepository : IHospitalizationRepository
+    public class KennelRepository : IKennelRepository
     {
-        public bool Add(Hospitalization hospitalization)
+        public bool Add(Kennel kennel)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Hospitalization> GetAll()
+        public IEnumerable<Kennel> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Hospitalization GetById(int id)
+        public Kennel GetById(int id)
         {
             throw new NotImplementedException();
         }
@@ -30,7 +30,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public bool Update(Hospitalization hospitalization)
+        public bool Update(Kennel kennel)
         {
             throw new NotImplementedException();
         }
