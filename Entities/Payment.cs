@@ -8,12 +8,12 @@ namespace PetHealthCareSystem.Models
 {
     public class Payment
     {
-        public int PaymentId { get; set; }
-        public User Customer { get; set; }
-        public Invoice Invoice { get; set; }
-        public double Amount { get; set; }
-        public DateOnly PaymentDate {get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
-        public bool IsPaid { get; set; }
+        public int paymentId { get; set; }
+        public User customer { get; set; }
+        public Invoice invoice { get; set; }
+        public double amount { get; set; }
+        public DateOnly paymentDate {get; set; }
+        public PaymentMethod paymentMethod { get; set; }
+        public bool isPaid { get; set; }
     }
 }

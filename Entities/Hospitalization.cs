@@ -7,13 +7,13 @@ namespace PetHealthCareSystem.Models
 {
     public class Hospitalization
     {
-        public int HospitalizationId { get; set; }
-        public Pet Pet{ get; set; }
-        public Kennel Kennel{ get; set; }
-        public User Vet { get; set; }
-        public DateOnly AdmissionDate { get; set; }
-        public DateOnly DischargeDate { get; set; }
-        public double TotalCost { get; set; }
-        public ICollection<PetHealthTrack> PetHealthTracks { get; set; }
+        public int hospitalizationId { get; set; }
+        public Pet pet{ get; set; }
+        public Kennel kennel{ get; set; }
+        public User vet { get; set; }
+        public DateOnly admissionDate { get; set; }
+        public DateOnly dischargeDate { get; set; }
+        public double totalCost { get; set; }
+        public ICollection<PetHealthTrack> petHealthTracks { get; set; }
     }
 }
