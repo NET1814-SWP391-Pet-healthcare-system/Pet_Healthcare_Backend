@@ -1,32 +1,32 @@
 [
     {
-        "KennelID": 1,
-        "Description": "Comfortable and secure kennel for your pet.",
-        "Capacity": 20,
-        "DailyCost": 25.00
+        "kennelId": 1,
+        "description": "Comfortable and secure kennel for your pet.",
+        "capacity": 20,
+        "dailyCost": 25.00
     },
     {
-        "KennelID": 2,
-        "Description": "Luxury kennel with premium amenities.",
-        "Capacity": 10,
-        "DailyCost": 40.00
+        "kennelId": 2,
+        "description": "Luxury kennel with premium amenities.",
+        "capacity": 10,
+        "dailyCost": 40.00
     },
     {
-        "KennelID": 3,
-        "Description": "Budget-friendly kennel for short-term stays.",
-        "Capacity": 30,
-        "DailyCost": 15.00
+        "kennelId": 3,
+        "description": "Budget-friendly kennel for short-term stays.",
+        "capacity": 30,
+        "dailyCost": 15.00
     },
     {
-        "KennelID": 4,
-        "Description": "Large kennel with outdoor play area.",
-        "Capacity": 25,
-        "DailyCost": 30.00
+        "kennelId": 4,
+        "description": "Large kennel with outdoor play area.",
+        "capacity": 25,
+        "dailyCost": 30.00
     },
     {
-        "KennelID": 5,
-        "Description": "Climate-controlled kennel for exotic pets.",
-        "Capacity": 15,
-        "DailyCost": 35.00
+        "kennelId": 5,
+        "description": "Climate-controlled kennel for exotic pets.",
+        "capacity": 15,
+        "dailyCost": 35.00
     }
 ]

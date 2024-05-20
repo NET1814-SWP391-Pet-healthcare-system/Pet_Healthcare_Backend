@@ -1,32 +1,32 @@
 [
     {
-        "SlotID": 1,
-        "StartTime": "09:00:00",
-        "EndTime": "10:00:00",
-        "Duration": "01:00:00"
+        "slotId": 1,
+        "startTime": "09:00:00",
+        "endTime": "10:00:00",
+        "duration": "01:00:00"
     },
     {
-        "SlotID": 2,
-        "StartTime": "11:00:00",
-        "EndTime": "12:00:00",
-        "Duration": "01:00:00"
+        "slotId": 2,
+        "startTime": "11:00:00",
+        "endTime": "12:00:00",
+        "duration": "01:00:00"
     },
     {
-        "SlotID": 3,
-        "StartTime": "14:00:00",
-        "EndTime": "15:00:00",
-        "Duration": "01:00:00"
+        "slotId": 3,
+        "startTime": "14:00:00",
+        "endTime": "15:00:00",
+        "duration": "01:00:00"
     },
     {
-        "SlotID": 4,
-        "StartTime": "16:00:00",
-        "EndTime": "17:00:00",
-        "Duration": "01:00:00"
+        "slotId": 4,
+        "startTime": "16:00:00",
+        "endTime": "17:00:00",
+        "duration": "01:00:00"
     },
     {
-        "SlotID": 5,
-        "StartTime": "18:00:00",
-        "EndTime": "19:00:00",
-        "Duration": "01:00:00"
+        "slotId": 5,
+        "startTime": "18:00:00",
+        "endTime": "19:00:00",
+        "duration": "01:00:00"
     }
 ]
