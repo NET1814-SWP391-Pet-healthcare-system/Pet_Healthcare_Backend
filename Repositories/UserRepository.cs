@@ -1,26 +1,26 @@
-﻿using RepositoryContracts;
+﻿using Entities;
+using RepositoryContracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Entities;
 
 namespace Repositories
 {
-    public class ServiceRepository : IServiceRepository
+    public class UserRepository : IUserRepository
     {
-        public bool Add(Service service)
+        public bool Add(User user)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Service> GetAll()
+        public IEnumerable<User> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Service GetById(int id)
+        public User GetById(int id)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +35,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public bool Update(Service service)
+        public bool Update(User user)
         {
             throw new NotImplementedException();
         }
