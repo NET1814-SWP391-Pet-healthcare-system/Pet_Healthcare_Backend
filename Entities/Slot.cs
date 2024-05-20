@@ -7,10 +7,10 @@ namespace PetHealthCareSystem.Models
 {
     public class Slot
     {
-        public int SlotId { get; set; }
-        public TimeOnly StartTime { get; set; }
-        public TimeOnly EndTime { get; set; }
-        public TimeSpan Duration => EndTime - StartTime;
-        public ICollection<Appointment> Appointments { get; set; }
+        public int slotId { get; set; }
+        public TimeOnly startTime { get; set; }
+        public TimeOnly endTime { get; set; }
+        public TimeSpan duration => endTime - startTime;
+        public ICollection<Appointment> appointments { get; set; }
     }
 }

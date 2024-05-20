@@ -7,10 +7,10 @@ namespace PetHealthCareSystem.Models
 {
     public class Service
     {
-        public int ServiceId { get; set; }
-        public string Name { get; set; }
+        public int serviceId { get; set; }
+        public string name { get; set; }
         public string description { get; set; }
         public double cost { get; set; }
-        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Appointment> appointments { get; set; }
     }
 }

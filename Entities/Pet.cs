@@ -7,15 +7,15 @@ namespace PetHealthCareSystem.Models
 {
     public class Pet
     {
-        public int PetId { get; set; }
-        public User CustomerId { get; set;}
-        public string Name { get; set;} 
-        public string Species { get; set;}
-        public string Breed { get; set;}
-        public bool Gender { get; set;}
-        public double Weight { get; set;}
-        public string ImageURL { get; set;}
-        public ICollection<PetVaccination> PetVaccinations { get; set;}
-        public ICollection<Hospitalization> Hospitalizations { get; set;}
+        public int petId { get; set; }
+        public User customerId { get; set; }
+        public string name { get; set; } 
+        public string species { get; set; }
+        public string breed { get; set; }
+        public bool gender { get; set; }
+        public double weight { get; set; }
+        public string imageURL { get; set; }
+        public ICollection<PetVaccination> petVaccinations { get; set; }
+        public ICollection<Hospitalization> hospitalizations { get; set; }
     }
 }

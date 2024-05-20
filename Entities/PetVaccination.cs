@@ -7,8 +7,8 @@ namespace PetHealthCareSystem.Models
 {
     public class PetVaccination
     {
-        public Pet Pet{ get; set; }
-        public Vaccine Vaccine{ get; set; }
-        public DateOnly VaccinationDate { get; set; }
+        public Pet pet{ get; set; }
+        public Vaccine vaccine{ get; set; }
+        public DateOnly vaccinationDate { get; set; }
     }
 }

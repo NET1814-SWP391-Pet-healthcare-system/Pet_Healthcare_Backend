@@ -7,9 +7,9 @@ namespace PetHealthCareSystem.Models
 {
     public class Record
     {
-        public int RecordId { get; set; }
-        public Pet Pet { get; set; }
-        public int NumberOfVisits { get; set; }
-        public ICollection<AppointmentDetail> AppointmentDetails { get; set; }
+        public int recordId { get; set; }
+        public Pet pet { get; set; }
+        public int numberOfVisits { get; set; }
+        public ICollection<AppointmentDetail> appointmentDetails { get; set; }
     }
 }
