@@ -1,4 +1,4 @@
-namespace PetHealthCareSystem.Data.Enum
+namespace Entities.Enum
 {
     public enum AppointmentStatus
     {

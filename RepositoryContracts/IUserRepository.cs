@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceContracts
+namespace RepositoryContracts
 {
     public interface IUserRepository
     {
