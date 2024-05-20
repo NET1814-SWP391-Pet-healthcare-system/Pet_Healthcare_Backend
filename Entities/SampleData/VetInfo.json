@@ -1,0 +1,27 @@
+[
+    {
+        "VetID": 1,
+        "Rating": 4,
+        "YearsOfExperience": 8
+    },
+    {
+        "VetID": 2,
+        "Rating": 5,
+        "YearsOfExperience": 12
+    },
+    {
+        "VetID": 3,
+        "Rating": 3,
+        "YearsOfExperience": 5
+    },
+    {
+        "VetID": 4,
+        "Rating": 4,
+        "YearsOfExperience": 10
+    },
+    {
+        "VetID": 5,
+        "Rating": 4,
+        "YearsOfExperience": 7
+    }
+]

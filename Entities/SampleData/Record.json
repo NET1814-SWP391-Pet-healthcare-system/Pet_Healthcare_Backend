@@ -1,0 +1,27 @@
+[
+    {
+        "RecordID": 1,
+        "PetID": 1,
+        "NumberOfVisits": 5
+    },
+    {
+        "RecordID": 2,
+        "PetID": 2,
+        "NumberOfVisits": 3
+    },
+    {
+        "RecordID": 3,
+        "PetID": 3,
+        "NumberOfVisits": 2
+    },
+    {
+        "RecordID": 4,
+        "PetID": 4,
+        "NumberOfVisits": 1
+    },
+    {
+        "RecordID": 5,
+        "PetID": 5,
+        "NumberOfVisits": 4
+    }
+]
