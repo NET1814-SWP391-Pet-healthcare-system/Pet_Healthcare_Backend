@@ -12,7 +12,7 @@ namespace PetHealthCareSystem.Models
         public User customer { get; set; }
         public Invoice invoice { get; set; }
         public double amount { get; set; }
-        public DateOnly paymentDate {get; set; }
+        public DateOnly paymentDate { get; set; }
         public PaymentMethod paymentMethod { get; set; }
         public bool isPaid { get; set; }
     }
