@@ -1,11 +1,11 @@
-﻿using PetHealthCareSystem.Data.Enum;
-using PetHealthCareSystem.Models;
-using RepositoryContracts;
+﻿using RepositoryContracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Entities;
+using Entities.Enum;
 
 namespace Repositories
 {

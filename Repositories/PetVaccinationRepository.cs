@@ -1,26 +1,26 @@
-﻿using RepositoryContracts;
+﻿using Entities;
+using RepositoryContracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Entities;
 
 namespace Repositories
 {
-    public class ServiceRepository : IServiceRepository
+    public class PetVaccinationRepository : IPetVaccinationRepository
     {
-        public bool Add(Service service)
+        public bool Add(PetVaccination petVaccination)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Service> GetAll()
+        public IEnumerable<PetVaccination> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Service GetById(int id)
+        public PetVaccination GetById(int id)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +35,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public bool Update(Service service)
+        public bool Update(PetVaccination petVaccination)
         {
             throw new NotImplementedException();
         }
