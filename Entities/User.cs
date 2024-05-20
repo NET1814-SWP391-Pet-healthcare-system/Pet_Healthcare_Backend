@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Entities.Enum;
 
 namespace Entities
 {
+    [Table("User")]
     public class User
     {
+        [Key]
         public int userId { get; set; }
+        [ForeignKey("Role")]
         public Role role{ get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }   
