@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IHospitalizationRepository
     {
         IEnumerable<Hospitalization> GetAll();
-        Hospitalization GetById(int id);
+        Pet GetById(int id);
         bool Add(Hospitalization hospitalization);
         bool Update(Hospitalization hospitalization);
         bool Remove(int id);
