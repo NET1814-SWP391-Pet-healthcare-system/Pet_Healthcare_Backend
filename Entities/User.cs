@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PetHealthCareSystem.Data.Enum;
+using Entities.Enum;
 
-namespace PetHealthCareSystem.Models
+namespace Entities
 {
     public class User
     {
