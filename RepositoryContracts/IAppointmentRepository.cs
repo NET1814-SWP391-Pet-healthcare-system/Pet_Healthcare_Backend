@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace RepositoryContracts
 {
-    public interface IPetRepository
+    public interface IAppointmentRepository
     {
-        IEnumerable<Pet> GetAll();
-        Pet GetById(int id);
-        bool Add(Pet pet);
-        bool Update(Pet pet);
+        IEnumerable<Appointment> GetAll();
+        Appointment GetById(int id);
+        bool Add(Appointment appointment);
+        bool Update(Appointment appointment);
         bool Remove(int id);
         bool SaveChanges();
     }

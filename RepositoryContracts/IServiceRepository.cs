@@ -7,12 +7,12 @@ using Entities;
 
 namespace RepositoryContracts
 {
-    public interface IVaccineRepository
+    public interface IServiceRepository
     {
-        IEnumerable<Vaccine> GetAll();
-        Vaccine GetById(int id);
-        bool Add(Vaccine vaccine);
-        bool Update(Vaccine vaccine);
+        IEnumerable<Service> GetAll();
+        Service GetById(int id);
+        bool Add(Service service);
+        bool Update(Service service);
         bool Remove(int id);
         bool SaveChanges();
     }
