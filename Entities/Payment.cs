@@ -8,6 +8,7 @@ using Entities.Enum;
 
 namespace Entities
 {
+    [Table("Payment")]
     public class Payment
     {
         [Key]

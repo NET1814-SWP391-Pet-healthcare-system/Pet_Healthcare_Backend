@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
+    [Table("Hospitalization")]
     public class Hospitalization
     {
         [Key]

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
+    [Table("Record")]
     public class Record
     {
         [Key]

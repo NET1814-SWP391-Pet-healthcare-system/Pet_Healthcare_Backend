@@ -13,7 +13,6 @@ namespace Entities
     {
         [Key]
         public int userId { get; set; }
-        [ForeignKey("Role")]
         public Role role{ get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }   
