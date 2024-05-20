@@ -1,47 +1,47 @@
 [
     {
-        "HospitalizationID": 1,
-        "PetID": 1,
-        "KennelID": 1,
-        "VetID": 1,
-        "AdmissionDate": "2023-05-01",
-        "DischargeDate": "2023-05-05",
-        "TotalCost": 500.00
+        "hospitalizationId": 1,
+        "petId": 1,
+        "kennelId": 1,
+        "vetId": 1,
+        "admissionDate": "2023-05-01",
+        "dischargeDate": "2023-05-05",
+        "totalCost": 500.00
     },
     {
-        "HospitalizationID": 2,
-        "PetID": 2,
-        "KennelID": 2,
-        "VetID": 2,
-        "AdmissionDate": "2023-06-10",
-        "DischargeDate": "2023-06-12",
-        "TotalCost": 300.00
+        "hospitalizationId": 2,
+        "petId": 2,
+        "kennelId": 2,
+        "vetId": 2,
+        "admissionDate": "2023-06-10",
+        "dischargeDate": "2023-06-12",
+        "totalCost": 300.00
     },
     {
-        "HospitalizationID": 3,
-        "PetID": 3,
-        "KennelID": 3,
-        "VetID": 1,
-        "AdmissionDate": "2023-07-15",
-        "DischargeDate": "2023-07-18",
-        "TotalCost": 150.00
+        "hospitalizationId": 3,
+        "petId": 3,
+        "kennelId": 3,
+        "vetId": 1,
+        "admissionDate": "2023-07-15",
+        "dischargeDate": "2023-07-18",
+        "totalCost": 150.00
     },
     {
-        "HospitalizationID": 4,
-        "PetID": 4,
-        "KennelID": 4,
-        "VetID": 2,
-        "AdmissionDate": "2023-08-01",
-        "DischargeDate": "2023-08-03",
-        "TotalCost": 200.00
+        "hospitalizationId": 4,
+        "petId": 4,
+        "kennelId": 4,
+        "vetId": 2,
+        "admissionDate": "2023-08-01",
+        "dischargeDate": "2023-08-03",
+        "totalCost": 200.00
     },
     {
-        "HospitalizationID": 5,
-        "PetID": 5,
-        "KennelID": 5,
-        "VetID": 1,
-        "AdmissionDate": "2023-09-10",
-        "DischargeDate": "2023-09-12",
-        "TotalCost": 250.00
+        "hospitalizationId": 5,
+        "petId": 5,
+        "kennelId": 5,
+        "vetId": 1,
+        "admissionDate": "2023-09-10",
+        "dischargeDate": "2023-09-12",
+        "totalCost": 250.00
     }
 ]

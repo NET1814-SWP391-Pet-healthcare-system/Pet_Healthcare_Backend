@@ -1,47 +1,47 @@
 [
     {
-        "PaymentID": 1,
-        "CustomerID": 1,
-        "InvoiceID": 1,
-        "Amount": 75.00,
-        "PaymentDate": "2023-06-15",
-        "PaymentMethod": 1,
-        "IsPaid": true
+        "paymentId": 1,
+        "customerId": 1,
+        "invoiceId": 1,
+        "amount": 75.00,
+        "paymentDate": "2023-06-15",
+        "paymentMethod": 1,
+        "isPaid": true
     },
     {
-        "PaymentID": 2,
-        "CustomerID": 2,
-        "InvoiceID": 2,
-        "Amount": 60.00,
-        "PaymentDate": "2023-07-01",
-        "PaymentMethod": 2,
-        "IsPaid": true
+        "paymentId": 2,
+        "customerId": 2,
+        "invoiceId": 2,
+        "amount": 60.00,
+        "paymentDate": "2023-07-01",
+        "paymentMethod": 2,
+        "isPaid": true
     },
     {
-        "PaymentID": 3,
-        "CustomerID": 1,
-        "InvoiceID": 3,
-        "Amount": 500.00,
-        "PaymentDate": "2023-05-10",
-        "PaymentMethod": 1,
-        "IsPaid": true
+        "paymentId": 3,
+        "customerId": 1,
+        "invoiceId": 3,
+        "amount": 500.00,
+        "paymentDate": "2023-05-10",
+        "paymentMethod": 1,
+        "isPaid": true
     },
     {
-        "PaymentID": 4,
-        "CustomerID": 2,
-        "InvoiceID": 4,
-        "Amount": 300.00,
-        "PaymentDate": "2023-06-15",
-        "PaymentMethod": 2,
-        "IsPaid": true
+        "paymentId": 4,
+        "customerId": 2,
+        "invoiceId": 4,
+        "amount": 300.00,
+        "paymentDate": "2023-06-15",
+        "paymentMethod": 2,
+        "isPaid": true
     },
     {
-        "PaymentID": 5,
-        "CustomerID": 3,
-        "InvoiceID": 5,
-        "Amount": 40.00,
-        "PaymentDate": "2023-08-10",
-        "PaymentMethod": 1,
-        "IsPaid": true
+        "paymentId": 5,
+        "customerId": 3,
+        "invoiceId": 5,
+        "amount": 40.00,
+        "paymentDate": "2023-08-10",
+        "paymentMethod": 1,
+        "isPaid": true
     }
 ]

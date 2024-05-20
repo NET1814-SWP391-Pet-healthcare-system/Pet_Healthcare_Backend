@@ -1,52 +1,52 @@
 [
     {
-        "PetID": 1,
-        "CustomerID": 1,
-        "Name": "Buddy",
-        "Species": "Dog",
-        "Breed": "Labrador Retriever",
-        "Gender": true,
-        "Weight": 30.5,
-        "ImageUrl": "https://example.com/pet_images/buddy.jpg"
+        "petId": 1,
+        "customerId": 1,
+        "name": "Buddy",
+        "species": "Dog",
+        "breed": "Labrador Retriever",
+        "gender": true,
+        "weight": 30.5,
+        "imageUrl": "https://example.com/pet_images/buddy.jpg"
     },
     {
-        "PetID": 2,
-        "CustomerID": 2,
-        "Name": "Whiskers",
-        "Species": "Cat",
-        "Breed": "Siamese",
-        "Gender": false,
-        "Weight": 4.2,
-        "ImageUrl": "https://example.com/pet_images/whiskers.jpg"
+        "petId": 2,
+        "customerId": 2,
+        "name": "Whiskers",
+        "species": "Cat",
+        "breed": "Siamese",
+        "gender": false,
+        "weight": 4.2,
+        "imageUrl": "https://example.com/pet_images/whiskers.jpg"
     },
     {
-        "PetID": 3,
-        "CustomerID": 3,
-        "Name": "Rocky",
-        "Species": "Bird",
-        "Breed": "Cockatiel",
-        "Gender": true,
-        "Weight": 0.3,
-        "ImageUrl": "https://example.com/pet_images/rocky.jpg"
+        "petId": 3,
+        "customerId": 3,
+        "name": "Rocky",
+        "species": "Bird",
+        "breed": "Cockatiel",
+        "gender": true,
+        "weight": 0.3,
+        "imageUrl": "https://example.com/pet_images/rocky.jpg"
     },
     {
-        "PetID": 4,
-        "CustomerID": 4,
-        "Name": "Finny",
-        "Species": "Fish",
-        "Breed": "Goldfish",
-        "Gender": false,
-        "Weight": 0.1,
-        "ImageUrl": "https://example.com/pet_images/finny.jpg"
+        "petId": 4,
+        "customerId": 4,
+        "name": "Finny",
+        "species": "Fish",
+        "breed": "Goldfish",
+        "gender": false,
+        "weight": 0.1,
+        "imageUrl": "https://example.com/pet_images/finny.jpg"
     },
     {
-        "PetID": 5,
-        "CustomerID": 5,
-        "Name": "Fluffy",
-        "Species": "Rabbit",
-        "Breed": "Lop",
-        "Gender": true,
-        "Weight": 2.8,
-        "ImageUrl": "https://example.com/pet_images/fluffy.jpg"
+        "petId": 5,
+        "customerId": 5,
+        "name": "Fluffy",
+        "species": "Rabbit",
+        "breed": "Lop",
+        "gender": true,
+        "weight": 2.8,
+        "imageUrl": "https://example.com/pet_images/fluffy.jpg"
     }
 ]

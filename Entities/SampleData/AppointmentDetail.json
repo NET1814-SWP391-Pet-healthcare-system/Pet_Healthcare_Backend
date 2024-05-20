@@ -1,42 +1,42 @@
 [
     {
-        "AppointmentDetailID": 1,
-        "AppointmentID": 1,
-        "RecordID": 1,
-        "Diagnosis": "Healthy",
-        "Treatment": null,
-        "Medication": null
+        "appointmentDetailId": 1,
+        "appointmentId": 1,
+        "recordId": 1,
+        "diagnosis": "Healthy",
+        "treatment": null,
+        "medication": null
     },
     {
-        "AppointmentDetailID": 2,
-        "AppointmentID": 2,
-        "RecordID": 2,
-        "Diagnosis": "Ear Infection",
-        "Treatment": "Antibiotic Ear Drops",
-        "Medication": "Otomax Otic Solution"
+        "appointmentDetailId": 2,
+        "appointmentId": 2,
+        "recordId": 2,
+        "diagnosis": "Ear Infection",
+        "treatment": "Antibiotic Ear Drops",
+        "medication": "Otomax Otic Solution"
     },
     {
-        "AppointmentDetailID": 3,
-        "AppointmentID": 3,
-        "RecordID": 3,
-        "Diagnosis": "Feather Plucking",
-        "Treatment": "Environmental Enrichment",
-        "Medication": null
+        "appointmentDetailId": 3,
+        "appointmentId": 3,
+        "recordId": 3,
+        "diagnosis": "Feather Plucking",
+        "treatment": "Environmental Enrichment",
+        "medication": null
     },
     {
-        "AppointmentDetailID": 4,
-        "AppointmentID": 4,
-        "RecordID": 4,
-        "Diagnosis": "Swim Bladder Disorder",
-        "Treatment": "Medication and Diet Change",
-        "Medication": "Antibiotics and Anti-inflammatory"
+        "appointmentDetailId": 4,
+        "appointmentId": 4,
+        "recordId": 4,
+        "diagnosis": "Swim Bladder Disorder",
+        "treatment": "Medication and Diet Change",
+        "medication": "Antibiotics and Anti-inflammatory"
     },
     {
-        "AppointmentDetailID": 5,
-        "AppointmentID": 5,
-        "RecordID": 5,
-        "Diagnosis": "Gastrointestinal Stasis",
-        "Treatment": "Motility Medication and Massage",
-        "Medication": "Cisapride and Simethicone"
+        "appointmentDetailId": 5,
+        "appointmentId": 5,
+        "recordId": 5,
+        "diagnosis": "Gastrointestinal Stasis",
+        "treatment": "Motility Medication and Massage",
+        "medication": "Cisapride and Simethicone"
     }
 ]

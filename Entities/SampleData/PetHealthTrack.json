@@ -1,37 +1,37 @@
 [
     {
-        "PetHealthTrackID": 1,
-        "HospitalizationID": 1,
-        "Description": "Recovering from surgery",
-        "Date": "2023-05-03",
-        "Status": 1
+        "petHealthTrackId": 1,
+        "hospitalizationId": 1,
+        "description": "Recovering from surgery",
+        "date": "2023-05-03",
+        "status": 1
     },
     {
-        "PetHealthTrackID": 2,
-        "HospitalizationID": 2,
-        "Description": "Monitoring for dehydration",
-        "Date": "2023-06-11",
-        "Status": 2
+        "petHealthTrackId": 2,
+        "hospitalizationId": 2,
+        "description": "Monitoring for dehydration",
+        "date": "2023-06-11",
+        "status": 2
     },
     {
-        "PetHealthTrackID": 3,
-        "HospitalizationID": 3,
-        "Description": "Treating respiratory infection",
-        "Date": "2023-07-16",
-        "Status": 3
+        "petHealthTrackId": 3,
+        "hospitalizationId": 3,
+        "description": "Treating respiratory infection",
+        "date": "2023-07-16",
+        "status": 3
     },
     {
-        "PetHealthTrackID": 4,
-        "HospitalizationID": 4,
-        "Description": "Observing swim bladder disorder",
-        "Date": "2023-08-02",
-        "Status": 1
+        "petHealthTrackId": 4,
+        "hospitalizationId": 4,
+        "description": "Observing swim bladder disorder",
+        "date": "2023-08-02",
+        "status": 1
     },
     {
-        "PetHealthTrackID": 5,
-        "HospitalizationID": 5,
-        "Description": "Managing gastrointestinal stasis",
-        "Date": "2023-09-11",
-        "Status": 2
+        "petHealthTrackId": 5,
+        "hospitalizationId": 5,
+        "description": "Managing gastrointestinal stasis",
+        "date": "2023-09-11",
+        "status": 2
     }
 ]

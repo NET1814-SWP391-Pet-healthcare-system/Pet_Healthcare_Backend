@@ -1,27 +1,27 @@
 [
     {
-        "VetID": 1,
-        "Rating": 4,
-        "YearsOfExperience": 8
+        "vetId": 1,
+        "rating": 4,
+        "yearsOfExperience": 8
     },
     {
-        "VetID": 2,
-        "Rating": 5,
-        "YearsOfExperience": 12
+        "vetId": 2,
+        "rating": 5,
+        "yearsOfExperience": 12
     },
     {
-        "VetID": 3,
-        "Rating": 3,
-        "YearsOfExperience": 5
+        "vetId": 3,
+        "rating": 3,
+        "yearsOfExperience": 5
     },
     {
-        "VetID": 4,
-        "Rating": 4,
-        "YearsOfExperience": 10
+        "vetId": 4,
+        "rating": 4,
+        "yearsOfExperience": 10
     },
     {
-        "VetID": 5,
-        "Rating": 4,
-        "YearsOfExperience": 7
+        "vetId": 5,
+        "rating": 4,
+        "yearsOfExperience": 7
     }
 ]
