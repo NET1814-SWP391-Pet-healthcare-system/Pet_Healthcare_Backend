@@ -20,7 +20,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Service GetById(int id)
+        public Service? GetById(int id)
         {
             throw new NotImplementedException();
         }

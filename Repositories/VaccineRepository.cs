@@ -20,7 +20,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Vaccine GetById(int id)
+        public Vaccine? GetById(int id)
         {
             throw new NotImplementedException();
         }

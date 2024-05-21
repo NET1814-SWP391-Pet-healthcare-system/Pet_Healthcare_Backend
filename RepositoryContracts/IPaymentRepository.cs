@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IPaymentRepository
     {
         IEnumerable<Payment> GetAll();
-        Payment GetById(int id);
+        Payment? GetById(int id);
         bool Add(Payment payment);
         bool Update(Payment payment);
         bool Remove(int id);

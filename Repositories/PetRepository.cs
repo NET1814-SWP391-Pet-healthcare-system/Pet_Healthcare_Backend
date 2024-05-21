@@ -15,7 +15,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Pet GetById(int id)
+        public Pet? GetById(int id)
         {
             throw new NotImplementedException();
         }

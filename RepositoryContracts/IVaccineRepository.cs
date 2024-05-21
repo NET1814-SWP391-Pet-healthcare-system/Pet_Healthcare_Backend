@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IVaccineRepository
     {
         IEnumerable<Vaccine> GetAll();
-        Vaccine GetById(int id);
+        Vaccine? GetById(int id);
         bool Add(Vaccine vaccine);
         bool Update(Vaccine vaccine);
         bool Remove(int id);

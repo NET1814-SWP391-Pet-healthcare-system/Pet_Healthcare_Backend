@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface ISlotRepository
     {
         IEnumerable<Slot> GetAll();
-        Slot GetById(int id);
+        Slot? GetById(int id);
         bool Add(Slot slot);
         bool Update(Slot slot);
         bool Remove(int id);

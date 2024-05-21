@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IPetVaccinationRepository
     {
         IEnumerable<PetVaccination> GetAll();
-        PetVaccination GetById(int id);       //2 id which are primary key?
+        PetVaccination? GetById(int id);       //2 id which are primary key?
         bool Add(PetVaccination petVaccination);
         bool Update(PetVaccination petVaccination);
         bool Remove(int id);    //2 id which are primary key?
