@@ -11,11 +11,11 @@ namespace Entities
     public class Record
     {
         [Key]
-        public int recordId { get; set; }
+        public int RecordId { get; set; }
         [ForeignKey("Pet")]
-        public int petId { get; set; }
-        public Pet pet { get; set; }
-        public int numberOfVisits { get; set; }
-        public ICollection<AppointmentDetail> appointmentDetails { get; set; }
+        public int PetId { get; set; }
+        public Pet Pet { get; set; }
+        public int NumberOfVisits { get; set; }
+        public ICollection<AppointmentDetail> AppointmentDetails { get; set; }
     }
 }
