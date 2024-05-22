@@ -24,5 +24,18 @@ namespace Entities
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PetVaccination>()
+                .HasKey(pv => new { pv.PetId, pv.VaccineId });
+            modelBuilder.Entity<PetVaccination>()
+                .HasOne(p => p.Pet)
+                .WithMany(pv => pv.PetVaccinations)
+                .HasForeignKey(p => p.PetId);
+            modelBuilder.Entity<PetVaccination>()
+                .HasOne(v => v.Vaccine)
+                .WithMany(pv => pv.PetVaccinations)
+                .HasForeignKey(v => v.VaccineId);
+        }
     }
 }
