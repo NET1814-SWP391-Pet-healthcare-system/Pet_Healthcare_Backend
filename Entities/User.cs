@@ -13,8 +13,8 @@ namespace Entities
     {
         [Key]
         public int UserId { get; set; }
-        [ForeignKey("Role")]
         public int RoleId { get; set; }
+        [ForeignKey("RoleId")]
         public Role Role{ get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }   
@@ -26,12 +26,5 @@ namespace Entities
         public string Country { get; set; }
         public string ImageURL { get; set; }
         public bool IsActice { get; set; }
-        public ICollection<Appointment> Appointments { get; set; }
-        public ICollection<Pet> Pets { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public ICollection<Hospitalization> Hospitalizations { get; set; }
-        // Vet-specific properties
-        public int? Rating { get; set; }
-        public int? YearsOfExperience { get; set; }
     }
 }

@@ -12,11 +12,11 @@ namespace Entities
     {
         [Key]
         public int AppointmentDetailId { get; set; }
-        [ForeignKey("Appointment")]
         public int AppointmentId { get; set; }
+        [ForeignKey("AppointmentId")]
         public Appointment Appointment { get; set; }
-        [ForeignKey("Record")]
         public int RecordId { get; set; }
+        [ForeignKey("RecordId")]
         public Record Record { get; set; }
         public string Diagnosis { get; set; }
         public string Treatment { get; set; }

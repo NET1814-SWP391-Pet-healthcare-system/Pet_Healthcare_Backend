@@ -17,9 +17,7 @@ namespace Entities
         public DbSet<PetVaccination> PetVaccinations { get; set; }
         public DbSet<PetHealthTrack> PetHealthTracks { get; set; }
         public DbSet<Pet> Pets { get; set; }
-        public DbSet<Payment> Payments { get; set; }
         public DbSet<Kennel> Kennels { get; set; }
-        public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Hospitalization> Hospitalizations { get; set; }
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
@@ -31,6 +29,9 @@ namespace Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure PetVaccination many to many relationship
             modelBuilder.Entity<PetVaccination>()
                 .HasKey(pv => new { pv.PetId, pv.VaccineId });
             modelBuilder.Entity<PetVaccination>()

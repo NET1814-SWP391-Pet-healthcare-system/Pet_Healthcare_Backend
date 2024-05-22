@@ -13,20 +13,20 @@ namespace Entities
     {
         [Key]
         public int AppointmentId { get; set; }
-        [ForeignKey("User")]
         public int CustomerId { get; set; }
+        [ForeignKey("CustomerId")]
         public User Customer { get; set; }
-        [ForeignKey("Pet")]
         public int PetId { get; set; }
+        [ForeignKey("PetId")]
         public Pet Pet { get; set; }
-        [ForeignKey("User")]
         public int VetId { get; set; }
+        [ForeignKey("VetId")]
         public User Vet { get; set; }
-        [ForeignKey("Slot")]
         public int SlotId { get; set; }
+        [ForeignKey("SlotId")]
         public Slot Slot { get; set; }
-        [ForeignKey("Service")]
         public int ServiceId { get; set; }
+        [ForeignKey("ServiceId")]
         public Service Service { get; set; }
         public DateOnly Date { get; set; }
         public double TotalCost { get; set; }

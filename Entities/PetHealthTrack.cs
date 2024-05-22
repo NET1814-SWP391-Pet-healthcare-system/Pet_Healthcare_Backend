@@ -13,8 +13,8 @@ namespace Entities
     {
         [Key]
         public int PetHealthTrackId { get; set; }
-        [ForeignKey("Hospitalization")]
         public int HospitalizationId { get; set; }
+        [ForeignKey("HospitalizationId")]
         public Hospitalization Hospitalization { get; set; }
         public string Description { get; set; }
         public DateOnly DateOnly { get; set; }

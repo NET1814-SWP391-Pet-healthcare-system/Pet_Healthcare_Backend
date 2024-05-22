@@ -12,8 +12,8 @@ namespace Entities
     {
         [Key]
         public int PetId { get; set; }
-        [ForeignKey("User")]
         public int CustomerId { get; set; }
+        [ForeignKey("CustomerId")]
         public User Customer { get; set; }
         public string Name { get; set; } 
         public string Species { get; set; }
@@ -23,5 +23,6 @@ namespace Entities
         public string ImageURL { get; set; }
         public ICollection<PetVaccination> PetVaccinations { get; set; }
         public ICollection<Hospitalization> Hospitalizations { get; set; }
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }

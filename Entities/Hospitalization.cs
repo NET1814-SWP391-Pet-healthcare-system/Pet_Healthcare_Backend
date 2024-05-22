@@ -12,14 +12,14 @@ namespace Entities
     {
         [Key]
         public int HospitalizationId { get; set; }
-        [ForeignKey("Pet")]
         public int PetId { get; set; }
+        [ForeignKey("PetId")]
         public Pet Pet { get; set; }
-        [ForeignKey("Kennel")]
         public int KennelId { get; set; }
+        [ForeignKey("KennelId")]
         public Kennel Kennel{ get; set; }
-        [ForeignKey("User")]
         public int VetId { get; set; }
+        [ForeignKey("VetId")]
         public User Vet { get; set; }
         public DateOnly AdmissionDate { get; set; }
         public DateOnly DischargeDate { get; set; }
