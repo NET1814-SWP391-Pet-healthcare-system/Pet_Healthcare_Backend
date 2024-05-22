@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public class ApplicationDbContext
+    public class ApplicationDbContext 
     {
         
     }
