@@ -12,28 +12,28 @@ namespace Entities
     public class Appointment
     {
         [Key]
-        public int appointmentId { get; set; }
+        public int AppointmentId { get; set; }
         [ForeignKey("User")]
-        public int customerId { get; set; }
-        public User customer { get; set; }
+        public int CustomerId { get; set; }
+        public User Customer { get; set; }
         [ForeignKey("Pet")]
-        public int petId { get; set; }
-        public Pet pet { get; set; }
+        public int PetId { get; set; }
+        public Pet Pet { get; set; }
         [ForeignKey("User")]
-        public int vetId { get; set; }
-        public User vet { get; set; }
+        public int VetId { get; set; }
+        public User Vet { get; set; }
         [ForeignKey("Slot")]
-        public int slotId { get; set; }
-        public Slot slot { get; set; }
+        public int SlotId { get; set; }
+        public Slot Slot { get; set; }
         [ForeignKey("Service")]
-        public int serviceId { get; set; }
-        public Service service { get; set; }
-        public DateOnly date { get; set; }
-        public double totalCost { get; set; }
-        public DateOnly cancellationDate { get; set; }
-        public double refundAmount { get; set; }
-        public int rating { get; set; }
-        public string comments { get; set; }
-        public AppointmentStatus status{ get; set; }
+        public int ServiceId { get; set; }
+        public Service Service { get; set; }
+        public DateOnly Date { get; set; }
+        public double TotalCost { get; set; }
+        public DateOnly CancellationDate { get; set; }
+        public double RefundAmount { get; set; }
+        public int Rating { get; set; }
+        public string Comments { get; set; }
+        public AppointmentStatus Status{ get; set; }
     }
 }

@@ -12,16 +12,16 @@ namespace Entities
     public class Payment
     {
         [Key]
-        public int paymentId { get; set; }
+        public int PaymentId { get; set; }
         [ForeignKey("User")]
-        public int customerId { get; set; }
-        public User customer { get; set; }
+        public int CustomerId { get; set; }
+        public User Customer { get; set; }
         [ForeignKey("Invoice")]
-        public int invoiceId { get; set; }
-        public Invoice invoice { get; set; }
-        public double amount { get; set; }
-        public DateOnly paymentDate { get; set; }
-        public PaymentMethod paymentMethod { get; set; }
-        public bool isPaid { get; set; }
+        public int InvoiceId { get; set; }
+        public Invoice Invoice { get; set; }
+        public double Amount { get; set; }
+        public DateOnly PaymentDate { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public bool IsPaid { get; set; }
     }
 }

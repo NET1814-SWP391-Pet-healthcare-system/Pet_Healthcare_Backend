@@ -11,19 +11,19 @@ namespace Entities
     public class Hospitalization
     {
         [Key]
-        public int hospitalizationId { get; set; }
+        public int HospitalizationId { get; set; }
         [ForeignKey("Pet")]
-        public int petId { get; set; }
-        public Pet pet { get; set; }
+        public int PetId { get; set; }
+        public Pet Pet { get; set; }
         [ForeignKey("Kennel")]
-        public int kennelId { get; set; }
-        public Kennel kennel{ get; set; }
+        public int KennelId { get; set; }
+        public Kennel Kennel{ get; set; }
         [ForeignKey("User")]
-        public int vetId { get; set; }
-        public User vet { get; set; }
-        public DateOnly admissionDate { get; set; }
-        public DateOnly dischargeDate { get; set; }
-        public double totalCost { get; set; }
-        public ICollection<PetHealthTrack> petHealthTracks { get; set; }
+        public int VetId { get; set; }
+        public User Vet { get; set; }
+        public DateOnly AdmissionDate { get; set; }
+        public DateOnly DischargeDate { get; set; }
+        public double TotalCost { get; set; }
+        public ICollection<PetHealthTrack> PetHealthTracks { get; set; }
     }
 }

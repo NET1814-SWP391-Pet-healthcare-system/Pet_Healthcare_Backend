@@ -11,10 +11,10 @@ namespace Entities
     public class Kennel
     {
         [Key]
-        public int kennelId { get; set;}
-        public string description { get; set; }
-        public int capacity { get; set; }
-        public double dailyCost { get; set; }
-        public ICollection<Hospitalization> hospitalizations { get; set; }
+        public int KennelId { get; set;}
+        public string Description { get; set; }
+        public int Capacity { get; set; }
+        public double DailyCost { get; set; }
+        public ICollection<Hospitalization> Hospitalizations { get; set; }
     }
 }

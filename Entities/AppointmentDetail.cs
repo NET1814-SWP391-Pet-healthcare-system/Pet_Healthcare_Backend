@@ -11,15 +11,15 @@ namespace Entities
     public class AppointmentDetail
     {
         [Key]
-        public int appointmentDetailId { get; set; }
+        public int AppointmentDetailId { get; set; }
         [ForeignKey("Appointment")]
-        public int appointmentId { get; set; }
-        public Appointment appointment { get; set; }
+        public int AppointmentId { get; set; }
+        public Appointment Appointment { get; set; }
         [ForeignKey("Record")]
-        public int recordId { get; set; }
-        public Record record { get; set; }
-        public string diagnosis { get; set; }
-        public string treatment { get; set; }
-        public string medication { get; set; }
+        public int RecordId { get; set; }
+        public Record Record { get; set; }
+        public string Diagnosis { get; set; }
+        public string Treatment { get; set; }
+        public string Medication { get; set; }
     }
 }

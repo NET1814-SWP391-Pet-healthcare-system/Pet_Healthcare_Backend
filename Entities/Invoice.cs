@@ -11,15 +11,15 @@ namespace Entities
     public class Invoice
     {
         [Key]
-        public int invoiceId { get; set; }
+        public int InvoiceId { get; set; }
         [ForeignKey("Appointment")]
-        public int appointmentId { get; set; }
-        public Appointment appointment { get; set; }
+        public int AppointmentId { get; set; }
+        public Appointment Appointment { get; set; }
         [ForeignKey("Hospitalization")]
-        public int hospitalizationId { get; set; }
-        public Hospitalization hospitalization { get; set; }
-        public DateOnly date { get; set; }
-        public double totalAmount { get; set; }
-        public ICollection<Payment> payments { get; set; } 
+        public int HospitalizationId { get; set; }
+        public Hospitalization Hospitalization { get; set; }
+        public DateOnly Date { get; set; }
+        public double TotalAmount { get; set; }
+        public ICollection<Payment> Payments { get; set; } 
     }
 }
