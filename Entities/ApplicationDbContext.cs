@@ -7,6 +7,6 @@ namespace Entities
 {
     public class ApplicationDbContext 
     {
-        
+
     }
 }
