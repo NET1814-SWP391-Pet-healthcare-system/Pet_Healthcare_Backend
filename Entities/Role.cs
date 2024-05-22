@@ -12,8 +12,8 @@ namespace Entities
     public class Role
     {
         [Key]
-        public int roleId { get; set; }
-        public string name { get; set; }
-        public ICollection<User> users { get; set; }
+        public int RoleId { get; set; }
+        public string Name { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }

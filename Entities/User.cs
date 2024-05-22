@@ -12,26 +12,26 @@ namespace Entities
     public class User
     {
         [Key]
-        public int userId { get; set; }
+        public int UserId { get; set; }
         [ForeignKey("Role")]
-        public int roleId { get; set; }
-        public Role role{ get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }   
-        public bool gender { get; set; }
-        public string email { get; set; }
-        public string userName { get; set; }
-        public string password { get; set; }
-        public string address { get; set; }
-        public string country { get; set; }
-        public string imageURL { get; set; }
-        public bool isActice { get; set; }
-        public ICollection<Appointment> appointments { get; set; }
-        public ICollection<Pet> pets { get; set; }
-        public ICollection<Payment> payments { get; set; }
-        public ICollection<Hospitalization> hospitalizations { get; set; }
+        public int RoleId { get; set; }
+        public Role Role{ get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }   
+        public bool Gender { get; set; }
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Address { get; set; }
+        public string Country { get; set; }
+        public string ImageURL { get; set; }
+        public bool IsActice { get; set; }
+        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Pet> Pets { get; set; }
+        public ICollection<Payment> Payments { get; set; }
+        public ICollection<Hospitalization> Hospitalizations { get; set; }
         // Vet-specific properties
-        public int? rating { get; set; }
-        public int? yearsOfExperience { get; set; }
+        public int? Rating { get; set; }
+        public int? YearsOfExperience { get; set; }
     }
 }

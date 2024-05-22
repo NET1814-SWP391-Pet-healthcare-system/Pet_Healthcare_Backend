@@ -9,10 +9,10 @@ namespace Entities
     [Table("PetVaccination")]
     public class PetVaccination
     {
-        public int petId { get; set; }
-        public Pet pet{ get; set; }
-        public int vaccineId { get; set; }
-        public Vaccine vaccine{ get; set; }
-        public DateOnly vaccinationDate { get; set; }
+        public int PetId { get; set; }
+        public Pet Pet{ get; set; }
+        public int VaccineId { get; set; }
+        public Vaccine Vaccine { get; set; }
+        public DateOnly VaccinationDate { get; set; }
     }
 }
