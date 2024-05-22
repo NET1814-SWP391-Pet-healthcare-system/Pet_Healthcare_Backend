@@ -15,7 +15,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Hospitalization GetById(int id)
+        public Hospitalization? GetById(int id)
         {
             throw new NotImplementedException();
         }

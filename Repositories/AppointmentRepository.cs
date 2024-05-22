@@ -20,7 +20,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Appointment GetById(int id)
+        public Appointment? GetById(int id)
         {
             throw new NotImplementedException();
         }

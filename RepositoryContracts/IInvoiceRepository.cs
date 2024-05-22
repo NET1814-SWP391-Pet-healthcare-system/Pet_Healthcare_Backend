@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IInvoiceRepository
     {
         IEnumerable<Invoice> GetAll();
-        Invoice GetById(int id);
+        Invoice? GetById(int id);
         bool Add(Invoice invoice);
         bool Update(Invoice invoice);
         bool Remove(int id);

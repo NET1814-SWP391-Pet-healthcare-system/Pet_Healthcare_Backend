@@ -20,7 +20,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Record GetById(int id)
+        public Record? GetById(int id)
         {
             throw new NotImplementedException();
         }

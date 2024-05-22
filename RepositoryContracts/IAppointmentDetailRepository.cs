@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IAppointmentDetailRepository
     {
         IEnumerable<AppointmentDetail> GetAll();
-        AppointmentDetail GetById(int id);
+        AppointmentDetail? GetById(int id);
         bool Add(AppointmentDetail appointmentDetail);
         bool Update(AppointmentDetail appointmentDetail);
         bool Remove(int id);

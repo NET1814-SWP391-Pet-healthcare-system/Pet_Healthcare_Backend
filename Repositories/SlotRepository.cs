@@ -26,7 +26,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Slot GetById(int id)
+        public Slot? GetById(int id)
         {
             throw new NotImplementedException();
         }

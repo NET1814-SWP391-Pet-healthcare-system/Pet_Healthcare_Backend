@@ -20,7 +20,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Payment GetById(int id)
+        public Payment? GetById(int id)
         {
             throw new NotImplementedException();
         }

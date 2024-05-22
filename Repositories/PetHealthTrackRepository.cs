@@ -15,7 +15,7 @@ namespace Repositories
             throw new System.NotImplementedException();
         }
 
-        public PetHealthTrack GetById(int id)
+        public PetHealthTrack? GetById(int id)
         {
             throw new System.NotImplementedException();
         }

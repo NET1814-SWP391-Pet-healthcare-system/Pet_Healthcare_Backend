@@ -15,7 +15,7 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Kennel GetById(int id)
+        public Kennel? GetById(int id)
         {
             throw new NotImplementedException();
         }
