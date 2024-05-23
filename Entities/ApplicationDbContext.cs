@@ -76,7 +76,7 @@ namespace Entities
             #region Seed Data
             #region kennel
             //Seed data to kennel
-            string kennelsJson = System.IO.File.ReadAllText("countries.json");
+            string kennelsJson = System.IO.File.ReadAllText("Kennel.json");
             //deserialize from json string to List of countries
             List<Kennel> kennels = System.Text.Json.JsonSerializer.Deserialize<List<Kennel>>(kennelsJson);
             //now foreach and use HasData
