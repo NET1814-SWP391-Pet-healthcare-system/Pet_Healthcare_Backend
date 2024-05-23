@@ -1,26 +1,26 @@
 [
     {
-        "VetID": 1,
+        "VetId": 1,
         "Rating": 4,
         "YearsOfExperience": 8
     },
     {
-        "VetID": 2,
+        "VetId": 2,
         "Rating": 5,
         "YearsOfExperience": 12
     },
     {
-        "VetID": 3,
+        "VetId": 3,
         "Rating": 3,
         "YearsOfExperience": 5
     },
     {
-        "VetID": 4,
+        "VetId": 4,
         "Rating": 4,
         "YearsOfExperience": 10
     },
     {
-        "VetID": 5,
+        "VetId": 5,
         "Rating": 4,
         "YearsOfExperience": 7
     }

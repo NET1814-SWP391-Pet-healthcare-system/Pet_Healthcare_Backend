@@ -1,36 +1,36 @@
 [
     {
-        "InvoiceID": 1,
-        "AppointmentID": 1,
-        "HospitalizationID": null,
+        "InvoiceId": 1,
+        "AppointmentId": 1,
+        "HospitalizationId": null,
         "Date": "2023-06-15",
         "TotalAmount": 75.00
     },
     {
-        "InvoiceID": 2,
-        "AppointmentID": 2,
-        "HospitalizationID": null,
+        "InvoiceId": 2,
+        "AppointmentId": 2,
+        "HospitalizationId": null,
         "Date": "2023-07-01",
         "TotalAmount": 60.00
     },
     {
-        "InvoiceID": 3,
-        "AppointmentID": null,
-        "HospitalizationID": 1,
+        "InvoiceId": 3,
+        "AppointmentId": null,
+        "HospitalizationId": 1,
         "Date": "2023-05-05",
         "TotalAmount": 500.00
     },
     {
-        "InvoiceID": 4,
-        "AppointmentID": null,
-        "HospitalizationID": 2,
+        "InvoiceId": 4,
+        "AppointmentId": null,
+        "HospitalizationId": 2,
         "Date": "2023-06-12",
         "TotalAmount": 300.00
     },
     {
-        "InvoiceID": 5,
-        "AppointmentID": 3,
-        "HospitalizationID": null,
+        "InvoiceId": 5,
+        "AppointmentId": 3,
+        "HospitalizationId": null,
         "Date": "2023-08-10",
         "TotalAmount": 40.00
     }

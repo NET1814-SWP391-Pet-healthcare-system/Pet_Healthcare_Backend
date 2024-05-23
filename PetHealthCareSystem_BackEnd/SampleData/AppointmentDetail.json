@@ -1,42 +1,42 @@
 [
     {
-        "AppointmentDetailID": 1,
-        "AppointmentID": 1,
-        "RecordID": 1,
+        "AppointmentDetailId": 1,
+        "AppointmentId": 1,
+        "RecordId": 1,
         "Diagnosis": "Healthy",
         "Treatment": null,
         "Medication": null
     },
     {
-        "AppointmentDetailID": 2,
-        "AppointmentID": 2,
-        "RecordID": 2,
+        "AppointmentDetailId": 2,
+        "AppointmentId": 2,
+        "RecordId": 2,
         "Diagnosis": "Ear Infection",
         "Treatment": "Antibiotic Ear Drops",
         "Medication": "Otomax Otic Solution"
     },
     {
-        "AppointmentDetailID": 3,
-        "AppointmentID": 3,
-        "RecordID": 3,
+        "AppointmentDetailId": 3,
+        "AppointmentId": 3,
+        "RecordId": 3,
         "Diagnosis": "Feather Plucking",
         "Treatment": "Environmental Enrichment",
         "Medication": null
     },
     {
-        "AppointmentDetailID": 4,
-        "AppointmentID": 4,
-        "RecordID": 4,
+        "AppointmentDetailId": 4,
+        "AppointmentId": 4,
+        "RecordId": 4,
         "Diagnosis": "Swim Bladder Disorder",
         "Treatment": "Medication and Diet Change",
         "Medication": "Antibiotics and Anti-inflammatory"
     },
     {
-        "AppointmentDetailID": 5,
-        "AppointmentID": 5,
-        "RecordID": 5,
+        "AppointmentDetailId": 5,
+        "AppointmentId": 5,
+        "RecordId": 5,
         "Diagnosis": "Gastrointestinal Stasis",
         "Treatment": "Motility Medication and Massage",
-        "Medication": "Cisapride and Simethicone"
+        "Medication": "CisaprIde and Simethicone"
     }
 ]
