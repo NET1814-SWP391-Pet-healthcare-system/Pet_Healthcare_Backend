@@ -7,6 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="SampleData\Appointment.json" />
+    <Content Remove="SampleData\AppointmentDetail.json" />
+    <Content Remove="SampleData\Hospitalization.json" />
+    <Content Remove="SampleData\Invoice.json" />
+    <Content Remove="SampleData\Kennel.json" />
+    <Content Remove="SampleData\Payment.json" />
+    <Content Remove="SampleData\Pet.json" />
+    <Content Remove="SampleData\PetHealthTrack.json" />
+    <Content Remove="SampleData\PetVaccination.json" />
+    <Content Remove="SampleData\Record.json" />
+    <Content Remove="SampleData\Role.json" />
+    <Content Remove="SampleData\Service.json" />
+    <Content Remove="SampleData\Slot.json" />
+    <Content Remove="SampleData\User.json" />
+    <Content Remove="SampleData\Vaccine.json" />
+    <Content Remove="SampleData\VetInfo.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -18,6 +37,25 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="SampleData\Appointment.json" />
+    <None Include="SampleData\AppointmentDetail.json" />
+    <None Include="SampleData\Hospitalization.json" />
+    <None Include="SampleData\Invoice.json" />
+    <None Include="SampleData\Kennel.json" />
+    <None Include="SampleData\Payment.json" />
+    <None Include="SampleData\Pet.json" />
+    <None Include="SampleData\PetHealthTrack.json" />
+    <None Include="SampleData\PetVaccination.json" />
+    <None Include="SampleData\Record.json" />
+    <None Include="SampleData\Role.json" />
+    <None Include="SampleData\Service.json" />
+    <None Include="SampleData\Slot.json" />
+    <None Include="SampleData\User.json" />
+    <None Include="SampleData\Vaccine.json" />
+    <None Include="SampleData\VetInfo.json" />
   </ItemGroup>
 
   <ItemGroup>
