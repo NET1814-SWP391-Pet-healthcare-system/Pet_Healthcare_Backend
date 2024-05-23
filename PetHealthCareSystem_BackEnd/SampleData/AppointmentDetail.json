@@ -1,0 +1,42 @@
+[
+    {
+        "AppointmentDetailId": 1,
+        "AppointmentId": 1,
+        "RecordId": 1,
+        "Diagnosis": "Healthy",
+        "Treatment": null,
+        "Medication": null
+    },
+    {
+        "AppointmentDetailId": 2,
+        "AppointmentId": 2,
+        "RecordId": 2,
+        "Diagnosis": "Ear Infection",
+        "Treatment": "Antibiotic Ear Drops",
+        "Medication": "Otomax Otic Solution"
+    },
+    {
+        "AppointmentDetailId": 3,
+        "AppointmentId": 3,
+        "RecordId": 3,
+        "Diagnosis": "Feather Plucking",
+        "Treatment": "Environmental Enrichment",
+        "Medication": null
+    },
+    {
+        "AppointmentDetailId": 4,
+        "AppointmentId": 4,
+        "RecordId": 4,
+        "Diagnosis": "Swim Bladder Disorder",
+        "Treatment": "Medication and Diet Change",
+        "Medication": "Antibiotics and Anti-inflammatory"
+    },
+    {
+        "AppointmentDetailId": 5,
+        "AppointmentId": 5,
+        "RecordId": 5,
+        "Diagnosis": "Gastrointestinal Stasis",
+        "Treatment": "Motility Medication and Massage",
+        "Medication": "CisaprIde and Simethicone"
+    }
+]

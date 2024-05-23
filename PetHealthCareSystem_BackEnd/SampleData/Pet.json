@@ -1,0 +1,52 @@
+[
+    {
+        "PetId": 1,
+        "CustomerId": 1,
+        "Name": "Buddy",
+        "Species": "Dog",
+        "Breed": "Labrador Retriever",
+        "Gender": true,
+        "Weight": 30.5,
+        "ImageUrl": "https://example.com/pet_images/buddy.jpg"
+    },
+    {
+        "PetId": 2,
+        "CustomerId": 2,
+        "Name": "Whiskers",
+        "Species": "Cat",
+        "Breed": "Siamese",
+        "Gender": false,
+        "Weight": 4.2,
+        "ImageUrl": "https://example.com/pet_images/whiskers.jpg"
+    },
+    {
+        "PetId": 3,
+        "CustomerId": 3,
+        "Name": "Rocky",
+        "Species": "Bird",
+        "Breed": "Cockatiel",
+        "Gender": true,
+        "Weight": 0.3,
+        "ImageUrl": "https://example.com/pet_images/rocky.jpg"
+    },
+    {
+        "PetId": 4,
+        "CustomerId": 4,
+        "Name": "Finny",
+        "Species": "Fish",
+        "Breed": "Goldfish",
+        "Gender": false,
+        "Weight": 0.1,
+        "ImageUrl": "https://example.com/pet_images/finny.jpg"
+    },
+    {
+        "PetId": 5,
+        "CustomerId": 5,
+        "Name": "Fluffy",
+        "Species": "Rabbit",
+        "Breed": "Lop",
+        "Gender": true,
+        "Weight": 2.8,
+        "ImageUrl": "https://example.com/pet_images/fluffy.jpg"
+    }
+]

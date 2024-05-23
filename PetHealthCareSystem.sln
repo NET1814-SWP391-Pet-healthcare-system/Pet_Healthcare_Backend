@@ -3,9 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHealthCareSystem_BackEnd", "PetHealthCareSystem_BackEnd\PetHealthCareSystem_BackEnd.csproj", "{D9EA6C6B-A087-48C3-9476-1F1E82225604}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHealthCareSystem_BackEnd", "PetHealthCareSystem_BackEnd\PetHealthCareSystem_BackEnd.csproj", "{D9EA6C6B-A087-48C3-9476-1F1E82225604}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{4EAD4340-7792-4AFA-972B-BC3A26E5F583}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{4EAD4340-7792-4AFA-972B-BC3A26E5F583}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repositories\Repositories.csproj", "{6A0E8160-FFDE-40C7-B82B-2AAD6C296D95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryContracts", "RepositoryContracts\RepositoryContracts.csproj", "{774D728E-558D-4110-AED2-4C915E938577}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{572D9096-64A0-4629-B8B2-D9629F53A86F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{6403A976-F08A-4843-9CCA-6AF836C01004}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,22 @@ Global
 		{4EAD4340-7792-4AFA-972B-BC3A26E5F583}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EAD4340-7792-4AFA-972B-BC3A26E5F583}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EAD4340-7792-4AFA-972B-BC3A26E5F583}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0E8160-FFDE-40C7-B82B-2AAD6C296D95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0E8160-FFDE-40C7-B82B-2AAD6C296D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0E8160-FFDE-40C7-B82B-2AAD6C296D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0E8160-FFDE-40C7-B82B-2AAD6C296D95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{774D728E-558D-4110-AED2-4C915E938577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{774D728E-558D-4110-AED2-4C915E938577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{774D728E-558D-4110-AED2-4C915E938577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{774D728E-558D-4110-AED2-4C915E938577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{572D9096-64A0-4629-B8B2-D9629F53A86F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{572D9096-64A0-4629-B8B2-D9629F53A86F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{572D9096-64A0-4629-B8B2-D9629F53A86F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{572D9096-64A0-4629-B8B2-D9629F53A86F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6403A976-F08A-4843-9CCA-6AF836C01004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6403A976-F08A-4843-9CCA-6AF836C01004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6403A976-F08A-4843-9CCA-6AF836C01004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6403A976-F08A-4843-9CCA-6AF836C01004}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,47 @@
+[
+    {
+        "PaymentId": 1,
+        "CustomerId": 1,
+        "InvoiceId": 1,
+        "Amount": 75.00,
+        "PaymentDate": "2023-06-15",
+        "PaymentMethod": 1,
+        "IsPaId": true
+    },
+    {
+        "PaymentId": 2,
+        "CustomerId": 2,
+        "InvoiceId": 2,
+        "Amount": 60.00,
+        "PaymentDate": "2023-07-01",
+        "PaymentMethod": 2,
+        "IsPaId": true
+    },
+    {
+        "PaymentId": 3,
+        "CustomerId": 1,
+        "InvoiceId": 3,
+        "Amount": 500.00,
+        "PaymentDate": "2023-05-10",
+        "PaymentMethod": 1,
+        "IsPaId": true
+    },
+    {
+        "PaymentId": 4,
+        "CustomerId": 2,
+        "InvoiceId": 4,
+        "Amount": 300.00,
+        "PaymentDate": "2023-06-15",
+        "PaymentMethod": 2,
+        "IsPaId": true
+    },
+    {
+        "PaymentId": 5,
+        "CustomerId": 3,
+        "InvoiceId": 5,
+        "Amount": 40.00,
+        "PaymentDate": "2023-08-10",
+        "PaymentMethod": 1,
+        "IsPaId": true
+    }
+]
