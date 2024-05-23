@@ -10,7 +10,6 @@ namespace Entities
     public class ApplicationDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Vet> Vets { get; set; }
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<Slot> Slots { get; set; }
         public DbSet<Service> Services { get; set; }
@@ -21,7 +20,6 @@ namespace Entities
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Kennel> Kennels { get; set; }
         public DbSet<Hospitalization> Hospitalizations { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
 
@@ -34,44 +32,17 @@ namespace Entities
         {
             base.OnModelCreating(modelBuilder);
 
-            // Disable cascading deletes for specific relationships
-            modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.Customer)
-                .WithMany(c => c.Appointments)
-                .HasForeignKey(a => a.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.Vet)
-                .WithMany(v => v.Appointments)
-                .HasForeignKey(a => a.VetId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Hospitalization>()
-                .HasOne(h => h.Vet)
-                .WithMany(v => v.Hospitalizations)
-                .HasForeignKey(h => h.VetId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<AppointmentDetail>()
-                .HasOne(ad => ad.Record)
-                .WithMany(r => r.AppointmentDetails)
-                .HasForeignKey(ad => ad.RecordId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Define composite keys
+            // Configure PetVaccination many to many relationship
             modelBuilder.Entity<PetVaccination>()
                 .HasKey(pv => new { pv.PetId, pv.VaccineId });
-
             modelBuilder.Entity<PetVaccination>()
-                .HasOne(pv => pv.Pet)
-                .WithMany(p => p.PetVaccinations)
-                .HasForeignKey(pv => pv.PetId);
-
+                .HasOne(p => p.Pet)
+                .WithMany(pv => pv.PetVaccinations)
+                .HasForeignKey(p => p.PetId);
             modelBuilder.Entity<PetVaccination>()
-                .HasOne(pv => pv.Vaccine)
-                .WithMany(v => v.PetVaccinations)
-                .HasForeignKey(pv => pv.VaccineId);
+                .HasOne(v => v.Vaccine)
+                .WithMany(pv => pv.PetVaccinations)
+                .HasForeignKey(v => v.VaccineId);
         }
     }
 }

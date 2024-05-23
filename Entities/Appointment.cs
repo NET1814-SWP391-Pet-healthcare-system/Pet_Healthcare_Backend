@@ -15,13 +15,13 @@ namespace Entities
         public int AppointmentId { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public User Customer { get; set; }
         public int PetId { get; set; }
         [ForeignKey("PetId")]
         public Pet Pet { get; set; }
         public int VetId { get; set; }
         [ForeignKey("VetId")]
-        public Vet Vet { get; set; }
+        public User Vet { get; set; }
         public int SlotId { get; set; }
         [ForeignKey("SlotId")]
         public Slot Slot { get; set; }

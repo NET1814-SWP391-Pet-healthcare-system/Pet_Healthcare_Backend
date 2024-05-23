@@ -14,7 +14,7 @@ namespace Entities
         public int PetId { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public User Customer { get; set; }
         public string Name { get; set; } 
         public string Species { get; set; }
         public string Breed { get; set; }

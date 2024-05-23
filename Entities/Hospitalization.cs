@@ -20,7 +20,7 @@ namespace Entities
         public Kennel Kennel{ get; set; }
         public int VetId { get; set; }
         [ForeignKey("VetId")]
-        public Vet Vet { get; set; }
+        public User Vet { get; set; }
         public DateOnly AdmissionDate { get; set; }
         public DateOnly DischargeDate { get; set; }
         public double TotalCost { get; set; }
