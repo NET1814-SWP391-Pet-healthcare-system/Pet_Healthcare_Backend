@@ -45,20 +45,9 @@ namespace Entities
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Kennel>().ToTable("Kennel");
-           
 
-            //Seed data to countries
-            string kennelsJson = System.IO.File.ReadAllText("countries.json");
-            //deserialize from json string to List of countries
-            List<Kennel> kennels = System.Text.Json.JsonSerializer.Deserialize<List<Kennel>>(kennelsJson);
-            //now foreach and use HasData
-            foreach (Kennel country in kennels)
-            {
-                modelBuilder.Entity<Kennel>().HasData(country);
-            }
 
-            
+
         }
     }
 }
