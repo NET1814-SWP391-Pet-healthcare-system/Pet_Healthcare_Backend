@@ -72,6 +72,192 @@ namespace Entities
                 .HasOne(pv => pv.Vaccine)
                 .WithMany(v => v.PetVaccinations)
                 .HasForeignKey(pv => pv.VaccineId);
+
+            #region Seed Data
+            #region kennel
+            //Seed data to kennel
+            string kennelsJson = System.IO.File.ReadAllText("countries.json");
+            //deserialize from json string to List of countries
+            List<Kennel> kennels = System.Text.Json.JsonSerializer.Deserialize<List<Kennel>>(kennelsJson);
+            //now foreach and use HasData
+            foreach (Kennel country in kennels)
+            {
+                modelBuilder.Entity<Kennel>().HasData(country);
+            }
+            #endregion kennel
+
+            #region vaccine
+            //Seed data to vaccine
+            string vaccinesJson = System.IO.File.ReadAllText("vaccines.json");
+            //deserialize from json string to List of vaccines
+            List<Vaccine> vaccines = System.Text.Json.JsonSerializer.Deserialize<List<Vaccine>>(vaccinesJson);
+            //now foreach and use HasData
+            foreach (Vaccine vaccine in vaccines)
+            {
+                modelBuilder.Entity<Vaccine>().HasData(vaccine);
+            }
+            #endregion vaccine  
+
+            #region service
+            //Seed data to service
+            string servicesJson = System.IO.File.ReadAllText("services.json");
+            //deserialize from json string to List of services
+            List<Service> services = System.Text.Json.JsonSerializer.Deserialize<List<Service>>(servicesJson);
+            //now foreach and use HasData
+            foreach (Service service in services)
+            {
+                modelBuilder.Entity<Service>().HasData(service);
+            }
+            #endregion service
+
+            #region role
+            //Seed data to role
+            string rolesJson = System.IO.File.ReadAllText("roles.json");
+            //deserialize from json string to List of roles
+            List<Role> roles = System.Text.Json.JsonSerializer.Deserialize<List<Role>>(rolesJson);
+            //now foreach and use HasData
+            foreach (Role role in roles)
+            {
+                modelBuilder.Entity<Role>().HasData(role);
+            }
+            #endregion
+
+            #region user
+            //Seed data to user
+            string usersJson = System.IO.File.ReadAllText("users.json");
+            //deserialize from json string to List of users
+            List<User> users = System.Text.Json.JsonSerializer.Deserialize<List<User>>(usersJson);
+            //now foreach and use HasData
+            foreach (User user in users)
+            {
+                modelBuilder.Entity<User>().HasData(user);
+            }
+            #endregion user
+
+            #region pet
+            //Seed data to pet
+            string petsJson = System.IO.File.ReadAllText("pets.json");
+            //deserialize from json string to List of pets
+            List<Pet> pets = System.Text.Json.JsonSerializer.Deserialize<List<Pet>>(petsJson);
+            //now foreach and use HasData
+            foreach (Pet pet in pets)
+            {
+                modelBuilder.Entity<Pet>().HasData(pet);
+            }
+            #endregion pet
+
+            #region slot
+            //Seed data to slot
+            string slotsJson = System.IO.File.ReadAllText("slots.json");
+            //deserialize from json string to List of slots
+            List<Slot> slots = System.Text.Json.JsonSerializer.Deserialize<List<Slot>>(slotsJson);
+            //now foreach and use HasData
+            foreach (Slot slot in slots)
+            {
+                modelBuilder.Entity<Slot>().HasData(slot);
+            }
+            #endregion slot
+
+            #region record
+            //Seed data to record
+            string recordsJson = System.IO.File.ReadAllText("records.json");
+            //deserialize from json string to List of records
+            List<Record> records = System.Text.Json.JsonSerializer.Deserialize<List<Record>>(recordsJson);
+            //now foreach and use HasData
+            foreach (Record record in records)
+            {
+                modelBuilder.Entity<Record>().HasData(record);
+            }
+            #endregion record
+
+            #region petvaccination
+            //Seed data to petvaccination
+            string petvaccinationsJson = System.IO.File.ReadAllText("petvaccinations.json");
+            //deserialize from json string to List of petvaccinations
+            List<PetVaccination> petvaccinations = System.Text.Json.JsonSerializer.Deserialize<List<PetVaccination>>(petvaccinationsJson);
+            //now foreach and use HasData
+            foreach (PetVaccination petvaccination in petvaccinations)
+            {
+                modelBuilder.Entity<PetVaccination>().HasData(petvaccination);
+            }
+            #endregion petvaccination
+
+            #region pethealthtrack
+            //Seed data to pethealthtrack
+            string pethealthtracksJson = System.IO.File.ReadAllText("pethealthtracks.json");
+            //deserialize from json string to List of pethealthtracks
+            List<PetHealthTrack> pethealthtracks = System.Text.Json.JsonSerializer.Deserialize<List<PetHealthTrack>>(pethealthtracksJson);
+            //now foreach and use HasData
+            foreach (PetHealthTrack pethealthtrack in pethealthtracks)
+            {
+                modelBuilder.Entity<PetHealthTrack>().HasData(pethealthtrack);
+            }
+            #endregion pethealthtrack
+
+            #region payment
+            ////Seed data to payment
+            //string paymentsJson = System.IO.File.ReadAllText("payments.json");
+            ////deserialize from json string to List of payments
+            //List<Payment> payments = System.Text.Json.JsonSerializer.Deserialize<List<Payment>>(paymentsJson);
+            ////now foreach and use HasData
+            //foreach (Payment payment in payments)
+            //{
+            //    modelBuilder.Entity<Payment>().HasData(payment);
+            //}
+            #endregion payment
+
+            #region invoice
+            ////Seed data to invoice
+            //string invoicesJson = System.IO.File.ReadAllText("invoices.json");
+            ////deserialize from json string to List of invoices
+            //List<Invoice> invoices = System.Text.Json.JsonSerializer.Deserialize<List<Invoice>>(invoicesJson);
+            ////now foreach and use HasData
+            //foreach (Invoice invoice in invoices)
+            //{
+            //    modelBuilder.Entity<Invoice>().HasData(invoice);
+            //}
+            #endregion invoice
+
+            #region hospitalization
+            //Seed data to hospitalization
+            string hospitalizationsJson = System.IO.File.ReadAllText("hospitalizations.json");
+            //deserialize from json string to List of hospitalizations
+            List<Hospitalization> hospitalizations = System.Text.Json.JsonSerializer.Deserialize<List<Hospitalization>>(hospitalizationsJson);
+            //now foreach and use HasData
+            foreach (Hospitalization hospitalization in hospitalizations)
+            {
+                modelBuilder.Entity<Hospitalization>().HasData(hospitalization);
+            }
+            #endregion hospitalization
+
+            #region appointment
+            //Seed data to appointment
+            string appointmentsJson = System.IO.File.ReadAllText("appointments.json");
+            //deserialize from json string to List of appointments
+            List<Appointment> appointments = System.Text.Json.JsonSerializer.Deserialize<List<Appointment>>(appointmentsJson);
+            //now foreach and use HasData
+            foreach (Appointment appointment in appointments)
+            {
+                modelBuilder.Entity<Appointment>().HasData(appointment);
+            }
+            #endregion appointment
+
+            #region appointmentdetail
+            //Seed data to appointmentdetail
+            string appointmentdetailsJson = System.IO.File.ReadAllText("appointmentdetails.json");
+            //deserialize from json string to List of appointmentdetails
+            List<AppointmentDetail> appointmentdetails = System.Text.Json.JsonSerializer.Deserialize<List<AppointmentDetail>>(appointmentdetailsJson);
+            //now foreach and use HasData
+            foreach (AppointmentDetail appointmentdetail in appointmentdetails)
+            {
+                modelBuilder.Entity<AppointmentDetail>().HasData(appointmentdetail);
+            }
+            #endregion appointmentdetail
+
+            #endregion Seed Data
+
         }
+
+
     }
 }
