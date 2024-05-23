@@ -22,7 +22,6 @@
     <Content Remove="SampleData\Slot.json" />
     <Content Remove="SampleData\User.json" />
     <Content Remove="SampleData\Vaccine.json" />
-    <Content Remove="SampleData\VetInfo.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,7 +54,6 @@
     <None Include="SampleData\Slot.json" />
     <None Include="SampleData\User.json" />
     <None Include="SampleData\Vaccine.json" />
-    <None Include="SampleData\VetInfo.json" />
   </ItemGroup>
 
   <ItemGroup>
