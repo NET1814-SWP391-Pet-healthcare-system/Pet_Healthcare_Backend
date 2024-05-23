@@ -1,27 +1,27 @@
 [
     {
-        "petId": 1,
-        "vaccineId": 1,
-        "vaccinationDate": "2023-04-01"
+        "PetID": 1,
+        "VaccineID": 1,
+        "VaccinationDate": "2023-04-01"
     },
     {
-        "petId": 1,
-        "vaccineId": 2,
-        "vaccinationDate": "2022-08-15"
+        "PetID": 1,
+        "VaccineID": 2,
+        "VaccinationDate": "2022-08-15"
     },
     {
-        "petId": 2,
-        "vaccineId": 3,
-        "vaccinationDate": "2023-03-01"
+        "PetID": 2,
+        "VaccineID": 3,
+        "VaccinationDate": "2023-03-01"
     },
     {
-        "petId": 1,
-        "vaccineId": 4,
-        "vaccinationDate": "2023-01-10"
+        "PetID": 1,
+        "VaccineID": 4,
+        "VaccinationDate": "2023-01-10"
     },
     {
-        "petId": 3,
-        "vaccineId": 5,
-        "vaccinationDate": "2023-02-20"
+        "PetID": 3,
+        "VaccineID": 5,
+        "VaccinationDate": "2023-02-20"
     }
 ]

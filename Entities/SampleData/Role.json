@@ -1,22 +1,18 @@
 [
     {
-        "roleId": 1,
-        "name": "Admin"
+        "RoleID": 1,
+        "Name": "Admin"
     },
     {
-        "roleId": 2,
-        "name": "Customer"
+        "RoleID": 2,
+        "Name": "Customer"
     },
     {
-        "roleId": 3,
-        "name": "Veterinarian"
+        "RoleID": 3,
+        "Name": "Veterinarian"
     },
     {
-        "roleId": 4,
-        "name": "Receptionist"
-    },
-    {
-        "roleId": 5,
-        "name": "Kennel Attendant"
+        "RoleID": 4,
+        "Name": "Employee"
     }
 ]
