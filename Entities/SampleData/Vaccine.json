@@ -1,32 +1,32 @@
 [
     {
-        "vaccineId": 1,
-        "name": "Rabies Vaccine",
-        "description": "Protects against the rabies virus.",
-        "isAnnualVaccine": true
+        "VaccineID": 1,
+        "Name": "Rabies Vaccine",
+        "Description": "Protects against the rabies virus.",
+        "IsAnnualVaccine": true
     },
     {
-        "vaccineId": 2,
-        "name": "Distemper Vaccine",
-        "description": "Protects against canine distemper virus.",
-        "isAnnualVaccine": false
+        "VaccineID": 2,
+        "Name": "Distemper Vaccine",
+        "Description": "Protects against canine distemper virus.",
+        "IsAnnualVaccine": false
     },
     {
-        "vaccineId": 3,
-        "name": "Feline Leukemia Vaccine",
-        "description": "Protects against feline leukemia virus.",
-        "isAnnualVaccine": true
+        "VaccineID": 3,
+        "Name": "Feline Leukemia Vaccine",
+        "Description": "Protects against feline leukemia virus.",
+        "IsAnnualVaccine": true
     },
     {
-        "vaccineId": 4,
-        "name": "Bordetella Vaccine",
-        "description": "Protects against kennel cough in dogs.",
-        "isAnnualVaccine": false
+        "VaccineID": 4,
+        "Name": "Bordetella Vaccine",
+        "Description": "Protects against kennel cough in dogs.",
+        "IsAnnualVaccine": false
     },
     {
-        "vaccineId": 5,
-        "name": "Parvo Vaccine",
-        "description": "Protects against parvovirus in dogs.",
-        "isAnnualVaccine": false
+        "VaccineID": 5,
+        "Name": "Parvo Vaccine",
+        "Description": "Protects against parvovirus in dogs.",
+        "IsAnnualVaccine": false
     }
 ]

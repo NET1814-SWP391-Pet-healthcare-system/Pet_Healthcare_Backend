@@ -1,32 +1,32 @@
 [
     {
-        "serviceId": 1,
-        "name": "Annual Checkup",
-        "description": "Comprehensive physical examination for your pet.",
-        "cost": 50.00
+        "ServiceID": 1,
+        "Name": "Annual Checkup",
+        "Description": "Comprehensive physical examination for your pet.",
+        "Cost": 50.00
     },
     {
-        "serviceId": 2,
-        "name": "Vaccination",
-        "description": "Administering essential vaccinations for your pet.",
-        "cost": 30.00
+        "ServiceID": 2,
+        "Name": "Vaccination",
+        "Description": "Administering essential vaccinations for your pet.",
+        "Cost": 30.00
     },
     {
-        "serviceId": 3,
-        "name": "Grooming",
-        "description": "Professional grooming services for your pet.",
-        "cost": 40.00
+        "ServiceID": 3,
+        "Name": "Grooming",
+        "Description": "Professional grooming services for your pet.",
+        "Cost": 40.00
     },
     {
-        "serviceId": 4,
-        "name": "Dental Cleaning",
-        "description": "Thorough dental cleaning and oral health check.",
-        "cost": 75.00
+            "ServiceID": 4,
+            "Name": "Dental Cleaning",
+            "Description": "Thorough dental cleaning and oral health check.",
+            "Cost": 75.00
     },
     {
-        "serviceId": 5,
-        "name": "Surgery",
-        "description": "Surgical procedures for your pet.",
-        "cost": 500.00
-    }
+            "ServiceID": 5,
+            "Name": "Surgery",
+            "Description": "Surgical procedures for your pet.",
+            "Cost": 500.00
+     }
 ]
