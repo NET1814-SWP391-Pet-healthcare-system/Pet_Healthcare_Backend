@@ -12,10 +12,10 @@ namespace Entities
     {
         [Key]
         public int RecordId { get; set; }
-        public int PetId { get; set; }
+        public int? PetId { get; set; }
         [ForeignKey("PetId")]
-        public Pet Pet { get; set; }
-        public int NumberOfVisits { get; set; }
-        public ICollection<AppointmentDetail> AppointmentDetails { get; set; }
+        public Pet? Pet { get; set; }
+        public int? NumberOfVisits { get; set; }
+        public ICollection<AppointmentDetail>? AppointmentDetails { get; set; }
     }
 }

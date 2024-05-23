@@ -9,7 +9,7 @@ namespace Entities
     public class Customer : User
     {
         // Customer-specific properties
-        public ICollection<Appointment> Appointments { get; set; }
-        public ICollection<Pet> Pets { get; set; }
+        public ICollection<Appointment>? Appointments { get; set; }
+        public ICollection<Pet>? Pets { get; set; }
     }
 }

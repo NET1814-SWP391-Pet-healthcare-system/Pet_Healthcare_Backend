@@ -12,9 +12,9 @@ namespace Entities
     {
         [Key]
         public int ServiceId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public double Cost { get; set; }
-        public ICollection<Appointment> Appointments { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public double? Cost { get; set; }
+        public ICollection<Appointment>? Appointments { get; set; }
     }
 }

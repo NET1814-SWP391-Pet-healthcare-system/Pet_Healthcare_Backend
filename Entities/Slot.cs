@@ -12,9 +12,9 @@ namespace Entities
     {
         [Key]
         public int SlotId { get; set; }
-        public TimeOnly StartTime { get; set; }
-        public TimeOnly EndTime { get; set; }
-        public TimeSpan Duration => EndTime - StartTime;
-        public ICollection<Appointment> Appointments { get; set; }
+        public TimeOnly? StartTime { get; set; }
+        public TimeOnly? EndTime { get; set; }
+        public TimeSpan? Duration => EndTime - StartTime;
+        public ICollection<Appointment>? Appointments { get; set; }
     }
 }

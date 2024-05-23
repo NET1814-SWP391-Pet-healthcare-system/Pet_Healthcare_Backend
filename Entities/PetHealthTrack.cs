@@ -13,11 +13,11 @@ namespace Entities
     {
         [Key]
         public int PetHealthTrackId { get; set; }
-        public int HospitalizationId { get; set; }
+        public int? HospitalizationId { get; set; }
         [ForeignKey("HospitalizationId")]
-        public Hospitalization Hospitalization { get; set; }
-        public string Description { get; set; }
-        public DateOnly DateOnly { get; set; }
-        public PetStatus Status { get; set; }
+        public Hospitalization? Hospitalization { get; set; }
+        public string? Description { get; set; }
+        public DateOnly? DateOnly { get; set; }
+        public PetStatus? Status { get; set; }
     }
 }

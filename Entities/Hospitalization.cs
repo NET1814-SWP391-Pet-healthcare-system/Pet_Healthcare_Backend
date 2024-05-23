@@ -12,18 +12,18 @@ namespace Entities
     {
         [Key]
         public int HospitalizationId { get; set; }
-        public int PetId { get; set; }
+        public int? PetId { get; set; }
         [ForeignKey("PetId")]
-        public Pet Pet { get; set; }
-        public int KennelId { get; set; }
+        public Pet? Pet { get; set; }
+        public int? KennelId { get; set; }
         [ForeignKey("KennelId")]
-        public Kennel Kennel{ get; set; }
-        public int VetId { get; set; }
+        public Kennel? Kennel{ get; set; }
+        public int? VetId { get; set; }
         [ForeignKey("VetId")]
-        public Vet Vet { get; set; }
-        public DateOnly AdmissionDate { get; set; }
-        public DateOnly DischargeDate { get; set; }
-        public double TotalCost { get; set; }
-        public ICollection<PetHealthTrack> PetHealthTracks { get; set; }
+        public Vet? Vet { get; set; }
+        public DateOnly? AdmissionDate { get; set; }
+        public DateOnly? DischargeDate { get; set; }
+        public double? TotalCost { get; set; }
+        public ICollection<PetHealthTrack>? PetHealthTracks { get; set; }
     }
 }

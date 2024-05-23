@@ -12,9 +12,9 @@ namespace Entities
     {
         [Key]
         public int VaccineId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool IsAnnualVaccine { get; set; }
-        public ICollection<PetVaccination> PetVaccinations { get; set; } 
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public bool? IsAnnualVaccine { get; set; }
+        public ICollection<PetVaccination>? PetVaccinations { get; set; } 
     }
 }

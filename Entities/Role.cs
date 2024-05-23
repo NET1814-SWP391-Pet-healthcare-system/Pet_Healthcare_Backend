@@ -13,7 +13,7 @@ namespace Entities
     {
         [Key]
         public int RoleId { get; set; }
-        public string Name { get; set; }
-        public ICollection<User> Users { get; set; }
+        public string? Name { get; set; }
+        public ICollection<User>? Users { get; set; }
     }
 }

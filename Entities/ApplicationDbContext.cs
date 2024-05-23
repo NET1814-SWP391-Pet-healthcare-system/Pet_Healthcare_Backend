@@ -9,6 +9,11 @@ namespace Entities
 {
     public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Vet> Vets { get; set; }
         public DbSet<Vaccine> Vaccines { get; set; }
@@ -24,11 +29,6 @@ namespace Entities
         public DbSet<Customer> Customers { get; set; }
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,7 +76,7 @@ namespace Entities
             #region Seed Data
             #region kennel
             //Seed data to kennel
-            string kennelsJson = System.IO.File.ReadAllText("Kennel.json");
+            string kennelsJson = System.IO.File.ReadAllText("SampleData\\Kennel.json");
             //deserialize from json string to List of countries
             List<Kennel> kennels = System.Text.Json.JsonSerializer.Deserialize<List<Kennel>>(kennelsJson);
             //now foreach and use HasData
@@ -88,7 +88,7 @@ namespace Entities
 
             #region vaccine
             //Seed data to vaccine
-            string vaccinesJson = System.IO.File.ReadAllText("Vaccine.json");
+            string vaccinesJson = System.IO.File.ReadAllText("SampleData\\Vaccine.json");
             //deserialize from json string to List of vaccines
             List<Vaccine> vaccines = System.Text.Json.JsonSerializer.Deserialize<List<Vaccine>>(vaccinesJson);
             //now foreach and use HasData
@@ -100,7 +100,7 @@ namespace Entities
 
             #region service
             //Seed data to service
-            string servicesJson = System.IO.File.ReadAllText("Service.json");
+            string servicesJson = System.IO.File.ReadAllText("SampleData\\Service.json");
             //deserialize from json string to List of services
             List<Service> services = System.Text.Json.JsonSerializer.Deserialize<List<Service>>(servicesJson);
             //now foreach and use HasData
@@ -112,7 +112,7 @@ namespace Entities
 
             #region role
             //Seed data to role
-            string rolesJson = System.IO.File.ReadAllText("Role.json");
+            string rolesJson = System.IO.File.ReadAllText("SampleData\\Role.json");
             //deserialize from json string to List of roles
             List<Role> roles = System.Text.Json.JsonSerializer.Deserialize<List<Role>>(rolesJson);
             //now foreach and use HasData
@@ -124,7 +124,7 @@ namespace Entities
 
             #region user
             //Seed data to user
-            string usersJson = System.IO.File.ReadAllText("User.json");
+            string usersJson = System.IO.File.ReadAllText("SampleData\\User.json");
             //deserialize from json string to List of users
             List<User> users = System.Text.Json.JsonSerializer.Deserialize<List<User>>(usersJson);
             //now foreach and use HasData
@@ -136,7 +136,7 @@ namespace Entities
 
             #region pet
             //Seed data to pet
-            string petsJson = System.IO.File.ReadAllText("Pet.json");
+            string petsJson = System.IO.File.ReadAllText("SampleData\\Pet.json");
             //deserialize from json string to List of pets
             List<Pet> pets = System.Text.Json.JsonSerializer.Deserialize<List<Pet>>(petsJson);
             //now foreach and use HasData
@@ -148,7 +148,7 @@ namespace Entities
 
             #region slot
             //Seed data to slot
-            string slotsJson = System.IO.File.ReadAllText("Slot.json");
+            string slotsJson = System.IO.File.ReadAllText("SampleData\\Slot.json");
             //deserialize from json string to List of slots
             List<Slot> slots = System.Text.Json.JsonSerializer.Deserialize<List<Slot>>(slotsJson);
             //now foreach and use HasData
@@ -160,7 +160,7 @@ namespace Entities
 
             #region record
             //Seed data to record
-            string recordsJson = System.IO.File.ReadAllText("Record.json");
+            string recordsJson = System.IO.File.ReadAllText("SampleData\\Record.json");
             //deserialize from json string to List of records
             List<Record> records = System.Text.Json.JsonSerializer.Deserialize<List<Record>>(recordsJson);
             //now foreach and use HasData
@@ -172,7 +172,7 @@ namespace Entities
 
             #region petvaccination
             //Seed data to petvaccination
-            string petvaccinationsJson = System.IO.File.ReadAllText("PetVaccination.json");
+            string petvaccinationsJson = System.IO.File.ReadAllText("SampleData\\PetVaccination.json");
             //deserialize from json string to List of petvaccinations
             List<PetVaccination> petvaccinations = System.Text.Json.JsonSerializer.Deserialize<List<PetVaccination>>(petvaccinationsJson);
             //now foreach and use HasData
@@ -184,7 +184,7 @@ namespace Entities
 
             #region pethealthtrack
             //Seed data to pethealthtrack
-            string pethealthtracksJson = System.IO.File.ReadAllText("PetHealthTrack.json");
+            string pethealthtracksJson = System.IO.File.ReadAllText("SampleData\\PetHealthTrack.json");
             //deserialize from json string to List of pethealthtracks
             List<PetHealthTrack> pethealthtracks = System.Text.Json.JsonSerializer.Deserialize<List<PetHealthTrack>>(pethealthtracksJson);
             //now foreach and use HasData
@@ -220,7 +220,7 @@ namespace Entities
 
             #region hospitalization
             //Seed data to hospitalization
-            string hospitalizationsJson = System.IO.File.ReadAllText("Hospitalization.json");
+            string hospitalizationsJson = System.IO.File.ReadAllText("SampleData\\Hospitalization.json");
             //deserialize from json string to List of hospitalizations
             List<Hospitalization> hospitalizations = System.Text.Json.JsonSerializer.Deserialize<List<Hospitalization>>(hospitalizationsJson);
             //now foreach and use HasData
@@ -232,7 +232,7 @@ namespace Entities
 
             #region appointment
             //Seed data to appointment
-            string appointmentsJson = System.IO.File.ReadAllText("Appointmnet.json");
+            string appointmentsJson = System.IO.File.ReadAllText("SampleData\\Appointment.json");
             //deserialize from json string to List of appointments
             List<Appointment> appointments = System.Text.Json.JsonSerializer.Deserialize<List<Appointment>>(appointmentsJson);
             //now foreach and use HasData
@@ -244,7 +244,7 @@ namespace Entities
 
             #region appointmentdetail
             //Seed data to appointmentdetail
-            string appointmentdetailsJson = System.IO.File.ReadAllText("appointmentdetails.json");
+            string appointmentdetailsJson = System.IO.File.ReadAllText("SampleData\\AppointmentDetail.json");
             //deserialize from json string to List of appointmentdetails
             List<AppointmentDetail> appointmentdetails = System.Text.Json.JsonSerializer.Deserialize<List<AppointmentDetail>>(appointmentdetailsJson);
             //now foreach and use HasData
@@ -255,9 +255,6 @@ namespace Entities
             #endregion appointmentdetail
 
             #endregion Seed Data
-
         }
-
-
     }
 }
