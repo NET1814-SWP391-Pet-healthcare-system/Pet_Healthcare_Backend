@@ -61,7 +61,7 @@
     },
     {
         "AppointmentId": 5,
-        "CustomerI": 5,
+        "CustomerId": 5,
         "PetId": 5,
         "VetId": 1,
         "SlotId": 5,
