@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.DTO.HospitalizationDTO;
+using ServiceContracts.DTO.UserDTO;
 using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -24,7 +24,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddHospitalization(Hospitalization? HospitalizationAddRequest)
+        public IActionResult AddHospitalization(UserAddRequest? HospitalizationAddRequest)
         {
             if (HospitalizationAddRequest == null)
             {
@@ -35,7 +35,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             return Ok("Created successfully");
         }
-        public IActionResult UpdateHospitalization(HospitalizationUpdateRequest? HospitalizationUpdateRequest)
+        public IActionResult UpdateHospitalization(UserUpdateRequest? HospitalizationUpdateRequest)
         {
             if (HospitalizationUpdateRequest == null)
             {
