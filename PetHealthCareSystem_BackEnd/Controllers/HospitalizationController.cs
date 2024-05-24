@@ -23,37 +23,39 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     //        _hospitalizationService = hospitalizationService;
     //    }
 
-    //    [HttpPost]
-    //    public IActionResult AddHospitalization(HospitalizationAddRequest? HospitalizationAddRequest)
-    //    {
-    //        if (HospitalizationAddRequest == null)
-    //        {
-    //            return BadRequest("HospitalizationRequest is null");
-    //        }
+        [HttpPost("api/Hospitalization/add")]
+        public IActionResult AddHospitalization(HospitalizationAddRequest? HospitalizationAddRequest)
+        {
+            if (HospitalizationAddRequest == null)
+            {
+                return BadRequest("HospitalizationRequest is null");
+            }
 
     //        _hospitalizationService.AddHospitalization(HospitalizationAddRequest);
 
-    //        return Ok("Created successfully");
-    //    }
-    //    public IActionResult UpdateHospitalization(HospitalizationUpdateRequest? HospitalizationUpdateRequest)
-    //    {
-    //        if (HospitalizationUpdateRequest == null)
-    //        {
-    //            return BadRequest("HospitalizationRequest is null");
-    //        }
+            return Ok("Created successfully");
+        }
+        [HttpPost("api/Hospitalization/update")]
+        public IActionResult UpdateHospitalization(HospitalizationUpdateRequest? HospitalizationUpdateRequest)
+        {
+            if (HospitalizationUpdateRequest == null)
+            {
+                return BadRequest("HospitalizationRequest is null");
+            }
 
     //        _hospitalizationService.UpdateHospitalization(HospitalizationUpdateRequest);
 
-    //        return Ok("Updated successfully");
-    //    } 
-    //    public IActionResult RemoveHospitalization(int id)
-    //    {
-    //        if (_hospitalizationService.RemoveHospitalization(id))
-    //        {
-    //            return Ok("Removed successfully");
-    //        }
-    //        return BadRequest("Hospitalization not found");
-    //    }
+            return Ok("Updated successfully");
+        }
+        [HttpPost("api/Hospitalization/remove")]
+        public IActionResult RemoveHospitalization(int id)
+        {
+            if (_hospitalizationService.RemoveHospitalization(id))
+            {
+                return Ok("Removed successfully");
+            }
+            return BadRequest("Hospitalization not found");
+        }
 
 
 
