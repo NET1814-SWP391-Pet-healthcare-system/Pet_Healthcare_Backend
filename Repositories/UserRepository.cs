@@ -27,33 +27,59 @@ namespace Repositories
                 return false;
             }
             _context.Users.Add(user);
-            _context.SaveChanges();
+            SaveChanges();
             return true;
         }
 
         public IEnumerable<User> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Users.ToList();
         }
 
         public User? GetById(int id)
         {
-            return _context.Users.FirstOrDefault(u => u.UserId == id);  
+            return _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == id);  
         }
 
-        public bool Remove(int id)
+        public User? GetByUsername(string username)
         {
-            throw new NotImplementedException();
+            return _context.Users.Include(u => u.Role).FirstOrDefault(x => x.Username == username);
+        }
+
+        public bool Remove(string username)
+        {
+            var user = GetByUsername(username);
+            _context.Users.Remove(user);
+            SaveChanges();
+            return true;
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
+            return true;
         }
 
         public bool Update(User user)
         {
-            throw new NotImplementedException();
+            var existingUser = GetById(user.UserId);
+            if(existingUser == null)
+            {
+                return false;
+            }
+            existingUser.RoleId = user.RoleId;
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.Gender = user.Gender;
+            existingUser.Email = user.Email;
+            existingUser.Username = user.Username;
+            existingUser.Password = user.Password;
+            existingUser.Address = user.Address;
+            existingUser.Country = user.Country;
+            existingUser.ImageURL = user.ImageURL;
+            existingUser.IsActice = user.IsActice;
+            SaveChanges();
+            return true;
         }
     }
 }

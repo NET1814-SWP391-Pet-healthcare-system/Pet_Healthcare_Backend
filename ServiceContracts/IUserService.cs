@@ -12,8 +12,9 @@ namespace ServiceContracts
     {
         bool AddUser(UserAddRequest request);
         User? GetUserById(int id);
+        User? GetUserByUsername(string username);
         IEnumerable<User> GetUsers();
         bool UpdateUser(UserUpdateRequest request);
-        bool RemoveUser(int id);
+        bool RemoveUser(string username);
     }
 }

@@ -12,10 +12,10 @@ namespace ServiceContracts
     public interface IAppointmentDetailService
     {
         bool AddAppointmentDetail(AppointmentDetailAddRequest request);
-        bool UpdateAppointmentDetail(AppointmentDetailAddRequest request);
+        bool UpdateAppointmentDetail(int i ,AppointmentDetailAddRequest request);
         IEnumerable<AppointmentDetail> GetAppointmentDetails();
         bool RemoveAppointmentDetail(int id);
-        AppointmentDetail GetAppointmentDetail(int id);
+        AppointmentDetail? GetAppointmentDetail(int id);
 
     }
 }

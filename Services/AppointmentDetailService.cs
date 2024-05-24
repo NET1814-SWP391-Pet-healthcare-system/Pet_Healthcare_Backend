@@ -27,7 +27,7 @@ namespace Services
 
  
 
-        public AppointmentDetail GetAppointmentDetail(int id)
+        public AppointmentDetail? GetAppointmentDetail(int id)
         {
             return _appointmentDetailRepository.GetById(id);
         }
@@ -47,13 +47,18 @@ namespace Services
             return true;
         }
 
-        public bool UpdateAppointmentDetail(AppointmentDetailAddRequest request)
+        public bool UpdateAppointmentDetail(int i ,AppointmentDetailAddRequest request)
         {
-            if(request == null || request.ToAppointmentDetail == null)
+            var ExistingAppointmentDetail = _appointmentDetailRepository.GetById(i);
+            if(request == null || request.ToAppointmentDetail == null || ExistingAppointmentDetail==null)
             {
                 return false;
             }
-            _appointmentDetailRepository.Update(request.ToAppointmentDetail());
+            var AppointmentDetail = request.ToAppointmentDetail();
+            ExistingAppointmentDetail.Appointment = AppointmentDetail.Appointment;
+            ExistingAppointmentDetail.Treatment = AppointmentDetail.Treatment;
+            ExistingAppointmentDetail.Diagnosis = AppointmentDetail.Diagnosis;
+            _appointmentDetailRepository.Update(ExistingAppointmentDetail);
             return true;
         }
 

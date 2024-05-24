@@ -11,9 +11,10 @@ namespace RepositoryContracts
     {
         IEnumerable<User> GetAll();
         User? GetById(int id);
+        User? GetByUsername(string username);   
         bool Add(User user);
         bool Update(User user);
-        bool Remove(int id);
+        bool Remove(string username);
         bool SaveChanges();
     }
 }
