@@ -10,9 +10,19 @@ namespace Repositories
 {
     public class RoleRepository : IRoleRepository
     {
+        private readonly ApplicationDbContext _context;
+
+        public RoleRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public bool Add(Role role)
         {
-            throw new NotImplementedException();
+            if(role == null) return false;
+
+            _context.Roles.Add(role);
+            _context.SaveChanges();
+            return true;
         }
 
         public IEnumerable<Role> GetAll()
@@ -32,7 +42,11 @@ namespace Repositories
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            if (_context.SaveChanges() == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public bool Update(Role role)
