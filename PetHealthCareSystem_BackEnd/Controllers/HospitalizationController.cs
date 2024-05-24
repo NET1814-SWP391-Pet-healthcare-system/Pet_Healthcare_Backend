@@ -24,11 +24,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddHospitalization(Hospitalization? HospitalizationAddRequest)
+        public IActionResult AddHospitalization(HospitalizationAddRequest? HospitalizationAddRequest)
         {
             if (HospitalizationAddRequest == null)
             {
-                return BadRequest("UserRequest is null");
+                return BadRequest("HospitalizationRequest is null");
             }
 
             _hospitalizationService.AddHospitalization(HospitalizationAddRequest);
@@ -39,7 +39,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             if (HospitalizationUpdateRequest == null)
             {
-                return BadRequest("UserRequest is null");
+                return BadRequest("HospitalizationRequest is null");
             }
 
             _hospitalizationService.UpdateHospitalization(HospitalizationUpdateRequest);
@@ -58,7 +58,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<Hospitalization> GetUserById(int id)
+        public ActionResult<Hospitalization> GetHospitalizationById(int id)
         {
             var Hospitalization = _hospitalizationService.GetHospitalizationById(id);
             if (Hospitalization == null)

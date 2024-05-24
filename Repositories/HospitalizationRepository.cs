@@ -25,7 +25,7 @@ namespace Repositories
 
         public IEnumerable<Hospitalization> GetAll()
         {
-            return _context.Hospitalizations;
+            return _context.Hospitalizations.ToList();
         }
 
         public Hospitalization? GetById(int id)
