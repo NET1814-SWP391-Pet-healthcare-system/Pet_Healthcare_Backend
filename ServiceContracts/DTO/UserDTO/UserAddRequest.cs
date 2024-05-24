@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities;
 
-namespace ServiceContracts.DTO
+namespace ServiceContracts.DTO.UserDTO
 {
     public class UserAddRequest
     {
@@ -45,6 +45,4 @@ namespace ServiceContracts.DTO
             };
         }
     }
-
-    
 }

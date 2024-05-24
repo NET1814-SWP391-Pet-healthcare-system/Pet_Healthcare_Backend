@@ -1,6 +1,7 @@
-﻿using RepositoryContracts;
+﻿using Entities;
+using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.DTO;
+using ServiceContracts.DTO.UserDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,31 @@ namespace Services
             //user.UserId = new Guid();
             _userRepository.Add(user);
             return true;
+        }
+
+        public User? GetUserById(int id)
+        {
+            var user = _userRepository.GetById(id);
+            if(user == null)
+            {
+                return null;
+            }
+            return user;
+        }
+
+        public IEnumerable<User> GetUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveUser(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateUser(UserUpdateRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

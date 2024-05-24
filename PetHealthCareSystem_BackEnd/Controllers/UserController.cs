@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.DTO;
+using ServiceContracts.DTO.UserDTO;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -34,10 +34,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok("Created successfully");
         }
 
-        //[HttpGet("{id}")]
-        //public IActionResult GetAll()
-        //{
-
-        //}
+        [HttpGet("{id}")]
+        public ActionResult<User> GetUserById(int id)
+        {
+            var user = _userService.GetUserById(id);
+            if(user == null)
+            {
+                return BadRequest("User not found");
+            }
+            return Ok(user);
+        }
     }
 }

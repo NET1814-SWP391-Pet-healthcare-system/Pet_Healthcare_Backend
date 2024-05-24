@@ -38,7 +38,7 @@ namespace Repositories
 
         public User? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Users.FirstOrDefault(u => u.UserId == id);  
         }
 
         public bool Remove(int id)
