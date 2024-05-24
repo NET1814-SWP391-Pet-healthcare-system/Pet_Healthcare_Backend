@@ -27,7 +27,11 @@ namespace Repositories
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            if (_context.SaveChanges() == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public bool Update(Hospitalization hospitalization)
