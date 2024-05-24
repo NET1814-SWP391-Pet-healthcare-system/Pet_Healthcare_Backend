@@ -20,7 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add Scoped for every repositories and services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<ISlotRepository, SlotRepository>();
+builder.Services.AddScoped<ISlotService, SlotService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
