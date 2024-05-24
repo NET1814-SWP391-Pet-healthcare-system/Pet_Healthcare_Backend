@@ -9,10 +9,10 @@ namespace PetHealthCareSystem_BackEnd.Validations
         {
             foreach (var existingSlot in slots)
             {
-                if ((requestSlot.StartTime > existingSlot.StartTime 
+                if ((requestSlot.StartTime >= existingSlot.StartTime 
                     && requestSlot.StartTime < existingSlot.EndTime) || 
                     (requestSlot.EndTime > existingSlot.StartTime 
-                    && requestSlot.EndTime < existingSlot.EndTime))
+                    && requestSlot.EndTime <= existingSlot.EndTime))
                 {
                     return true;
                 }

@@ -26,9 +26,7 @@ namespace Services
 
         public Slot? GetSlotById(int id)
         {
-            var slot = _slotRepository.GetById(id);
-            if (slot == null) return null;
-            return slot;
+            return _slotRepository.GetById(id);
         }
 
         public IEnumerable<Slot> GetSlots()
