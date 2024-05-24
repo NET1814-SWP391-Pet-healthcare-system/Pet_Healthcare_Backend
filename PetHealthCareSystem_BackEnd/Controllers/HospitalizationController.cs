@@ -23,7 +23,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _hospitalizationService = hospitalizationService;
         }
 
-        [HttpPost]
+        [HttpPost("api/Hospitalization/add")]
         public IActionResult AddHospitalization(HospitalizationAddRequest? HospitalizationAddRequest)
         {
             if (HospitalizationAddRequest == null)
@@ -35,6 +35,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             return Ok("Created successfully");
         }
+        [HttpPost("api/Hospitalization/update")]
         public IActionResult UpdateHospitalization(HospitalizationUpdateRequest? HospitalizationUpdateRequest)
         {
             if (HospitalizationUpdateRequest == null)
@@ -45,7 +46,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _hospitalizationService.UpdateHospitalization(HospitalizationUpdateRequest);
 
             return Ok("Updated successfully");
-        } 
+        }
+        [HttpPost("api/Hospitalization/remove")]
         public IActionResult RemoveHospitalization(int id)
         {
             if (_hospitalizationService.RemoveHospitalization(id))

@@ -24,6 +24,8 @@ builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 builder.Services.AddScoped<ISlotService, SlotService>();
 builder.Services.AddScoped<IAppointmentDetailRepository, AppointmentDetaiRepository>();
 builder.Services.AddScoped<IAppointmentDetailService, AppointmentDetailService>();
+builder.Services.AddScoped<IHospitalizationRepository, HospitalizationRepository>();
+builder.Services.AddScoped<IHospitalizationService, HospitalizationService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
