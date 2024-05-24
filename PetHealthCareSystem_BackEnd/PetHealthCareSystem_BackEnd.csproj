@@ -35,10 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="SampleData\Appointment.json" />
     <None Include="SampleData\AppointmentDetail.json" />
     <None Include="SampleData\Hospitalization.json" />

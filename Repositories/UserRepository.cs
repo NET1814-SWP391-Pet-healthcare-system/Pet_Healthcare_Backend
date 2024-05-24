@@ -1,4 +1,6 @@
 ﻿using Entities;
+using Entities.Constants;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -10,9 +12,23 @@ namespace Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public bool Add(User user)
+        private readonly ApplicationDbContext _context;
+
+
+        public UserRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+
+        public bool Add(User? user)
+        {
+            if(user == null)
+            {
+                return false;
+            }
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return true;
         }
 
         public IEnumerable<User> GetAll()

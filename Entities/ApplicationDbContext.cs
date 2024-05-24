@@ -15,7 +15,7 @@ namespace Entities
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Vet> Vets { get; set; }
+        //public DbSet<Vet> Vets { get; set; }
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<Slot> Slots { get; set; }
         public DbSet<Service> Services { get; set; }
@@ -26,7 +26,7 @@ namespace Entities
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Kennel> Kennels { get; set; }
         public DbSet<Hospitalization> Hospitalizations { get; set; }
-        public DbSet<Customer> Customers { get; set; }
+        //public DbSet<Customer> Customers { get; set; }
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
 
