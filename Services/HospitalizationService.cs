@@ -7,10 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities;
+using ServiceContracts;
+using ServiceContracts.DTO.UserDTO;
 
 namespace Services
 {
-    public class HospitalizationService
+    public class HospitalizationService : IHospitalizationService
     {
         private readonly IHospitalizationRepository _hospitalizationRepository;
 
@@ -49,6 +51,46 @@ namespace Services
             var hospitalization = request.ToHospitalization();
             _hospitalizationRepository.Remove(hospitalization.HospitalizationId);
             return true;
+        }
+
+        public Hospitalization? GetHospitalizationById(int id)
+        {
+            var hospitalization = _hospitalizationRepository.GetById(id);
+            if (hospitalization == null)
+            {
+                return null;
+            }
+            return hospitalization;
+        }   
+    
+        public IEnumerable<Hospitalization> GetHospitalizations()
+        {
+            return _hospitalizationRepository.GetAll();
+        }
+
+        public bool AddHospitalization(UserAddRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        User? IHospitalizationService.GetHospitalizationById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<User> GetHospitalization()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateHospitalization(UserUpdateRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveHospitalization(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
