@@ -10,34 +10,47 @@ namespace Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        public bool Add(Appointment appointment)
+        private readonly ApplicationDbContext _context;
+        public AppointmentRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public bool Add(Appointment? appointment)
+        {
+            if (appointment == null) return false;
+            _context.Appointments.Add(appointment);
+            return SaveChanges();
         }
 
         public IEnumerable<Appointment> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Appointments.ToList();
         }
 
         public Appointment? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Appointments.Find(id);
         }
 
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            var appointment = _context.Appointments.Find(id);
+            if (appointment == null) return false;
+            _context.Appointments.Remove(appointment);
+            return SaveChanges();
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
-        public bool Update(Appointment appointment)
+        public bool Update(Appointment? appointment)
         {
-            throw new NotImplementedException();
+            if (appointment == null) return false;
+            _context.Appointments.Update(appointment);
+            return SaveChanges();
         }
     }
 }
