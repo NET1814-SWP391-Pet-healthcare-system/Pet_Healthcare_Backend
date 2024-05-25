@@ -34,6 +34,11 @@ builder.Services.AddScoped<IKennelRepository, KennelRepository>();
 builder.Services.AddScoped<IKennelService, KennelService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IHospitalizationRepository, HospitalizationRepository>();
+builder.Services.AddScoped<IHospitalizationService, HospitalizationService>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

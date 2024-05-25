@@ -26,30 +26,26 @@ namespace Services
                 return false;
             }
             var hospitalization = request.ToHospitalization();
-            _hospitalizationRepository.Add(hospitalization);
-            return true;
+            return _hospitalizationRepository.Add(hospitalization);
         }
 
         public bool UpdateHospitalization(HospitalizationUpdateRequest? request)
         {
-            if (request == null)
+            if (_hospitalizationRepository.GetById(request.HospitalizationId) == null)
             {
                 return false;
             }
-            var hospitalization = request.ToHospitalization();
-            _hospitalizationRepository.Update(hospitalization);
-            return true;
+            return _hospitalizationRepository.Update(request.ToHospitalization());
         }
-        //huh this needs to be changed
+
         public bool RemoveHospitalization(int id)
         {
-            if (id == null)
+            if (_hospitalizationRepository.GetById(id) == null)
             {
                 return false;
             }
             var hospitalization = id;
-            _hospitalizationRepository.Remove(id);
-            return true;
+            return _hospitalizationRepository.Remove(id);
         }
 
         public Hospitalization? GetHospitalizationById(int id)
@@ -57,7 +53,7 @@ namespace Services
             return _hospitalizationRepository.GetById(id);
         }
 
-        public IEnumerable<Hospitalization> GetHospitalization()
+        public IEnumerable<Hospitalization> GetHospitalizations()
         {
             return _hospitalizationRepository.GetAll();
         }
