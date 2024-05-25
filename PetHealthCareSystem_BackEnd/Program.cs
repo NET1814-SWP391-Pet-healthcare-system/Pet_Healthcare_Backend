@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using Services;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
+builder.Services.AddControllers().AddNewtonsoftJson(options => { 
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
