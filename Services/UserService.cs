@@ -33,26 +33,41 @@ namespace Services
         public User? GetUserById(int id)
         {
             var user = _userRepository.GetById(id);
-            if(user == null)
-            {
-                return null;
-            }
+            return user;
+        }
+
+        public User? GetUserByUsername(string username)
+        {
+            var user = _userRepository.GetByUsername(username);
             return user;
         }
 
         public IEnumerable<User> GetUsers()
         {
-            throw new NotImplementedException();
+            return _userRepository.GetAll();
         }
 
-        public bool RemoveUser(int id)
+        public bool RemoveUser(string username)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.GetByUsername(username);
+            if(user == null)
+            {
+                return false;
+            }
+            return _userRepository.Remove(username);
+
         }
 
         public bool UpdateUser(UserUpdateRequest request)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.GetById(request.UserId);
+            if(user == null)
+            {
+                return false;
+            }
+            
+            return _userRepository.Update(request.ToUser());
+            
         }
     }
 }
