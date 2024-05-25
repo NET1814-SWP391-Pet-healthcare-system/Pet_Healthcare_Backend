@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using ServiceContracts;
-using ServiceContracts.DTO.UserDTO;
 
 namespace Services
 {
@@ -42,40 +41,25 @@ namespace Services
             return true;
         }
         //huh this needs to be changed
-        public bool RemoveHospitalization(HospitalizationRemoveRequest? request)
+        public bool RemoveHospitalization(int id)
         {
-            if (request == null)
+            if (id == null)
             {
                 return false;
             }
-            var hospitalization = request.ToHospitalization();
-            _hospitalizationRepository.Remove(hospitalization.HospitalizationId);
+            var hospitalization = id;
+            _hospitalizationRepository.Remove(id);
             return true;
         }
 
-        public bool AddHospitalization(UserAddRequest request)
+        public Hospitalization? GetHospitalizationById(int id)
         {
-            throw new NotImplementedException();
+            return _hospitalizationRepository.GetById(id);
         }
 
-        public User? GetHospitalizationById(int id)
+        public IEnumerable<Hospitalization> GetHospitalization()
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<User> GetHospitalization()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool UpdateHospitalization(UserUpdateRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool RemoveHospitalization(int id)
-        {
-            throw new NotImplementedException();
+            return _hospitalizationRepository.GetAll();
         }
     }
 }

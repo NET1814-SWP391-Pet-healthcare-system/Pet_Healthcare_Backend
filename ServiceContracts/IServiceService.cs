@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts
 {
-    public interface IHospitalizationService
+    public interface IServiceService
     {
         bool AddHospitalization(HospitalizationAddRequest request);
         Hospitalization? GetHospitalizationById(int id);

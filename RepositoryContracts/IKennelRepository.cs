@@ -11,8 +11,8 @@ namespace RepositoryContracts
     {
         IEnumerable<Kennel> GetAll();
         Kennel? GetById(int id);
-        bool Add(Kennel kennel);
-        bool Update(Kennel kennel);
+        bool Add(Kennel? kennel);
+        bool Update(Kennel? kennel);
         bool Remove(int id);
         bool SaveChanges();
     }

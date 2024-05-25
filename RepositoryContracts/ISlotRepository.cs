@@ -11,8 +11,8 @@ namespace RepositoryContracts
     {
         IEnumerable<Slot> GetAll();
         Slot? GetById(int id);
-        bool Add(Slot slot);
-        bool Update(Slot slot);
+        bool Add(Slot? slot);
+        bool Update(Slot? slot);
         bool Remove(int id);
         bool SaveChanges();
     }

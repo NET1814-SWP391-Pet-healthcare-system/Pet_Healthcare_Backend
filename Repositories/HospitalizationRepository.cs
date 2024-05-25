@@ -13,19 +13,17 @@ namespace Repositories
         }
         public bool Add(Hospitalization hospitalization)
         {
-            {
                 if (hospitalization == null)
                 {
                     return false;
                 }
                 _context.Hospitalizations.Add(hospitalization);
                 return true;
-            }
         }
 
         public IEnumerable<Hospitalization> GetAll()
         {
-            return _context.Hospitalizations;
+            return _context.Hospitalizations.ToList();
         }
 
         public Hospitalization? GetById(int id)

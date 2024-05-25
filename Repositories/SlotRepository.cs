@@ -16,34 +16,42 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Slot slot)
+        public bool Add(Slot? slot)
         {
-            throw new NotImplementedException();
+            if (slot == null) return false;
+            _context.Slots.Add(slot);
+            return SaveChanges();
         }
 
         public IEnumerable<Slot> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Slots.ToList(); 
         }
 
         public Slot? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Slots.Find(id);
         }
 
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            var slot = _context.Slots.Find(id);
+            if (slot == null) return false;
+            _context.Slots.Remove(slot);
+            return SaveChanges();
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
-        public bool Update(Slot slot)
+        public bool Update(Slot? slot)
         {
-            throw new NotImplementedException();
+            if (slot == null) return false;
+            _context.Slots.Update(slot);
+            return SaveChanges();
         }
     }
 }

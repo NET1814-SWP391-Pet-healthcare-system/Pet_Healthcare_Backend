@@ -10,6 +10,8 @@ namespace ServiceContracts.DTO.HospitalizationDTO
 {
     public class HospitalizationUpdateRequest
     {
+        [Required]
+        public int HospitalizationId { get; set; }
         public int? PetId { get; set; }
         public int? KennelId { get; set; }
         public int? VetId { get; set; }
@@ -21,6 +23,7 @@ namespace ServiceContracts.DTO.HospitalizationDTO
         {
             return new Hospitalization
             {
+                HospitalizationId = HospitalizationId,
                 PetId = PetId,
                 KennelId = KennelId,
                 VetId = VetId,
