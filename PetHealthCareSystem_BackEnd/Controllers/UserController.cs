@@ -25,16 +25,22 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public IActionResult AddUser(UserAddRequest? userAddRequest)
+        public ActionResult<BusinessResult> AddUser(UserAddRequest? userAddRequest)
         {
+            BusinessResult businessResult = new BusinessResult();
             if(userAddRequest == null)
             {
-                return BadRequest("UserRequest is null");
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "User request is null";
+                return BadRequest(businessResult);
             }
 
             _userService.AddUser(userAddRequest);
-
-            return Ok("Created successfully");
+            businessResult.Status = 404;
+            businessResult.Data = null;
+            businessResult.Message = "No User found";
+            return Ok(businessResult);
         }
 
         //Read
@@ -45,7 +51,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Data = _userService.GetUsers(); ;
             businessResult.Message = "Successful";
             businessResult.Status = 200;
-            return businessResult;
+            return Ok(businessResult);
         }
 
         [HttpGet("id/{id}")]
@@ -58,12 +64,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "No User found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
             businessResult.Data = user;
             businessResult.Message = "User found";
-            return businessResult;
+            return Ok(businessResult);
         }
 
         [HttpGet("username/{username}")]
@@ -76,12 +82,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "No User found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
             businessResult.Data = user;
             businessResult.Message = "User found";
-            return businessResult;
+            return Ok(businessResult);
         }
 
         //Update
@@ -94,14 +100,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Status = 400;
                 businessResult.Data = null;
                 businessResult.Message = "Request is null";
-                return businessResult;
+                return BadRequest(businessResult);
             }
             if(id != userUpdateRequest.UserId)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
                 businessResult.Message = "Mismatched id";
-                return businessResult;
+                return BadRequest(businessResult);
             }
             var isUpdated = _userService.UpdateUser(userUpdateRequest);
             if(!isUpdated)
@@ -109,12 +115,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "User not found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
             businessResult.Data = userUpdateRequest.ToUser();
             businessResult.Message = "User updated";
-            return businessResult;
+            return Ok(businessResult);
         }
 
         //Delete
@@ -129,12 +135,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "User not found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
             businessResult.Data = userData;
             businessResult.Message = "User deleted";
-            return businessResult;
+            return Ok(businessResult);
         }
     }
 }
