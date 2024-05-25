@@ -11,8 +11,8 @@ namespace RepositoryContracts
     {
         IEnumerable<Role> GetAll();
         Role? GetById(int id);
-        bool Add(Role role);
-        bool Update(Role role);
+        bool Add(Role? role);
+        bool Update(Role? role);
         bool Remove(int id);
         bool SaveChanges();
     }

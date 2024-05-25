@@ -16,7 +16,7 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Role role)
+        public bool Add(Role? role)
         {
             if(role == null) return false;
 
@@ -27,17 +27,24 @@ namespace Repositories
 
         public IEnumerable<Role> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Roles.ToList();
         }
 
         public Role? GetById(int id)
         {
-            throw new NotImplementedException();
-        }
+            if(id == 0) return null;
 
+            return _context.Roles.Find(id);
+        }
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            var roleToRemove = GetById(id);
+            if (roleToRemove == null)
+                return false;
+
+            _context.Roles.Remove(roleToRemove);
+            _context.SaveChanges();
+            return true;
         }
 
         public bool SaveChanges()
@@ -49,9 +56,14 @@ namespace Repositories
             return true;
         }
 
-        public bool Update(Role role)
+        public bool Update(Role? role)
         {
-            throw new NotImplementedException();
+            if (role == null)
+            {
+                return false;
+            }
+            _context.Roles.Update(role);
+            return true;
         }
     }
 }
