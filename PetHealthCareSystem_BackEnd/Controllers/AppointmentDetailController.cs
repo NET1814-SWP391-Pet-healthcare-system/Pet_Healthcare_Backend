@@ -78,7 +78,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            var isUpdated = appointmentDetailUpdateRequest.UpdateAppointmentDetail(appointmentDetailUpdateRequest);
+            var isUpdated = appointmentDetailUpdateRequest.UpdateAppointmentDetail();
             if (isUpdated == null)
             {
                 businessResult.Status = 404;
