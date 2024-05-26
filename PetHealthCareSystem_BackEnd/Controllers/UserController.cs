@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +44,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
+
         //Read
+        [Authorize]
         [HttpGet]
         public ActionResult<BusinessResult> GetUsers()
         {
