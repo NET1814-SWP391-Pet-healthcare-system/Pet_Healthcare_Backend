@@ -22,7 +22,7 @@ namespace ServiceContracts.DTO.UserDTO
         public string? Address { get; set; }
         public string? Country { get; set; }
         public string? ImageURL { get; set; }
-        public bool? IsActice { get; set; }
+        public bool? IsActive { get; set; }
 
         public User ToUser()
         {
@@ -39,7 +39,7 @@ namespace ServiceContracts.DTO.UserDTO
                 Address = Address,
                 Country = Country,
                 ImageURL = ImageURL,
-                IsActice = IsActice
+                IsActive = IsActive
             };
         }
     }

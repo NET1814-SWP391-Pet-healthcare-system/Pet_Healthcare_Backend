@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.AppointmentDTO
 {
-    public class AppointmentAddRequest
+    public class AppointmentRatingRequest
     {
-        [Required(ErrorMessage = "Must choose a date for the appointment")]
-        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
-        public string? Date { get; set; }
+        [Required(ErrorMessage = "must rate the appointment")]
+        [Range(1,5)]
+        public int Rating { get; set; }
+        public string? Comments { get; set; }
     }
 }

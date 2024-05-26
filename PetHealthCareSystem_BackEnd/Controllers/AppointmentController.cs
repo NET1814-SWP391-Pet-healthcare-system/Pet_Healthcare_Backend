@@ -2,6 +2,8 @@
 using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts.DTO.AppointmentDTO;
 using ServiceContracts;
+using ServiceContracts.DTO.Result;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -10,49 +12,60 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _AppointmentService;
-        public AppointmentController(IAppointmentService AppointmentService)
+        private readonly IUserService _UserService;
+        public AppointmentController(IAppointmentService AppointmentService, IUserService userService)
         {
             _AppointmentService = AppointmentService;
+            _UserService = userService;
         }
 
         [HttpGet]
         public IActionResult GetAppointments()
         {
-            var Appointments = _AppointmentService.GetAppointments();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(Appointments);
+            var appointments = _AppointmentService.GetAppointments();
+            var appointmentDtos = appointments.Select(x => x.ToAppointmentDto());
+            return Ok(appointmentDtos);
         }
 
-        [HttpGet("{AppointmentId}")]
-        public IActionResult GetAppointmentById(int AppointmentId)
+        [HttpGet("{appointmentId}")]
+        public IActionResult GetAppointmentById(int appointmentId)
         {
-            var Appointment = _AppointmentService.GetAppointmentById(AppointmentId);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(Appointment);
+            var appointment = _AppointmentService.GetAppointmentById(appointmentId);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+            return Ok(appointment.ToAppointmentDto());
         }
 
-        [HttpPost]
-        public IActionResult AddAppointment([FromBody] AppointmentAddRequest AppointmentAddRequest)
+        [HttpPost("Book")]
+        public IActionResult AddAppointment([FromQuery] int customerId, int petId, int? vetId, int slotId, int serviceId, [FromBody] AppointmentAddRequest appointmentAddRequest)
         {
-            if (AppointmentAddRequest == null) { return BadRequest(ModelState); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            _AppointmentService.AddAppointment(AppointmentAddRequest);
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
+            if (appointmentAddRequest == null) { return BadRequest(ModelState); }
+            _AppointmentService.AddAppointment(appointmentAddRequest.ToAppointmentFromAdd(customerId, petId, vetId, slotId, serviceId));
             return Ok("successfully created");
         }
 
-        [HttpPut("{AppointmentId}")]
-        public IActionResult UpdateAppointment(int AppointmentId, [FromBody] AppointmentUpdateRequest AppointmentUpdateRequest)
+        [HttpPut("Rate/{AppointmentId}")]
+        public IActionResult RateAppointment(int AppointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
-            if (AppointmentUpdateRequest == null) { return BadRequest(ModelState); }
-            if (_AppointmentService.GetAppointmentById(AppointmentId) == null) { return NotFound(); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            if (!_AppointmentService.UpdateAppointment(AppointmentId, AppointmentUpdateRequest))
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
+            if (!_AppointmentService.UpdateAppointment(AppointmentId, AppointmentRatingRequest.ToAppointmentFromRating()))
             {
                 ModelState.AddModelError("", "Something went wrong updating Appointment");
                 return StatusCode(500, ModelState);

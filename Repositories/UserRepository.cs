@@ -77,7 +77,7 @@ namespace Repositories
             existingUser.Address = user.Address;
             existingUser.Country = user.Country;
             existingUser.ImageURL = user.ImageURL;
-            existingUser.IsActice = user.IsActice;
+            existingUser.IsActive = user.IsActive;
             SaveChanges();
             return true;
         }

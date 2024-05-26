@@ -17,9 +17,9 @@ namespace Services
         {
             _appointmentRepository = appointmentRepository;
         }
-        public bool AddAppointment(AppointmentAddRequest? request)
+        public bool AddAppointment(Appointment? request)
         {
-            throw new NotImplementedException();
+            return _appointmentRepository.Add(request);
         }
 
         public Appointment? GetAppointmentById(int id)
@@ -29,17 +29,24 @@ namespace Services
 
         public IEnumerable<Appointment> GetAppointments()
         {
-            throw new NotImplementedException();
+            return _appointmentRepository.GetAll();
         }
 
         public bool RemoveAppointment(int id)
         {
-            throw new NotImplementedException();
+            return _appointmentRepository.Remove(id);
         }
 
-        public bool UpdateAppointment(int id, AppointmentUpdateRequest? request)
+        public bool UpdateAppointment(int id, Appointment? request)
         {
-            throw new NotImplementedException();
+            var existingAppointment = _appointmentRepository.GetById(id);
+            if (existingAppointment == null) { return false; }
+            if (request == null) { return false; }
+
+            existingAppointment.Comments = request.Comments;
+            existingAppointment.Rating = request.Rating;
+            existingAppointment.Status = request.Status;
+            return _appointmentRepository.Update(existingAppointment);
         }
     }
 }

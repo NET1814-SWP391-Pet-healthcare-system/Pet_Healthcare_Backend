@@ -41,7 +41,7 @@ namespace ServiceContracts.DTO.UserDTO
                 Address = Address,
                 Country = Country,
                 ImageURL = ImageURL,
-                IsActice = IsActice
+                IsActive = IsActice
             };
         }
     }
