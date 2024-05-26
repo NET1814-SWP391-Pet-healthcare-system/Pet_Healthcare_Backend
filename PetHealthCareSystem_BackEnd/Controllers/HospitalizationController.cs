@@ -1,73 +1,129 @@
-//using Entities;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Http.HttpResults;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.Identity.Client;
-//using RepositoryContracts;
-//using ServiceContracts;
-//using ServiceContracts.DTO.HospitalizationDTO;
-//using Services;
+using Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RepositoryContracts;
+using ServiceContracts;
+using ServiceContracts.DTO.Result;
+using ServiceContracts.DTO.HospitalizationDTO;
 
-//namespace PetHealthCareSystem_BackEnd.Controllers
-//{
-//    //[Route("api/[controller]")]
-//    //[ApiController]
-//    //public class HospitalizationController : ControllerBase
-//    //{
-//    //    private readonly ApplicationDbContext _context;
-//    //    private readonly IHospitalizationService _hospitalizationService;
+namespace PetHealthCareSystem_BackEnd.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class HospitalizationController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IHospitalizationService _hospitalizationService;
 
-//    //    public HospitalizationController(ApplicationDbContext context, IHospitalizationService hospitalizationService)
-//    //    {
-//    //        _context = context;
-//    //        _hospitalizationService = hospitalizationService;
-//    //    }
+        public HospitalizationController(ApplicationDbContext context, IHospitalizationService hospitalizationService)
+        {
+            _context = context;
+            _hospitalizationService = hospitalizationService;
+        }
 
-//        [HttpPost("api/Hospitalization/add")]
-//        public IActionResult AddHospitalization(HospitalizationAddRequest? HospitalizationAddRequest)
-//        {
-//            if (HospitalizationAddRequest == null)
-//            {
-//                return BadRequest("HospitalizationRequest is null");
-//            }
+        //Create
+        [HttpPost]
+        public ActionResult<BusinessResult> AddHospitalization(HospitalizationAddRequest? hospitalizationAddRequest)
+        {
+            BusinessResult businessResult = new BusinessResult();
+            if (hospitalizationAddRequest == null)
+            {
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "Hospitalization request is null";
+                return BadRequest(businessResult);
+            }
 
-//    //        _hospitalizationService.AddHospitalization(HospitalizationAddRequest);
+            _hospitalizationService.AddHospitalization(hospitalizationAddRequest);
+            businessResult.Status = 404;
+            businessResult.Data = null;
+            businessResult.Message = "No Hospitalization found";
+            return Ok(businessResult);
+        }
 
-//            return Ok("Created successfully");
-//        }
-//        [HttpPost("api/Hospitalization/update")]
-//        public IActionResult UpdateHospitalization(HospitalizationUpdateRequest? HospitalizationUpdateRequest)
-//        {
-//            if (HospitalizationUpdateRequest == null)
-//            {
-//                return BadRequest("HospitalizationRequest is null");
-//            }
+        //Read
+        [HttpGet]
+        public ActionResult<BusinessResult> GetHospitalizations()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            businessResult.Data = _hospitalizationService.GetHospitalizations(); ;
+            businessResult.Message = "Successful";
+            businessResult.Status = 200;
+            return Ok(businessResult);
+        }
 
-//    //        _hospitalizationService.UpdateHospitalization(HospitalizationUpdateRequest);
+        [HttpGet("id/{id}")]
+        public ActionResult<BusinessResult> GetHospitalizationById(int id)
+        {
+            BusinessResult businessResult = new BusinessResult();
+            var hospitalization = _hospitalizationService.GetHospitalizationById(id);
+            if (hospitalization == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "No Hospitalization found";
+                return NotFound(businessResult);
+            }
+            businessResult.Status = 200;
+            businessResult.Data = hospitalization;
+            businessResult.Message = "Hospitalization found";
+            return Ok(businessResult);
+        }
 
-//            return Ok("Updated successfully");
-//        }
-//        [HttpPost("api/Hospitalization/remove")]
-//        public IActionResult RemoveHospitalization(int id)
-//        {
-//            if (_hospitalizationService.RemoveHospitalization(id))
-//            {
-//                return Ok("Removed successfully");
-//            }
-//            return BadRequest("Hospitalization not found");
-//        }
 
+        //Update
+        [HttpPut("{id}")]
+        public ActionResult<BusinessResult> UpdateHospitalizationById(int id, HospitalizationUpdateRequest? hospitalizationUpdateRequest)
+        {
+            BusinessResult businessResult = new BusinessResult();
+            if (hospitalizationUpdateRequest == null)
+            {
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "Request is null";
+                return BadRequest(businessResult);
+            }
+            if (id != hospitalizationUpdateRequest.HospitalizationId)
+            {
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "Mismatched id";
+                return BadRequest(businessResult);
+            }
+            var isUpdated = _hospitalizationService.UpdateHospitalization(hospitalizationUpdateRequest);
+            if (!isUpdated)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Hospitalization not found";
+                return NotFound(businessResult);
+            }
+            businessResult.Status = 200;
+            businessResult.Data = hospitalizationUpdateRequest.ToHospitalization();
+            businessResult.Message = "Hospitalization updated";
+            return Ok(businessResult);
+        }
 
-
-//    //    [HttpGet("{id}")]
-//    //    public ActionResult<Hospitalization> GetHospitalizationById(int id)
-//    //    {
-//    //        var Hospitalization = _hospitalizationService.GetHospitalizationById(id);
-//    //        if (Hospitalization == null)
-//    //        {
-//    //            return BadRequest("Hospitalization not found");
-//    //        }
-//    //        return Ok(Hospitalization);
-//    //    }
-//    //}
-//}
+        //Delete
+        [HttpDelete("{hospitalizationname}")]
+        public ActionResult<BusinessResult> DeleteHospitalizationByHospitalizationname(int id)
+        {
+            BusinessResult businessResult = new BusinessResult();
+            var hospitalizationData = _hospitalizationService.GetHospitalizationById(id);
+            var isDeleted = _hospitalizationService.RemoveHospitalization(id);
+            if (!isDeleted)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Hospitalization not found";
+                return NotFound(businessResult);
+            }
+            businessResult.Status = 200;
+            businessResult.Data = hospitalizationData;
+            businessResult.Message = "Hospitalization deleted";
+            return Ok(businessResult);
+        }
+    }
+}

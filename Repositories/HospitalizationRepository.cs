@@ -18,7 +18,8 @@ namespace Repositories
                     return false;
                 }
                 _context.Hospitalizations.Add(hospitalization);
-                return true;
+            SaveChanges();
+            return true;
         }
 
         public IEnumerable<Hospitalization> GetAll()
@@ -38,6 +39,7 @@ namespace Repositories
                 return false;
             }
             _context.Hospitalizations.Remove(GetById(id));
+            SaveChanges();
             return true;
         }
 
@@ -57,7 +59,8 @@ namespace Repositories
                     return false;
                 }
                 _context.Hospitalizations.Update(hospitalization);
-                return true;
+            SaveChanges();
+            return true;
         }
     }
 }

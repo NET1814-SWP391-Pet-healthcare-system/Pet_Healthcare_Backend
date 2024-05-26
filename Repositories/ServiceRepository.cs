@@ -23,6 +23,7 @@ namespace Repositories
                 return false;
             }
             _context.Services.Add(service);
+            SaveChanges();
             return true;
         }
 
@@ -43,6 +44,7 @@ namespace Repositories
                 return false;
             }
             _context.Services.Remove(GetById(id));
+            SaveChanges();
             return true;
         }
 
@@ -62,6 +64,7 @@ namespace Repositories
                 return false;
             }
             _context.Services.Update(service);
+            SaveChanges();
             return true;
         }
     }
