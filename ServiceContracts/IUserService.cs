@@ -14,6 +14,8 @@ namespace ServiceContracts
         User? GetUserById(int id);
         User? GetUserByUsername(string username);
         IEnumerable<User> GetUsers();
+        IEnumerable<Customer> GetCustomers();
+        IEnumerable<Vet> GetVets();
         bool UpdateUser(UserUpdateRequest request);
         bool RemoveUser(string username);
     }

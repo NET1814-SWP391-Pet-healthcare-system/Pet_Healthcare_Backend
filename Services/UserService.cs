@@ -46,6 +46,15 @@ namespace Services
         {
             return _userRepository.GetAll();
         }
+        public IEnumerable<Customer> GetCustomers()
+        {
+            return _userRepository.GetAllCustomer();
+        }
+
+        public IEnumerable<Vet> GetVets()
+        {
+            return _userRepository.GetAllVet();
+        }
 
         public bool RemoveUser(string username)
         {

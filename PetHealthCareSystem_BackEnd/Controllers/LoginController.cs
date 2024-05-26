@@ -52,27 +52,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Data = false;
                 return businessResult;
             }
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("Username", user.UserName.ToString()),
-                new Claim("Email", user.Email.ToString()),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.UtcNow.AddMinutes(10),
-                signingCredentials: signIn
-            );
-            string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
             businessResult.Message = "Login successfully";
             businessResult.Status = 200;
-            businessResult.Data = tokenValue;
+            businessResult.Data = user;
             return businessResult;
         }
     }

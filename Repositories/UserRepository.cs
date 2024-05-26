@@ -35,6 +35,15 @@ namespace Repositories
         {
             return _context.Users.Include(u => u.Role).ToList();
         }
+        public IEnumerable<Customer> GetAllCustomer()
+        {
+            return _context.Customers.Include(u => u.Role).ToList();
+        }
+
+        public IEnumerable<Vet> GetAllVet()
+        {
+            return _context.Vets.Include(u => u.Role).ToList();
+        }
 
         public User? GetById(int id)
         {

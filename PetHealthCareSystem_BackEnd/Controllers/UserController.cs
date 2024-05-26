@@ -46,12 +46,31 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
         //Read
-        [Authorize]
         [HttpGet]
         public ActionResult<BusinessResult> GetUsers()
         {
             BusinessResult businessResult = new BusinessResult();
             businessResult.Data = _userService.GetUsers(); ;
+            businessResult.Message = "Successful";
+            businessResult.Status = 200;
+            return Ok(businessResult);
+        }
+
+        [HttpGet("customers")]
+        public ActionResult<BusinessResult> GetCustomers()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            businessResult.Data = _userService.GetCustomers();
+            businessResult.Message = "Successful";
+            businessResult.Status = 200;
+            return Ok(businessResult);
+        }
+
+        [HttpGet("vets")]
+        public ActionResult<BusinessResult> GetVets()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            businessResult.Data = _userService.GetVets();
             businessResult.Message = "Successful";
             businessResult.Status = 200;
             return Ok(businessResult);

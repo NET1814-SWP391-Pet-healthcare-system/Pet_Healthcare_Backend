@@ -10,6 +10,8 @@ namespace RepositoryContracts
     public interface IUserRepository
     {
         IEnumerable<User> GetAll();
+        IEnumerable<Customer> GetAllCustomer();
+        IEnumerable<Vet> GetAllVet();
         User? GetById(int id);
         User? GetByUsername(string username);   
         bool Add(User user);
