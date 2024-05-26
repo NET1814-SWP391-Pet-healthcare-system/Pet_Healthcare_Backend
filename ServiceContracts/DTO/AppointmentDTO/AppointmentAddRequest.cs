@@ -13,20 +13,7 @@ namespace ServiceContracts.DTO.AppointmentDTO
     public class AppointmentAddRequest
     {
         [Required(ErrorMessage = "Must choose a date for the appointment")]
-        public DateOnly Date { get; set; }
-
-        public Appointment ToAppointment(int customerId, int petId, int? vetId, int slotId, int serviceId)
-        {
-            return new Appointment()
-            { 
-                CustomerId = customerId,
-                PetId = petId,
-                VetId = vetId,
-                SlotId = slotId,
-                ServiceId = serviceId,
-                Date = Date,
-                Status = AppointmentStatus.Boooked,
-            };
-        }
+        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
+        public string? Date { get; set; }
     }
 }

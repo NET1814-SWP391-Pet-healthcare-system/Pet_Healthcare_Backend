@@ -38,7 +38,7 @@
     "ServiceId": 3,
     "Date": "2023-08-10",
     "TotalCost": 40.00,
-    "CancellationDate": "null",
+    "CancellationDate": null,
     "RefundAmount": null,
     "Rating": 4,
     "Comments": "Friendly staff, great service.",

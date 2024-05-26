@@ -25,12 +25,24 @@ namespace Repositories
 
         public IEnumerable<Appointment> GetAll()
         {
-            return _context.Appointments.ToList();
+            return _context.Appointments
+                .Include(a => a.Customer)
+                .Include(a => a.Pet)
+                .Include(a => a.Vet)
+                .Include(a => a.Slot)
+                .Include(a => a.Service)
+                .ToList();
         }
 
         public Appointment? GetById(int id)
         {
-            return _context.Appointments.Find(id);
+            return _context.Appointments
+                .Include(a => a.Customer)
+                .Include(a => a.Pet)
+                .Include(a => a.Vet)
+                .Include(a => a.Slot)
+                .Include(a => a.Service)
+                .FirstOrDefault(a => a.AppointmentId == id);
         }
 
         public bool Remove(int id)

@@ -16,15 +16,5 @@ namespace ServiceContracts.DTO.AppointmentDTO
         [Range(1,5)]
         public int Rating { get; set; }
         public string? Comments { get; set; }
-
-        public Appointment ToAppointment()
-        {
-            return new Appointment()
-            {
-                Rating = Rating,
-                Comments = Comments,
-                Status = AppointmentStatus.Done,
-            };
-        }
     }
 }

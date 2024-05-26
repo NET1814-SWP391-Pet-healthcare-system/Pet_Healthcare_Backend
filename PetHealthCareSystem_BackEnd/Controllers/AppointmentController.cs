@@ -3,6 +3,7 @@ using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts.DTO.AppointmentDTO;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -11,48 +12,60 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _AppointmentService;
-        public AppointmentController(IAppointmentService AppointmentService)
+        private readonly IUserService _UserService;
+        public AppointmentController(IAppointmentService AppointmentService, IUserService userService)
         {
             _AppointmentService = AppointmentService;
+            _UserService = userService;
         }
 
         [HttpGet]
         public IActionResult GetAppointments()
         {
-            BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _AppointmentService.GetAppointments();
-            businessResult.Status = 200;
-            businessResult.Message = "Success";
-            return Ok(businessResult);
-        }
-
-        [HttpGet("{AppointmentId}")]
-        public IActionResult GetAppointmentById(int AppointmentId)
-        {
-            var Appointment = _AppointmentService.GetAppointmentById(AppointmentId);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(Appointment);
+            var appointments = _AppointmentService.GetAppointments();
+            var appointmentDtos = appointments.Select(x => x.ToAppointmentDto());
+            return Ok(appointmentDtos);
         }
 
-        [HttpPost]
-        public IActionResult AddAppointment(int customerId, int petId, int? vetId, int slotId, int serviceId, [FromBody] AppointmentAddRequest AppointmentAddRequest)
+        [HttpGet("{appointmentId}")]
+        public IActionResult GetAppointmentById(int appointmentId)
         {
-            if (AppointmentAddRequest == null) { return BadRequest(ModelState); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            _AppointmentService.AddAppointment(AppointmentAddRequest.ToAppointment(customerId, petId, vetId, slotId, serviceId));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var appointment = _AppointmentService.GetAppointmentById(appointmentId);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+            return Ok(appointment.ToAppointmentDto());
+        }
+
+        [HttpPost("Book")]
+        public IActionResult AddAppointment([FromQuery] int customerId, int petId, int? vetId, int slotId, int serviceId, [FromBody] AppointmentAddRequest appointmentAddRequest)
+        {
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
+            if (appointmentAddRequest == null) { return BadRequest(ModelState); }
+            _AppointmentService.AddAppointment(appointmentAddRequest.ToAppointmentFromAdd(customerId, petId, vetId, slotId, serviceId));
             return Ok("successfully created");
         }
 
-        [HttpPut("{AppointmentId}")]
-        public IActionResult UpdateAppointment(int AppointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
+        [HttpPut("Rate/{AppointmentId}")]
+        public IActionResult RateAppointment(int AppointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
-            if (AppointmentRatingRequest == null) { return BadRequest(ModelState); }
-            if (_AppointmentService.GetAppointmentById(AppointmentId) == null) { return NotFound(); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            if (!_AppointmentService.UpdateAppointment(AppointmentId, AppointmentRatingRequest.ToAppointment()))
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
+            if (!_AppointmentService.UpdateAppointment(AppointmentId, AppointmentRatingRequest.ToAppointmentFromRating()))
             {
                 ModelState.AddModelError("", "Something went wrong updating Appointment");
                 return StatusCode(500, ModelState);

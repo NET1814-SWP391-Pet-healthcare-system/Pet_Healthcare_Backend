@@ -3,45 +3,45 @@
         "HospitalizationId": 1,
         "PetId": 1,
         "KennelId": 1,
-        "VetId": 1,
+        "VetId": 4,
         "AdmissionDate": "2023-05-01",
         "DischargeDate": "2023-05-05",
-        "TotalCost": 500.00
+        "TotalCost": 125.00
     },
     {
         "HospitalizationId": 2,
         "PetId": 2,
         "KennelId": 2,
-        "VetId": 2,
+        "VetId": 4,
         "AdmissionDate": "2023-06-10",
         "DischargeDate": "2023-06-12",
-        "TotalCost": 300.00
+        "TotalCost": 120.00
     },
     {
         "HospitalizationId": 3,
         "PetId": 3,
         "KennelId": 3,
-        "VetId": 1,
+        "VetId": 5,
         "AdmissionDate": "2023-07-15",
         "DischargeDate": "2023-07-18",
-        "TotalCost": 150.00
+        "TotalCost": 60.00
     },
     {
         "HospitalizationId": 4,
         "PetId": 4,
         "KennelId": 4,
-        "VetId": 2,
+        "VetId": 5,
         "AdmissionDate": "2023-08-01",
         "DischargeDate": "2023-08-03",
-        "TotalCost": 200.00
+        "TotalCost": 90.00
     },
     {
         "HospitalizationId": 5,
         "PetId": 5,
         "KennelId": 5,
-        "VetId": 1,
+        "VetId": 5,
         "AdmissionDate": "2023-09-10",
         "DischargeDate": "2023-09-12",
-        "TotalCost": 250.00
+        "TotalCost": 105.00
     }
 ]
