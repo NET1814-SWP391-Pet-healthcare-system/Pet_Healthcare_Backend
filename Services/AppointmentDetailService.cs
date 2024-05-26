@@ -27,7 +27,7 @@ namespace Services
 
  
 
-        public AppointmentDetail? GetAppointmentDetail(int id)
+        public AppointmentDetail? GetAppointmentDetailById(int id)
         {
             return _appointmentDetailRepository.GetById(id);
         }

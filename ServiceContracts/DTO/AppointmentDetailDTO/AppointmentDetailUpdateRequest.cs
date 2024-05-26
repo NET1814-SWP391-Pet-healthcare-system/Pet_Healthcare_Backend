@@ -18,7 +18,7 @@ namespace ServiceContracts.DTO.AppointmentDetailDTO
         public string? Treatment { get; set; }
         public string? Medication { get; set; }
         
-        public AppointmentDetail UpdateAppointmentDetail(AppointmentDetail appointmentDetail)
+        public AppointmentDetail UpdateAppointmentDetail()
         {
             return new AppointmentDetail
             {
