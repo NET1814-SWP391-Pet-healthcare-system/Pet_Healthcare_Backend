@@ -10,34 +10,60 @@ namespace Repositories
 {
     public class RoleRepository : IRoleRepository
     {
-        public bool Add(Role role)
+        private readonly ApplicationDbContext _context;
+
+        public RoleRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public bool Add(Role? role)
+        {
+            if(role == null) return false;
+
+            _context.Roles.Add(role);
+            _context.SaveChanges();
+            return true;
         }
 
         public IEnumerable<Role> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Roles.ToList();
         }
 
         public Role? GetById(int id)
         {
-            throw new NotImplementedException();
-        }
+            if(id == 0) return null;
 
+            return _context.Roles.Find(id);
+        }
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            var roleToRemove = GetById(id);
+            if (roleToRemove == null)
+                return false;
+
+            _context.Roles.Remove(roleToRemove);
+            _context.SaveChanges();
+            return true;
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            if (_context.SaveChanges() == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public bool Update(Role role)
+        public bool Update(Role? role)
         {
-            throw new NotImplementedException();
+            if (role == null)
+            {
+                return false;
+            }
+            _context.Roles.Update(role);
+            return true;
         }
     }
 }

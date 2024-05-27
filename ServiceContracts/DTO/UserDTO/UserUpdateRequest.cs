@@ -12,7 +12,6 @@ namespace ServiceContracts.DTO.UserDTO
     public class UserUpdateRequest
     {
         public int UserId { get; set; }
-        public int? RoleId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? Gender { get; set; }
@@ -23,13 +22,14 @@ namespace ServiceContracts.DTO.UserDTO
         public string? Country { get; set; }
         public string? ImageURL { get; set; }
         public bool? IsActive { get; set; }
+        public int? Rating { get; set; }
+        public int? YearsOfExperience { get; set; }
 
         public User ToUser()
         {
             return new User
             {
                 UserId = UserId,
-                RoleId = RoleId,
                 FirstName = FirstName,
                 LastName = LastName,
                 Gender = Gender,
@@ -40,6 +40,44 @@ namespace ServiceContracts.DTO.UserDTO
                 Country = Country,
                 ImageURL = ImageURL,
                 IsActive = IsActive
+            };
+        }
+
+        public Customer ToCustomer()
+        {
+            return new Customer
+            {
+                UserId = UserId,
+                FirstName = FirstName,
+                LastName = LastName,
+                Gender = Gender,
+                Email = Email,
+                Username = Username,
+                Password = Password,
+                Address = Address,
+                Country = Country,
+                ImageURL = ImageURL,
+                IsActive = IsActive
+            };
+        }
+
+        public Vet ToVet()
+        {
+            return new Vet
+            {
+                UserId = UserId,
+                FirstName = FirstName,
+                LastName = LastName,
+                Gender = Gender,
+                Email = Email,
+                Username = Username,
+                Password = Password,
+                Address = Address,
+                Country = Country,
+                ImageURL = ImageURL,
+                IsActive = IsActive,
+                Rating = Rating,
+                YearsOfExperience = YearsOfExperience
             };
         }
     }

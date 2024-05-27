@@ -5,34 +5,50 @@ namespace Repositories
 {
     public class PetHealthTrackRepository : IPetHealthTrackRepository
     {
-        public bool Add(PetHealthTrack petHealthTrack)
+        private readonly ApplicationDbContext _context;
+        public PetHealthTrackRepository(ApplicationDbContext context)
         {
-            throw new System.NotImplementedException();
+            _context = context;
+        }
+
+        public bool Add(PetHealthTrack? petHealthTrack)
+        {
+            if(petHealthTrack == null)
+                return false;
+            _context.PetHealthTracks.Add(petHealthTrack);
+            return SaveChanges();
+
         }
 
         public IEnumerable<PetHealthTrack> GetAll()
         {
-            throw new System.NotImplementedException();
+            return _context.PetHealthTracks.ToList();
         }
 
         public PetHealthTrack? GetById(int id)
         {
-            throw new System.NotImplementedException();
+            return _context.PetHealthTracks.Find(id);
         }
 
         public bool Remove(int id)
         {
-            throw new System.NotImplementedException();
+            var pht = _context.PetHealthTracks.Find(id);
+            if (pht == null) return false;
+            _context.PetHealthTracks.Remove(pht);
+            return SaveChanges();
         }
 
         public bool SaveChanges()
         {
-            throw new System.NotImplementedException();
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
-        public bool Update(PetHealthTrack petHealthTrack)
+        public bool Update(PetHealthTrack? petHealthTrack)
         {
-            throw new System.NotImplementedException();
+            if (petHealthTrack == null) return false;
+            _context.PetHealthTracks.Update(petHealthTrack);
+            return SaveChanges();
         }   
     }
 }
