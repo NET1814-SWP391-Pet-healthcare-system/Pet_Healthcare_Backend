@@ -65,6 +65,10 @@ namespace Repositories
         public Object? GetUserById(int id)
         {
             var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == id);
+            if(user == null)
+            {
+                return null;
+            }
             switch(user.RoleId)
             {
                 case 2:
@@ -168,7 +172,6 @@ namespace Repositories
             }
             SaveChanges();
             return result;
-            
         }
     }
 }

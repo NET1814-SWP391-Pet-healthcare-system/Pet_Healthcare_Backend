@@ -1,38 +1,62 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 
 namespace Repositories
 {
     public class PetRepository : IPetRepository
     {
-        public bool Add(Pet pet)
+        private readonly ApplicationDbContext _context;
+
+        public PetRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public IEnumerable<Pet> GetAll()
+        public bool AddPet(Pet pet)
         {
-            throw new NotImplementedException();
+            _context.Pets.Add(pet);
+            return SaveChanges();
         }
 
-        public Pet? GetById(int id)
+        public IEnumerable<Pet> GetAllPet()
         {
-            throw new NotImplementedException();
+            return _context.Pets.Include(p => p.Customer).ToList();
         }
 
-        public bool Remove(int id)
+        public Pet? GetPetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Pets.Include(p => p.Customer).FirstOrDefault(p => p.PetId == id);
+        }
+
+        public bool RemovePet(Pet pet)
+        {
+            _context.Pets.Remove(pet);
+            return SaveChanges();
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
+            return true;
         }
 
-        public bool Update(Pet pet)
+        public Pet UpdatePet(int id, Pet pet)
         {
-            throw new NotImplementedException();
+            var existingPet = GetPetById(id);
+            Pet result = null;
+            //update
+            existingPet.CustomerId = pet.CustomerId;
+            existingPet.Name = pet.Name;
+            existingPet.Species = pet.Species;
+            existingPet.Breed = pet.Breed;
+            existingPet.Gender = pet.Gender;
+            existingPet.Weight = pet.Weight;
+            existingPet.ImageURL = pet.ImageURL;
+            
+            result = existingPet;
+            SaveChanges();
+            return result;
         }
     }
 }

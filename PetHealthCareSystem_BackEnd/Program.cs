@@ -50,6 +50,8 @@ builder.Services.AddScoped<IHospitalizationRepository, HospitalizationRepository
 builder.Services.AddScoped<IHospitalizationService, HospitalizationService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IPetRepository, PetRepository>();
+builder.Services.AddScoped<IPetService, PetService>();
 
 var app = builder.Build();
 

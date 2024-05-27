@@ -113,11 +113,8 @@ namespace Services
 
         public bool RemoveUser(int id)
         {
+            //use repo because the method need object type
             var obj = _userRepository.GetUserById(id);
-            if(obj == null)
-            {
-                return false;
-            }
             return _userRepository.RemoveUser(obj);
 
         }

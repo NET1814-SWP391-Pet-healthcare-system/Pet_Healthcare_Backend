@@ -29,11 +29,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public ActionResult<BusinessResult> AddUser(UserAddRequest? userAddRequest)
         {
             BusinessResult businessResult = new BusinessResult();
-            if(userAddRequest == null)
+            if(!ModelState.IsValid)
             {
                 businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "User request is null";
+                businessResult.Data = false;
+                businessResult.Message = "Invalid request";
                 return BadRequest(businessResult);
             }
 
@@ -102,14 +102,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if(!ModelState.IsValid)
             {
                 businessResult.Status = 400;
-                businessResult.Data = null;
+                businessResult.Data = false;
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
             if(id != userUpdateRequest.UserId)
             {
                 businessResult.Status = 400;
-                businessResult.Data = null;
+                businessResult.Data = false;
                 businessResult.Message = "Mismatched id";
                 return BadRequest(businessResult);
             }
@@ -129,16 +129,22 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Delete
         [HttpDelete("{id}")]
-        public ActionResult<BusinessResult> DeleteUserByUsername(int id)
+        public ActionResult<BusinessResult> DeleteUserById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var userData = _userService.GetUserById(id);
+            if(userData == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = false;
+                businessResult.Message = "User not found";
+            }
             var isDeleted = _userService.RemoveUser(id);
             if(!isDeleted)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "User not found";
+                businessResult.Status = 400;
+                businessResult.Data = false;
+                businessResult.Message = "Didn't delete";
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
