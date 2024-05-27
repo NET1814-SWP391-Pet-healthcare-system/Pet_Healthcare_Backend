@@ -35,16 +35,16 @@ namespace ServiceContracts.Mappers
             };
         }
 
-        public static Appointment ToAppointmentFromAdd(this AppointmentAddRequest appointmentAddRequest, int customerId, int petId, int? vetId, int slotId, int serviceId)
+        public static Appointment ToAppointmentFromAdd(this AppointmentAddRequest appointmentAddRequest)
         {
             return new Appointment()
             {
-                CustomerId = customerId,
-                PetId = petId,
-                VetId = vetId,
-                SlotId = slotId,
-                ServiceId = serviceId,
-                Date = DateOnly.Parse(appointmentAddRequest.Date),
+                CustomerId = appointmentAddRequest.CustomerId,
+                PetId = appointmentAddRequest.PetId,
+                VetId = appointmentAddRequest.VetId,
+                SlotId = appointmentAddRequest.SlotId,
+                ServiceId = appointmentAddRequest.ServiceId,
+                Date = DateOnly.FromDateTime(appointmentAddRequest.Date),
                 Status = AppointmentStatus.Boooked,
             };
         }

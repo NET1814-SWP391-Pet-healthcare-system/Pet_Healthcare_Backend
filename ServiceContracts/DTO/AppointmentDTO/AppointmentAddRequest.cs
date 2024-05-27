@@ -12,8 +12,20 @@ namespace ServiceContracts.DTO.AppointmentDTO
 {
     public class AppointmentAddRequest
     {
-        [Required(ErrorMessage = "Must choose a date for the appointment")]
-        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
-        public string? Date { get; set; }
+        public int CustomerId { get; set; }   
+        [Required(ErrorMessage = "Pet ID is required.")]
+        public int PetId { get; set; }
+
+        public int? VetId { get; set; }
+
+        [Required(ErrorMessage = "Slot ID is required.")]
+        public int SlotId { get; set; }
+
+        [Required(ErrorMessage = "Service ID is required.")]
+        public int ServiceId { get; set; }
+
+        [Required(ErrorMessage = "Date is required.")]
+        [DataType(DataType.Date, ErrorMessage ="Invalid Date Formate (yyyy-MM-dd)")]
+        public DateTime Date { get; set; }
     }
 }

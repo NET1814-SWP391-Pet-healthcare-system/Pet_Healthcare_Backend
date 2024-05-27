@@ -12,11 +12,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _AppointmentService;
-        private readonly IUserService _UserService;
-        public AppointmentController(IAppointmentService AppointmentService, IUserService userService)
+        public AppointmentController(IAppointmentService AppointmentService)
         {
             _AppointmentService = AppointmentService;
-            _UserService = userService;
         }
 
         [HttpGet]
@@ -47,14 +45,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost("Book")]
-        public IActionResult AddAppointment([FromQuery] int customerId, int petId, int? vetId, int slotId, int serviceId, [FromBody] AppointmentAddRequest appointmentAddRequest)
+        public IActionResult AddAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
         {
             if (!ModelState.IsValid) 
             { 
                 return BadRequest(ModelState); 
             }
             if (appointmentAddRequest == null) { return BadRequest(ModelState); }
-            _AppointmentService.AddAppointment(appointmentAddRequest.ToAppointmentFromAdd(customerId, petId, vetId, slotId, serviceId));
+            _AppointmentService.AddAppointment(appointmentAddRequest.ToAppointmentFromAdd());
             return Ok("successfully created");
         }
 
