@@ -15,7 +15,7 @@ namespace ServiceContracts
         bool UpdateAppointmentDetail(int i ,AppointmentDetailAddRequest request);
         IEnumerable<AppointmentDetail> GetAppointmentDetails();
         bool RemoveAppointmentDetail(int id);
-        AppointmentDetail? GetAppointmentDetail(int id);
+        AppointmentDetail? GetAppointmentDetailById(int id);
 
     }
 }

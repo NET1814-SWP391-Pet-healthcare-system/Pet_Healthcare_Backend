@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Entities.Enum;
+using Microsoft.AspNetCore.Identity;
 
 namespace Entities
 {
@@ -25,6 +26,6 @@ namespace Entities
         public string? Address { get; set; }
         public string? Country { get; set; }
         public string? ImageURL { get; set; }
-        public bool? IsActice { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Entities.Constants;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
@@ -14,60 +15,130 @@ namespace Services
     {
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository) 
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
-        public bool AddUser(UserAddRequest? request)
+        public bool AddUser(UserAddRequest request)
         {
-            if(request == null)
+            var role = request.RoleId;
+            switch(role)
             {
-                return false;
+                //Admin
+                case 1:
+                    return _userRepository.AddUser(request.ToUser());
+
+                //Customer
+                case 2:
+                    Customer customer = new Customer
+                    {
+                        RoleId = request.RoleId,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        Gender = request.Gender,
+                        Email = request.Email,
+                        Username = request.Username,
+                        Password = request.Password,
+                        Address = request.Address,
+                        Country = request.Country,
+                        ImageURL = request.ImageURL,
+                        IsActive = request.IsActice
+                    };
+                    _userRepository.AddCustomer(customer);
+                    break;
+
+                //Vet
+                case 3:
+                    Vet vet = new Vet
+                    {
+                        RoleId = request.RoleId,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        Gender = request.Gender,
+                        Email = request.Email,
+                        Username = request.Username,
+                        Password = request.Password,
+                        Address = request.Address,
+                        Country = request.Country,
+                        ImageURL = request.ImageURL,
+                        IsActive = request.IsActice,
+                        Rating = request.Rating,
+                        YearsOfExperience = request.YearsOfExperience
+                    };
+                    _userRepository.AddVet(vet);
+                    break;
+
+                //Employee
+                case 4:
+                    User employee = request.ToUser();
+                    _userRepository.AddUser(employee);
+                    break;
+
             }
-            var user = request.ToUser();
-            //user.UserId = new Guid();
-            _userRepository.Add(user);
             return true;
         }
 
-        public User? GetUserById(int id)
+        public Object? GetUserById(int id)
         {
-            var user = _userRepository.GetById(id);
-            return user;
-        }
-
-        public User? GetUserByUsername(string username)
-        {
-            var user = _userRepository.GetByUsername(username);
-            return user;
+            var obj = _userRepository.GetUserById(id);
+            if(obj is Customer customer)
+            {
+                customer = obj as Customer;
+                return customer;
+            }
+            else if(obj is Vet vet)
+            {
+                vet = obj as Vet;
+                return vet;
+            }
+            else
+            {
+                return obj as User;
+            }
         }
 
         public IEnumerable<User> GetUsers()
         {
             return _userRepository.GetAll();
         }
-
-        public bool RemoveUser(string username)
+        public IEnumerable<Customer> GetCustomers()
         {
-            var user = _userRepository.GetByUsername(username);
-            if(user == null)
+            return _userRepository.GetAllCustomer();
+        }
+
+        public IEnumerable<Vet> GetVets()
+        {
+            return _userRepository.GetAllVet();
+        }
+
+        public bool RemoveUser(int id)
+        {
+            var obj = _userRepository.GetUserById(id);
+            if(obj == null)
             {
                 return false;
             }
-            return _userRepository.Remove(username);
+            return _userRepository.RemoveUser(obj);
 
         }
 
-        public bool UpdateUser(UserUpdateRequest request)
+        public Object? UpdateUser(int id, UserUpdateRequest request)
         {
-            var user = _userRepository.GetById(request.UserId);
-            if(user == null)
+            Object? result = null;
+            var obj = _userRepository.GetUserById(id);
+            if(obj is Customer customer)
             {
-                return false;
+                result = _userRepository.UpdateUser(id, request.ToCustomer());
             }
-            
-            return _userRepository.Update(request.ToUser());
-            
+            else if(obj is Vet vet)
+            {
+                result = _userRepository.UpdateUser(id, request.ToVet());
+            }
+            else
+            {
+                result = _userRepository.UpdateUser(id, request.ToUser());
+            }
+            return result;
         }
     }
 }

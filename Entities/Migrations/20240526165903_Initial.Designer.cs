@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240524045615_Initial")]
+    [Migration("20240526165903_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -92,9 +92,9 @@ namespace Entities.Migrations
                             PetId = 1,
                             ServiceId = 1,
                             SlotId = 1,
-                            Status = 1,
-                            TotalCost = 75.0,
-                            VetId = 1
+                            Status = 0,
+                            TotalCost = 50.0,
+                            VetId = 4
                         },
                         new
                         {
@@ -104,49 +104,47 @@ namespace Entities.Migrations
                             PetId = 2,
                             ServiceId = 2,
                             SlotId = 2,
-                            Status = 2,
-                            TotalCost = 60.0,
-                            VetId = 2
+                            Status = 1,
+                            TotalCost = 30.0,
+                            VetId = 4
                         },
                         new
                         {
                             AppointmentId = 3,
-                            CancellationDate = new DateOnly(2023, 8, 8),
                             Comments = "Friendly staff, great service.",
-                            CustomerId = 3,
+                            CustomerId = 2,
                             Date = new DateOnly(2023, 8, 10),
                             PetId = 3,
                             Rating = 4,
-                            RefundAmount = 20.0,
                             ServiceId = 3,
                             SlotId = 3,
-                            Status = 3,
+                            Status = 2,
                             TotalCost = 40.0,
-                            VetId = 1
+                            VetId = 5
                         },
                         new
                         {
                             AppointmentId = 4,
-                            CustomerId = 4,
+                            CustomerId = 1,
                             Date = new DateOnly(2023, 9, 1),
                             PetId = 4,
                             ServiceId = 4,
                             SlotId = 4,
-                            Status = 1,
-                            TotalCost = 35.0,
-                            VetId = 2
+                            Status = 0,
+                            TotalCost = 75.0,
+                            VetId = 5
                         },
                         new
                         {
                             AppointmentId = 5,
-                            CustomerId = 5,
+                            CustomerId = 1,
                             Date = new DateOnly(2023, 10, 15),
                             PetId = 5,
                             ServiceId = 1,
                             SlotId = 5,
-                            Status = 2,
-                            TotalCost = 50.0,
-                            VetId = 1
+                            Status = 0,
+                            TotalCost = 500.0,
+                            VetId = 4
                         });
                 });
 
@@ -270,8 +268,8 @@ namespace Entities.Migrations
                             DischargeDate = new DateOnly(2023, 5, 5),
                             KennelId = 1,
                             PetId = 1,
-                            TotalCost = 500.0,
-                            VetId = 1
+                            TotalCost = 125.0,
+                            VetId = 4
                         },
                         new
                         {
@@ -280,8 +278,8 @@ namespace Entities.Migrations
                             DischargeDate = new DateOnly(2023, 6, 12),
                             KennelId = 2,
                             PetId = 2,
-                            TotalCost = 300.0,
-                            VetId = 2
+                            TotalCost = 120.0,
+                            VetId = 4
                         },
                         new
                         {
@@ -290,8 +288,8 @@ namespace Entities.Migrations
                             DischargeDate = new DateOnly(2023, 7, 18),
                             KennelId = 3,
                             PetId = 3,
-                            TotalCost = 150.0,
-                            VetId = 1
+                            TotalCost = 60.0,
+                            VetId = 5
                         },
                         new
                         {
@@ -300,8 +298,8 @@ namespace Entities.Migrations
                             DischargeDate = new DateOnly(2023, 8, 3),
                             KennelId = 4,
                             PetId = 4,
-                            TotalCost = 200.0,
-                            VetId = 2
+                            TotalCost = 90.0,
+                            VetId = 5
                         },
                         new
                         {
@@ -310,8 +308,8 @@ namespace Entities.Migrations
                             DischargeDate = new DateOnly(2023, 9, 12),
                             KennelId = 5,
                             PetId = 5,
-                            TotalCost = 250.0,
-                            VetId = 1
+                            TotalCost = 105.0,
+                            VetId = 5
                         });
                 });
 
@@ -416,6 +414,7 @@ namespace Entities.Migrations
                             Breed = "Labrador Retriever",
                             CustomerId = 1,
                             Gender = true,
+                            ImageURL = "https://example.com/pet_images/buddy.jpg",
                             Name = "Buddy",
                             Species = "Dog",
                             Weight = 30.5
@@ -426,6 +425,7 @@ namespace Entities.Migrations
                             Breed = "Siamese",
                             CustomerId = 2,
                             Gender = false,
+                            ImageURL = "https://example.com/pet_images/whiskers.jpg",
                             Name = "Whiskers",
                             Species = "Cat",
                             Weight = 4.2000000000000002
@@ -434,8 +434,9 @@ namespace Entities.Migrations
                         {
                             PetId = 3,
                             Breed = "Cockatiel",
-                            CustomerId = 3,
+                            CustomerId = 2,
                             Gender = true,
+                            ImageURL = "https://example.com/pet_images/rocky.jpg",
                             Name = "Rocky",
                             Species = "Bird",
                             Weight = 0.29999999999999999
@@ -444,8 +445,9 @@ namespace Entities.Migrations
                         {
                             PetId = 4,
                             Breed = "Goldfish",
-                            CustomerId = 4,
+                            CustomerId = 1,
                             Gender = false,
+                            ImageURL = "https://example.com/pet_images/finny.jpg",
                             Name = "Finny",
                             Species = "Fish",
                             Weight = 0.10000000000000001
@@ -454,8 +456,9 @@ namespace Entities.Migrations
                         {
                             PetId = 5,
                             Breed = "Lop",
-                            CustomerId = 5,
+                            CustomerId = 1,
                             Gender = true,
+                            ImageURL = "https://example.com/pet_images/fluffy.jpg",
                             Name = "Fluffy",
                             Species = "Rabbit",
                             Weight = 2.7999999999999998
@@ -470,7 +473,7 @@ namespace Entities.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PetHealthTrackId"));
 
-                    b.Property<DateOnly?>("DateOnly")
+                    b.Property<DateOnly?>("Date")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -492,37 +495,42 @@ namespace Entities.Migrations
                         new
                         {
                             PetHealthTrackId = 1,
+                            Date = new DateOnly(2023, 5, 3),
                             Description = "Recovering from surgery",
                             HospitalizationId = 1,
-                            Status = 1
+                            Status = 0
                         },
                         new
                         {
                             PetHealthTrackId = 2,
+                            Date = new DateOnly(2023, 6, 11),
                             Description = "Monitoring for dehydration",
                             HospitalizationId = 2,
-                            Status = 2
-                        },
-                        new
-                        {
-                            PetHealthTrackId = 3,
-                            Description = "Treating respiratory infection",
-                            HospitalizationId = 3,
-                            Status = 3
-                        },
-                        new
-                        {
-                            PetHealthTrackId = 4,
-                            Description = "Observing swim bladder disorder",
-                            HospitalizationId = 4,
                             Status = 1
                         },
                         new
                         {
+                            PetHealthTrackId = 3,
+                            Date = new DateOnly(2023, 7, 16),
+                            Description = "Treating respiratory infection",
+                            HospitalizationId = 3,
+                            Status = 2
+                        },
+                        new
+                        {
+                            PetHealthTrackId = 4,
+                            Date = new DateOnly(2023, 8, 2),
+                            Description = "Observing swim bladder disorder",
+                            HospitalizationId = 4,
+                            Status = 0
+                        },
+                        new
+                        {
                             PetHealthTrackId = 5,
+                            Date = new DateOnly(2023, 9, 11),
                             Description = "Managing gastrointestinal stasis",
                             HospitalizationId = 5,
-                            Status = 2
+                            Status = 1
                         });
                 });
 
@@ -600,19 +608,19 @@ namespace Entities.Migrations
                         new
                         {
                             RecordId = 1,
-                            NumberOfVisits = 5,
+                            NumberOfVisits = 1,
                             PetId = 1
                         },
                         new
                         {
                             RecordId = 2,
-                            NumberOfVisits = 3,
+                            NumberOfVisits = 1,
                             PetId = 2
                         },
                         new
                         {
                             RecordId = 3,
-                            NumberOfVisits = 2,
+                            NumberOfVisits = 1,
                             PetId = 3
                         },
                         new
@@ -624,7 +632,7 @@ namespace Entities.Migrations
                         new
                         {
                             RecordId = 5,
-                            NumberOfVisits = 4,
+                            NumberOfVisits = 1,
                             PetId = 5
                         });
                 });
@@ -658,7 +666,7 @@ namespace Entities.Migrations
                         new
                         {
                             RoleId = 3,
-                            Name = "Veterinarian"
+                            Name = "Vet"
                         },
                         new
                         {
@@ -693,36 +701,29 @@ namespace Entities.Migrations
                         {
                             ServiceId = 1,
                             Cost = 50.0,
-                            Description = "Comprehensive physical examination for your pet.",
-                            Name = "Annual Checkup"
+                            Description = "Comprehensive health check-up for your pet.",
+                            Name = "Annual Check-Up"
                         },
                         new
                         {
                             ServiceId = 2,
                             Cost = 30.0,
-                            Description = "Administering essential vaccinations for your pet.",
+                            Description = "Essential vaccines to keep your pet healthy.",
                             Name = "Vaccination"
                         },
                         new
                         {
                             ServiceId = 3,
                             Cost = 40.0,
-                            Description = "Professional grooming services for your pet.",
-                            Name = "Grooming"
+                            Description = "Addressing behavioral issues with your pet.",
+                            Name = "Behavioral Consultation"
                         },
                         new
                         {
                             ServiceId = 4,
                             Cost = 75.0,
-                            Description = "Thorough dental cleaning and oral health check.",
-                            Name = "Dental Cleaning"
-                        },
-                        new
-                        {
-                            ServiceId = 5,
-                            Cost = 500.0,
-                            Description = "Surgical procedures for your pet.",
-                            Name = "Surgery"
+                            Description = "Advanced surgical procedures for complex conditions.",
+                            Name = "Specialized Surgery"
                         });
                 });
 
@@ -754,26 +755,38 @@ namespace Entities.Migrations
                         new
                         {
                             SlotId = 2,
+                            EndTime = new TimeOnly(11, 0, 0),
+                            StartTime = new TimeOnly(10, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 3,
                             EndTime = new TimeOnly(12, 0, 0),
                             StartTime = new TimeOnly(11, 0, 0)
                         },
                         new
                         {
-                            SlotId = 3,
+                            SlotId = 4,
+                            EndTime = new TimeOnly(13, 0, 0),
+                            StartTime = new TimeOnly(12, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 5,
+                            EndTime = new TimeOnly(14, 0, 0),
+                            StartTime = new TimeOnly(13, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 6,
                             EndTime = new TimeOnly(15, 0, 0),
                             StartTime = new TimeOnly(14, 0, 0)
                         },
                         new
                         {
-                            SlotId = 4,
-                            EndTime = new TimeOnly(17, 0, 0),
-                            StartTime = new TimeOnly(16, 0, 0)
-                        },
-                        new
-                        {
-                            SlotId = 5,
-                            EndTime = new TimeOnly(19, 0, 0),
-                            StartTime = new TimeOnly(18, 0, 0)
+                            SlotId = 7,
+                            EndTime = new TimeOnly(16, 0, 0),
+                            StartTime = new TimeOnly(15, 0, 0)
                         });
                 });
 
@@ -808,7 +821,7 @@ namespace Entities.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsActice")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -836,68 +849,18 @@ namespace Entities.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = 1,
-                            Address = "123 Main St, Anytown USA",
-                            Country = "United States",
-                            Email = "john.doe@example.com",
-                            FirstName = "John",
-                            Gender = true,
-                            LastName = "Doe",
-                            Password = "password123",
-                            RoleId = 2,
-                            Username = "jdoe"
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            Address = "456 Oak Rd, Anytown USA",
-                            Country = "United States",
-                            Email = "jane.smith@example.com",
-                            FirstName = "Jane",
-                            Gender = false,
-                            LastName = "Smith",
-                            Password = "password456",
-                            RoleId = 2,
-                            Username = "jsmith"
-                        },
-                        new
-                        {
                             UserId = 3,
                             Address = "789 Elm St, Anytown USA",
                             Country = "United States",
                             Email = "bob.johnson@example.com",
                             FirstName = "Bob",
                             Gender = true,
+                            ImageURL = "https://example.com/user_images/bjohnson.jpg",
+                            IsActive = true,
                             LastName = "Johnson",
                             Password = "password789",
                             RoleId = 1,
                             Username = "bjohnson"
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            Address = "456 Pine Ave, Anytown USA",
-                            Country = "United States",
-                            Email = "emily.wilson@example.com",
-                            FirstName = "Emily",
-                            Gender = false,
-                            LastName = "Wilson",
-                            Password = "password321",
-                            RoleId = 3,
-                            Username = "ewilson"
-                        },
-                        new
-                        {
-                            UserId = 5,
-                            Address = "789 Maple Ln, Anytown USA",
-                            Country = "United States",
-                            Email = "michael.brown@example.com",
-                            FirstName = "Michael",
-                            Gender = true,
-                            LastName = "Brown",
-                            Password = "password654",
-                            RoleId = 3,
-                            Username = "mbrown"
                         });
                 });
 
@@ -926,37 +889,32 @@ namespace Entities.Migrations
                         new
                         {
                             VaccineId = 1,
-                            Description = "Protects against the rabies virus.",
-                            IsAnnualVaccine = true,
+                            Description = "Prevents rabies infection.",
                             Name = "Rabies Vaccine"
                         },
                         new
                         {
                             VaccineId = 2,
-                            Description = "Protects against canine distemper virus.",
-                            IsAnnualVaccine = false,
+                            Description = "Prevents canine distemper.",
                             Name = "Distemper Vaccine"
                         },
                         new
                         {
                             VaccineId = 3,
-                            Description = "Protects against feline leukemia virus.",
-                            IsAnnualVaccine = true,
+                            Description = "Prevents feline leukemia.",
                             Name = "Feline Leukemia Vaccine"
                         },
                         new
                         {
                             VaccineId = 4,
-                            Description = "Protects against kennel cough in dogs.",
-                            IsAnnualVaccine = false,
-                            Name = "Bordetella Vaccine"
+                            Description = "Prevents canine parvovirus.",
+                            Name = "Parvovirus Vaccine"
                         },
                         new
                         {
                             VaccineId = 5,
-                            Description = "Protects against parvovirus in dogs.",
-                            IsAnnualVaccine = false,
-                            Name = "Parvo Vaccine"
+                            Description = "Prevents avian influenza.",
+                            Name = "Avian Influenza Vaccine"
                         });
                 });
 
@@ -967,6 +925,38 @@ namespace Entities.Migrations
                     b.ToTable("User");
 
                     b.HasDiscriminator().HasValue("Customer");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            Address = "123 Main St, Anytown USA",
+                            Country = "United States",
+                            Email = "john.doe@example.com",
+                            FirstName = "John",
+                            Gender = true,
+                            ImageURL = "https://example.com/user_images/jdoe.jpg",
+                            IsActive = true,
+                            LastName = "Doe",
+                            Password = "password123",
+                            RoleId = 2,
+                            Username = "jdoe"
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            Address = "456 Oak Rd, Anytown USA",
+                            Country = "United States",
+                            Email = "jane.smith@example.com",
+                            FirstName = "Jane",
+                            Gender = false,
+                            ImageURL = "https://example.com/user_images/jsmith.jpg",
+                            IsActive = true,
+                            LastName = "Smith",
+                            Password = "password456",
+                            RoleId = 2,
+                            Username = "jsmith"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Vet", b =>
@@ -982,6 +972,42 @@ namespace Entities.Migrations
                     b.ToTable("User");
 
                     b.HasDiscriminator().HasValue("Vet");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 4,
+                            Address = "456 Pine Ave, Anytown USA",
+                            Country = "United States",
+                            Email = "emily.wilson@example.com",
+                            FirstName = "Emily",
+                            Gender = false,
+                            ImageURL = "https://example.com/user_images/ewilson.jpg",
+                            IsActive = true,
+                            LastName = "Wilson",
+                            Password = "password321",
+                            RoleId = 3,
+                            Username = "ewilson",
+                            Rating = 4,
+                            YearsOfExperience = 10
+                        },
+                        new
+                        {
+                            UserId = 5,
+                            Address = "789 Maple Ln, Anytown USA",
+                            Country = "United States",
+                            Email = "michael.brown@example.com",
+                            FirstName = "Michael",
+                            Gender = true,
+                            ImageURL = "https://example.com/user_images/mbrown.jpg",
+                            IsActive = true,
+                            LastName = "Brown",
+                            Password = "password654",
+                            RoleId = 3,
+                            Username = "mbrown",
+                            Rating = 5,
+                            YearsOfExperience = 7
+                        });
                 });
 
             modelBuilder.Entity("Entities.Appointment", b =>

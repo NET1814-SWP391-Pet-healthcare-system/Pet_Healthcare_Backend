@@ -11,10 +11,11 @@ namespace ServiceContracts
     public interface IUserService
     {
         bool AddUser(UserAddRequest request);
-        User? GetUserById(int id);
-        User? GetUserByUsername(string username);
+        Object? GetUserById(int id);
         IEnumerable<User> GetUsers();
-        bool UpdateUser(UserUpdateRequest request);
-        bool RemoveUser(string username);
+        IEnumerable<Customer> GetCustomers();
+        IEnumerable<Vet> GetVets();
+        Object? UpdateUser(int id, UserUpdateRequest request);
+        bool RemoveUser(int id);
     }
 }

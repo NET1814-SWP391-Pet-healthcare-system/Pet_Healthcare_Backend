@@ -27,6 +27,8 @@ namespace ServiceContracts.DTO.UserDTO
         public string? ImageURL { get; set; }
         public bool? IsActice { get; set; } = true;
 
+        public int? Rating { get; set; }
+        public int? YearsOfExperience { get; set; }
         public User ToUser()
         {
             return new User
@@ -41,7 +43,7 @@ namespace ServiceContracts.DTO.UserDTO
                 Address = Address,
                 Country = Country,
                 ImageURL = ImageURL,
-                IsActice = IsActice
+                IsActive = IsActice
             };
         }
     }

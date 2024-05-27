@@ -21,7 +21,7 @@
     },
     {
         "PetId": 3,
-        "CustomerId": 3,
+        "CustomerId": 2,
         "Name": "Rocky",
         "Species": "Bird",
         "Breed": "Cockatiel",
@@ -31,7 +31,7 @@
     },
     {
         "PetId": 4,
-        "CustomerId": 4,
+        "CustomerId": 1,
         "Name": "Finny",
         "Species": "Fish",
         "Breed": "Goldfish",
@@ -41,7 +41,7 @@
     },
     {
         "PetId": 5,
-        "CustomerId": 5,
+        "CustomerId": 1,
         "Name": "Fluffy",
         "Species": "Rabbit",
         "Breed": "Lop",

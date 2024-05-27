@@ -101,7 +101,7 @@ namespace Entities.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActice = table.Column<bool>(type: "bit", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: true),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: true)
@@ -277,7 +277,7 @@ namespace Entities.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HospitalizationId = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOnly = table.Column<DateOnly>(type: "date", nullable: true),
+                    Date = table.Column<DateOnly>(type: "date", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -337,7 +337,7 @@ namespace Entities.Migrations
                 {
                     { 1, "Admin" },
                     { 2, "Customer" },
-                    { 3, "Veterinarian" },
+                    { 3, "Vet" },
                     { 4, "Employee" }
                 });
 
@@ -346,11 +346,10 @@ namespace Entities.Migrations
                 columns: new[] { "ServiceId", "Cost", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, 50.0, "Comprehensive physical examination for your pet.", "Annual Checkup" },
-                    { 2, 30.0, "Administering essential vaccinations for your pet.", "Vaccination" },
-                    { 3, 40.0, "Professional grooming services for your pet.", "Grooming" },
-                    { 4, 75.0, "Thorough dental cleaning and oral health check.", "Dental Cleaning" },
-                    { 5, 500.0, "Surgical procedures for your pet.", "Surgery" }
+                    { 1, 50.0, "Comprehensive health check-up for your pet.", "Annual Check-Up" },
+                    { 2, 30.0, "Essential vaccines to keep your pet healthy.", "Vaccination" },
+                    { 3, 40.0, "Addressing behavioral issues with your pet.", "Behavioral Consultation" },
+                    { 4, 75.0, "Advanced surgical procedures for complex conditions.", "Specialized Surgery" }
                 });
 
             migrationBuilder.InsertData(
@@ -359,10 +358,12 @@ namespace Entities.Migrations
                 values: new object[,]
                 {
                     { 1, new TimeOnly(10, 0, 0), new TimeOnly(9, 0, 0) },
-                    { 2, new TimeOnly(12, 0, 0), new TimeOnly(11, 0, 0) },
-                    { 3, new TimeOnly(15, 0, 0), new TimeOnly(14, 0, 0) },
-                    { 4, new TimeOnly(17, 0, 0), new TimeOnly(16, 0, 0) },
-                    { 5, new TimeOnly(19, 0, 0), new TimeOnly(18, 0, 0) }
+                    { 2, new TimeOnly(11, 0, 0), new TimeOnly(10, 0, 0) },
+                    { 3, new TimeOnly(12, 0, 0), new TimeOnly(11, 0, 0) },
+                    { 4, new TimeOnly(13, 0, 0), new TimeOnly(12, 0, 0) },
+                    { 5, new TimeOnly(14, 0, 0), new TimeOnly(13, 0, 0) },
+                    { 6, new TimeOnly(15, 0, 0), new TimeOnly(14, 0, 0) },
+                    { 7, new TimeOnly(16, 0, 0), new TimeOnly(15, 0, 0) }
                 });
 
             migrationBuilder.InsertData(
@@ -370,23 +371,30 @@ namespace Entities.Migrations
                 columns: new[] { "VaccineId", "Description", "IsAnnualVaccine", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Protects against the rabies virus.", true, "Rabies Vaccine" },
-                    { 2, "Protects against canine distemper virus.", false, "Distemper Vaccine" },
-                    { 3, "Protects against feline leukemia virus.", true, "Feline Leukemia Vaccine" },
-                    { 4, "Protects against kennel cough in dogs.", false, "Bordetella Vaccine" },
-                    { 5, "Protects against parvovirus in dogs.", false, "Parvo Vaccine" }
+                    { 1, "Prevents rabies infection.", null, "Rabies Vaccine" },
+                    { 2, "Prevents canine distemper.", null, "Distemper Vaccine" },
+                    { 3, "Prevents feline leukemia.", null, "Feline Leukemia Vaccine" },
+                    { 4, "Prevents canine parvovirus.", null, "Parvovirus Vaccine" },
+                    { 5, "Prevents avian influenza.", null, "Avian Influenza Vaccine" }
                 });
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "UserId", "Address", "Country", "Discriminator", "Email", "FirstName", "Gender", "ImageURL", "IsActice", "LastName", "Password", "RoleId", "Username" },
+                columns: new[] { "UserId", "Address", "Country", "Discriminator", "Email", "FirstName", "Gender", "ImageURL", "IsActive", "LastName", "Password", "RoleId", "Username" },
                 values: new object[,]
                 {
-                    { 1, "123 Main St, Anytown USA", "United States", "User", "john.doe@example.com", "John", true, null, null, "Doe", "password123", 2, "jdoe" },
-                    { 2, "456 Oak Rd, Anytown USA", "United States", "User", "jane.smith@example.com", "Jane", false, null, null, "Smith", "password456", 2, "jsmith" },
-                    { 3, "789 Elm St, Anytown USA", "United States", "User", "bob.johnson@example.com", "Bob", true, null, null, "Johnson", "password789", 1, "bjohnson" },
-                    { 4, "456 Pine Ave, Anytown USA", "United States", "User", "emily.wilson@example.com", "Emily", false, null, null, "Wilson", "password321", 3, "ewilson" },
-                    { 5, "789 Maple Ln, Anytown USA", "United States", "User", "michael.brown@example.com", "Michael", true, null, null, "Brown", "password654", 3, "mbrown" }
+                    { 1, "123 Main St, Anytown USA", "United States", "Customer", "john.doe@example.com", "John", true, "https://example.com/user_images/jdoe.jpg", true, "Doe", "password123", 2, "jdoe" },
+                    { 2, "456 Oak Rd, Anytown USA", "United States", "Customer", "jane.smith@example.com", "Jane", false, "https://example.com/user_images/jsmith.jpg", true, "Smith", "password456", 2, "jsmith" },
+                    { 3, "789 Elm St, Anytown USA", "United States", "User", "bob.johnson@example.com", "Bob", true, "https://example.com/user_images/bjohnson.jpg", true, "Johnson", "password789", 1, "bjohnson" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "UserId", "Address", "Country", "Discriminator", "Email", "FirstName", "Gender", "ImageURL", "IsActive", "LastName", "Password", "Rating", "RoleId", "Username", "YearsOfExperience" },
+                values: new object[,]
+                {
+                    { 4, "456 Pine Ave, Anytown USA", "United States", "Vet", "emily.wilson@example.com", "Emily", false, "https://example.com/user_images/ewilson.jpg", true, "Wilson", "password321", 4, 3, "ewilson", 10 },
+                    { 5, "789 Maple Ln, Anytown USA", "United States", "Vet", "michael.brown@example.com", "Michael", true, "https://example.com/user_images/mbrown.jpg", true, "Brown", "password654", 5, 3, "mbrown", 7 }
                 });
 
             migrationBuilder.InsertData(
@@ -394,11 +402,11 @@ namespace Entities.Migrations
                 columns: new[] { "PetId", "Breed", "CustomerId", "Gender", "ImageURL", "Name", "Species", "Weight" },
                 values: new object[,]
                 {
-                    { 1, "Labrador Retriever", 1, true, null, "Buddy", "Dog", 30.5 },
-                    { 2, "Siamese", 2, false, null, "Whiskers", "Cat", 4.2000000000000002 },
-                    { 3, "Cockatiel", 3, true, null, "Rocky", "Bird", 0.29999999999999999 },
-                    { 4, "Goldfish", 4, false, null, "Finny", "Fish", 0.10000000000000001 },
-                    { 5, "Lop", 5, true, null, "Fluffy", "Rabbit", 2.7999999999999998 }
+                    { 1, "Labrador Retriever", 1, true, "https://example.com/pet_images/buddy.jpg", "Buddy", "Dog", 30.5 },
+                    { 2, "Siamese", 2, false, "https://example.com/pet_images/whiskers.jpg", "Whiskers", "Cat", 4.2000000000000002 },
+                    { 3, "Cockatiel", 2, true, "https://example.com/pet_images/rocky.jpg", "Rocky", "Bird", 0.29999999999999999 },
+                    { 4, "Goldfish", 1, false, "https://example.com/pet_images/finny.jpg", "Finny", "Fish", 0.10000000000000001 },
+                    { 5, "Lop", 1, true, "https://example.com/pet_images/fluffy.jpg", "Fluffy", "Rabbit", 2.7999999999999998 }
                 });
 
             migrationBuilder.InsertData(
@@ -406,11 +414,11 @@ namespace Entities.Migrations
                 columns: new[] { "AppointmentId", "CancellationDate", "Comments", "CustomerId", "Date", "PetId", "Rating", "RefundAmount", "ServiceId", "SlotId", "Status", "TotalCost", "VetId" },
                 values: new object[,]
                 {
-                    { 1, null, null, 1, new DateOnly(2023, 6, 15), 1, null, null, 1, 1, 1, 75.0, 1 },
-                    { 2, null, null, 2, new DateOnly(2023, 7, 1), 2, null, null, 2, 2, 2, 60.0, 2 },
-                    { 3, new DateOnly(2023, 8, 8), "Friendly staff, great service.", 3, new DateOnly(2023, 8, 10), 3, 4, 20.0, 3, 3, 3, 40.0, 1 },
-                    { 4, null, null, 4, new DateOnly(2023, 9, 1), 4, null, null, 4, 4, 1, 35.0, 2 },
-                    { 5, null, null, 5, new DateOnly(2023, 10, 15), 5, null, null, 1, 5, 2, 50.0, 1 }
+                    { 1, null, null, 1, new DateOnly(2023, 6, 15), 1, null, null, 1, 1, 0, 50.0, 4 },
+                    { 2, null, null, 2, new DateOnly(2023, 7, 1), 2, null, null, 2, 2, 1, 30.0, 4 },
+                    { 3, null, "Friendly staff, great service.", 2, new DateOnly(2023, 8, 10), 3, 4, null, 3, 3, 2, 40.0, 5 },
+                    { 4, null, null, 1, new DateOnly(2023, 9, 1), 4, null, null, 4, 4, 0, 75.0, 5 },
+                    { 5, null, null, 1, new DateOnly(2023, 10, 15), 5, null, null, 1, 5, 0, 500.0, 4 }
                 });
 
             migrationBuilder.InsertData(
@@ -418,11 +426,11 @@ namespace Entities.Migrations
                 columns: new[] { "HospitalizationId", "AdmissionDate", "DischargeDate", "KennelId", "PetId", "TotalCost", "VetId" },
                 values: new object[,]
                 {
-                    { 1, new DateOnly(2023, 5, 1), new DateOnly(2023, 5, 5), 1, 1, 500.0, 1 },
-                    { 2, new DateOnly(2023, 6, 10), new DateOnly(2023, 6, 12), 2, 2, 300.0, 2 },
-                    { 3, new DateOnly(2023, 7, 15), new DateOnly(2023, 7, 18), 3, 3, 150.0, 1 },
-                    { 4, new DateOnly(2023, 8, 1), new DateOnly(2023, 8, 3), 4, 4, 200.0, 2 },
-                    { 5, new DateOnly(2023, 9, 10), new DateOnly(2023, 9, 12), 5, 5, 250.0, 1 }
+                    { 1, new DateOnly(2023, 5, 1), new DateOnly(2023, 5, 5), 1, 1, 125.0, 4 },
+                    { 2, new DateOnly(2023, 6, 10), new DateOnly(2023, 6, 12), 2, 2, 120.0, 4 },
+                    { 3, new DateOnly(2023, 7, 15), new DateOnly(2023, 7, 18), 3, 3, 60.0, 5 },
+                    { 4, new DateOnly(2023, 8, 1), new DateOnly(2023, 8, 3), 4, 4, 90.0, 5 },
+                    { 5, new DateOnly(2023, 9, 10), new DateOnly(2023, 9, 12), 5, 5, 105.0, 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -442,11 +450,11 @@ namespace Entities.Migrations
                 columns: new[] { "RecordId", "NumberOfVisits", "PetId" },
                 values: new object[,]
                 {
-                    { 1, 5, 1 },
-                    { 2, 3, 2 },
-                    { 3, 2, 3 },
+                    { 1, 1, 1 },
+                    { 2, 1, 2 },
+                    { 3, 1, 3 },
                     { 4, 1, 4 },
-                    { 5, 4, 5 }
+                    { 5, 1, 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -463,14 +471,14 @@ namespace Entities.Migrations
 
             migrationBuilder.InsertData(
                 table: "PetHealthTrack",
-                columns: new[] { "PetHealthTrackId", "DateOnly", "Description", "HospitalizationId", "Status" },
+                columns: new[] { "PetHealthTrackId", "Date", "Description", "HospitalizationId", "Status" },
                 values: new object[,]
                 {
-                    { 1, null, "Recovering from surgery", 1, 1 },
-                    { 2, null, "Monitoring for dehydration", 2, 2 },
-                    { 3, null, "Treating respiratory infection", 3, 3 },
-                    { 4, null, "Observing swim bladder disorder", 4, 1 },
-                    { 5, null, "Managing gastrointestinal stasis", 5, 2 }
+                    { 1, new DateOnly(2023, 5, 3), "Recovering from surgery", 1, 0 },
+                    { 2, new DateOnly(2023, 6, 11), "Monitoring for dehydration", 2, 1 },
+                    { 3, new DateOnly(2023, 7, 16), "Treating respiratory infection", 3, 2 },
+                    { 4, new DateOnly(2023, 8, 2), "Observing swim bladder disorder", 4, 0 },
+                    { 5, new DateOnly(2023, 9, 11), "Managing gastrointestinal stasis", 5, 1 }
                 });
 
             migrationBuilder.CreateIndex(

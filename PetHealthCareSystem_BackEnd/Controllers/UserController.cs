@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -25,17 +26,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public IActionResult AddUser(UserAddRequest? userAddRequest)
+        public ActionResult<BusinessResult> AddUser(UserAddRequest? userAddRequest)
         {
+            BusinessResult businessResult = new BusinessResult();
             if(userAddRequest == null)
             {
-                return BadRequest("UserRequest is null");
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "User request is null";
+                return BadRequest(businessResult);
             }
 
             _userService.AddUser(userAddRequest);
-
-            return Ok("Created successfully");
+            businessResult.Status = 200;
+            businessResult.Data = userAddRequest;
+            businessResult.Message = "User added";
+            return Ok(businessResult);
         }
+
 
         //Read
         [HttpGet]
@@ -45,7 +53,27 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Data = _userService.GetUsers(); ;
             businessResult.Message = "Successful";
             businessResult.Status = 200;
-            return businessResult;
+            return Ok(businessResult);
+        }
+
+        [HttpGet("customers")]
+        public ActionResult<BusinessResult> GetCustomers()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            businessResult.Data = _userService.GetCustomers();
+            businessResult.Message = "Successful";
+            businessResult.Status = 200;
+            return Ok(businessResult);
+        }
+
+        [HttpGet("vets")]
+        public ActionResult<BusinessResult> GetVets()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            businessResult.Data = _userService.GetVets();
+            businessResult.Message = "Successful";
+            businessResult.Status = 200;
+            return Ok(businessResult);
         }
 
         [HttpGet("id/{id}")]
@@ -58,30 +86,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "No User found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
             businessResult.Data = user;
             businessResult.Message = "User found";
-            return businessResult;
-        }
-
-        [HttpGet("username/{username}")]
-        public ActionResult<BusinessResult> GetUserByUsername(string username)
-        {
-            BusinessResult businessResult = new BusinessResult();
-            var user = _userService.GetUserByUsername(username);
-            if(user == null)
-            {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "No User found";
-                return businessResult;
-            }
-            businessResult.Status = 200;
-            businessResult.Data = user;
-            businessResult.Message = "User found";
-            return businessResult;
+            return Ok(businessResult);
         }
 
         //Update
@@ -89,52 +99,52 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public ActionResult<BusinessResult> UpdateUserById(int id, UserUpdateRequest? userUpdateRequest)
         {
             BusinessResult businessResult = new BusinessResult();
-            if(userUpdateRequest == null)
+            if(!ModelState.IsValid)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
                 businessResult.Message = "Request is null";
-                return businessResult;
+                return BadRequest(businessResult);
             }
             if(id != userUpdateRequest.UserId)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
                 businessResult.Message = "Mismatched id";
-                return businessResult;
+                return BadRequest(businessResult);
             }
-            var isUpdated = _userService.UpdateUser(userUpdateRequest);
-            if(!isUpdated)
+            var result = _userService.UpdateUser(id, userUpdateRequest);
+            if(result == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "User not found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = userUpdateRequest.ToUser();
+            businessResult.Data = result;
             businessResult.Message = "User updated";
-            return businessResult;
+            return Ok(businessResult);
         }
 
         //Delete
-        [HttpDelete("{username}")]
-        public ActionResult<BusinessResult> DeleteUserByUsername(string username)
+        [HttpDelete("{id}")]
+        public ActionResult<BusinessResult> DeleteUserByUsername(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var userData = _userService.GetUserByUsername(username);
-            var isDeleted = _userService.RemoveUser(username);
+            var userData = _userService.GetUserById(id);
+            var isDeleted = _userService.RemoveUser(id);
             if(!isDeleted)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "User not found";
-                return businessResult;
+                return NotFound(businessResult);
             }
             businessResult.Status = 200;
             businessResult.Data = userData;
             businessResult.Message = "User deleted";
-            return businessResult;
+            return Ok(businessResult);
         }
     }
 }

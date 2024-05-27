@@ -1,5 +1,6 @@
 ﻿using Entities;
 using ServiceContracts.DTO.HospitalizationDTO;
+using ServiceContracts.DTO.ServiceDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace ServiceContracts
 {
     public interface IServiceService
     {
-        bool AddHospitalization(HospitalizationAddRequest request);
-        Hospitalization? GetHospitalizationById(int id);
-        IEnumerable<Hospitalization> GetHospitalization();
-        bool UpdateHospitalization(HospitalizationUpdateRequest request);
-        bool RemoveHospitalization(int id);
+        bool AddService(ServiceAddRequest request);
+        Service? GetServiceById(int id);
+        IEnumerable<Service> GetServices();
+        bool UpdateService(ServiceUpdateRequest request);
+        bool RemoveService(int id);
     }
 }
