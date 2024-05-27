@@ -38,9 +38,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             _userService.AddUser(userAddRequest);
-            businessResult.Status = 404;
-            businessResult.Data = null;
-            businessResult.Message = "No User found";
+            businessResult.Status = 200;
+            businessResult.Data = userAddRequest;
+            businessResult.Message = "User added";
             return Ok(businessResult);
         }
 
@@ -94,30 +94,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
-        [HttpGet("username/{username}")]
-        public ActionResult<BusinessResult> GetUserByUsername(string username)
-        {
-            BusinessResult businessResult = new BusinessResult();
-            var user = _userService.GetUserByUsername(username);
-            if(user == null)
-            {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "No User found";
-                return NotFound(businessResult);
-            }
-            businessResult.Status = 200;
-            businessResult.Data = user;
-            businessResult.Message = "User found";
-            return Ok(businessResult);
-        }
-
         //Update
         [HttpPut("{id}")]
         public ActionResult<BusinessResult> UpdateUserById(int id, UserUpdateRequest? userUpdateRequest)
         {
             BusinessResult businessResult = new BusinessResult();
-            if(userUpdateRequest == null)
+            if(!ModelState.IsValid)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
@@ -131,8 +113,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Mismatched id";
                 return BadRequest(businessResult);
             }
-            var isUpdated = _userService.UpdateUser(userUpdateRequest);
-            if(!isUpdated)
+            var result = _userService.UpdateUser(id, userUpdateRequest);
+            if(result == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
@@ -140,18 +122,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = userUpdateRequest.ToUser();
+            businessResult.Data = result;
             businessResult.Message = "User updated";
             return Ok(businessResult);
         }
 
         //Delete
-        [HttpDelete("{username}")]
-        public ActionResult<BusinessResult> DeleteUserByUsername(string username)
+        [HttpDelete("{id}")]
+        public ActionResult<BusinessResult> DeleteUserByUsername(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var userData = _userService.GetUserByUsername(username);
-            var isDeleted = _userService.RemoveUser(username);
+            var userData = _userService.GetUserById(id);
+            var isDeleted = _userService.RemoveUser(id);
             if(!isDeleted)
             {
                 businessResult.Status = 404;

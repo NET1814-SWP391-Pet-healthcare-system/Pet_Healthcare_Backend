@@ -1,10 +1,14 @@
-﻿using Entities;
+﻿using Azure.Core;
+using Entities;
 using Entities.Constants;
 using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,45 +24,69 @@ namespace Repositories
             _context = context;
         }
 
-        public bool Add(User? user)
+        public bool AddUser(User user)
         {
-            if(user == null)
-            {
-                return false;
-            }
             _context.Users.Add(user);
-            SaveChanges();
-            return true;
+            return SaveChanges();
+        }
+
+        public bool AddCustomer(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            return SaveChanges();
+        }
+        public bool AddVet(Vet vet)
+        {
+            _context.Vets.Add(vet);
+            return SaveChanges();
         }
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.Include(u => u.Role).ToList();
+            return _context.Users
+                .Include(u => u.Role)
+                .ToList();
         }
         public IEnumerable<Customer> GetAllCustomer()
         {
-            return _context.Customers.Include(u => u.Role).ToList();
+            return _context.Customers
+                .Include(c => c.Role)
+                .Include(c => c.Pets)
+                .ToList();
         }
 
         public IEnumerable<Vet> GetAllVet()
         {
-            return _context.Vets.Include(u => u.Role).ToList();
+            return _context.Vets
+                .Include(v => v.Role)
+                .ToList();
         }
 
-        public User? GetById(int id)
+        public Object? GetUserById(int id)
         {
-            return _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == id);  
+            var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == id);
+            switch(user.RoleId)
+            {
+                case 2:
+                    Customer customer = _context.Customers
+                        .Include(c => c.Role)
+                        .Include(c => c.Pets)
+                        .FirstOrDefault(c => c.UserId == id);
+                    return customer;
+
+                case 3:
+                    Vet vet = _context.Vets
+                        .Include(v => v.Role)
+                        .FirstOrDefault(v => v.UserId == id);
+                    return vet;
+            }
+            //other cases such as Admin, Employee
+            return user;
         }
 
-        public User? GetByUsername(string username)
+        public bool RemoveUser(Object? user)
         {
-            return _context.Users.Include(u => u.Role).FirstOrDefault(x => x.Username == username);
-        }
-
-        public bool Remove(string username)
-        {
-            var user = GetByUsername(username);
-            _context.Users.Remove(user);
+            _context.Users.Remove((User)user);
             SaveChanges();
             return true;
         }
@@ -69,26 +97,78 @@ namespace Repositories
             return true;
         }
 
-        public bool Update(User user)
+        public Object UpdateUser(int id, Object obj)
         {
-            var existingUser = GetById(user.UserId);
-            if(existingUser == null)
+            var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == id);
+            Object result = null;
+            switch(user.RoleId)
             {
-                return false;
+                case 2:
+                    Customer? existingCustomer = _context.Customers.FirstOrDefault(c => c.UserId == id);
+                    if(existingCustomer == null)
+                    {
+                        return false;
+                    }
+                    Customer customerRequest = obj as Customer;
+                    existingCustomer.FirstName = customerRequest.FirstName;
+                    existingCustomer.LastName = customerRequest.LastName;
+                    existingCustomer.Gender = customerRequest.Gender;
+                    existingCustomer.Email = customerRequest.Email;
+                    existingCustomer.Username = customerRequest.Username;
+                    existingCustomer.Password = customerRequest.Password;
+                    existingCustomer.Address = customerRequest.Address;
+                    existingCustomer.Country = customerRequest.Country;
+                    existingCustomer.ImageURL = customerRequest.ImageURL;
+                    existingCustomer.IsActive = customerRequest.IsActive;
+                    result = existingCustomer;
+                    break;
+
+                case 3:
+                    Vet? existingVet = _context.Vets.FirstOrDefault(v => v.UserId == id);
+                    if(existingVet == null)
+                    {
+                        return false;
+                    }
+                    Vet vetRequest = obj as Vet;
+                    existingVet.FirstName = vetRequest.FirstName;
+                    existingVet.LastName = vetRequest.LastName;
+                    existingVet.Gender = vetRequest.Gender;
+                    existingVet.Email = vetRequest.Email;
+                    existingVet.Username = vetRequest.Username;
+                    existingVet.Password = vetRequest.Password;
+                    existingVet.Address = vetRequest.Address;
+                    existingVet.Country = vetRequest.Country;
+                    existingVet.ImageURL = vetRequest.ImageURL;
+                    existingVet.IsActive = vetRequest.IsActive;
+                    existingVet.Rating = vetRequest.Rating;
+                    existingVet.YearsOfExperience = vetRequest.YearsOfExperience;
+                    result = existingVet;
+                    break;
+
+                //user, employee, admin
+                default:
+                    User? existingUser = _context.Users.FirstOrDefault(u => u.UserId == id);
+                    if(existingUser == null)
+                    {
+                        return false;
+                    }
+                    User userRequest = obj as User;
+                    existingUser.FirstName = userRequest.FirstName;
+                    existingUser.LastName = userRequest.LastName;
+                    existingUser.Gender = userRequest.Gender;
+                    existingUser.Email = userRequest.Email;
+                    existingUser.Username = userRequest.Username;
+                    existingUser.Password = userRequest.Password;
+                    existingUser.Address = userRequest.Address;
+                    existingUser.Country = userRequest.Country;
+                    existingUser.ImageURL = userRequest.ImageURL;
+                    existingUser.IsActive = userRequest.IsActive;
+                    result = existingUser;
+                    break;
             }
-            existingUser.RoleId = user.RoleId;
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
-            existingUser.Gender = user.Gender;
-            existingUser.Email = user.Email;
-            existingUser.Username = user.Username;
-            existingUser.Password = user.Password;
-            existingUser.Address = user.Address;
-            existingUser.Country = user.Country;
-            existingUser.ImageURL = user.ImageURL;
-            existingUser.IsActive = user.IsActive;
             SaveChanges();
-            return true;
+            return result;
+            
         }
     }
 }
