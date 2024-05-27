@@ -10,7 +10,7 @@ namespace ServiceContracts.DTO.RoleDTO
 {
     public class RoleRemoveRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Must enter a Role ID that existed")]
         public int RoleId { get; set; }
         public Role toRole()
         {

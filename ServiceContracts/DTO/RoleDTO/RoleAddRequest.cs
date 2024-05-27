@@ -10,9 +10,9 @@ namespace ServiceContracts.DTO.RoleDTO
 {
     public class RoleAddRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Must enter a valid ID")]
         public int RoleId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Must enter a Role Name")]
         public string? Name { get; set; }
         public Role toRole()
         {
