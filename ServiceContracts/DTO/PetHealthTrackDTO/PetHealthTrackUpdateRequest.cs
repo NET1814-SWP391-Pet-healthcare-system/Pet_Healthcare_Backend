@@ -31,7 +31,7 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
                 HospitalizationId = HospitalizationId,
                 Hospitalization = Hospitalization,
                 Description = Description,
-                DateOnly = DateOnly,
+                Date = DateOnly,
                 Status = Status
             };
         }

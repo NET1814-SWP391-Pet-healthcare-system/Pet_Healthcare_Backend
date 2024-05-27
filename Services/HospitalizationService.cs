@@ -19,23 +19,30 @@ namespace Services
         {
             _hospitalizationRepository = hospitalizationRepository;
         }
-        public bool AddHospitalization(HospitalizationAddRequest? request)
+        public bool AddHospitalization(Hospitalization? request)
         {
             if (request == null)
             {
                 return false;
             }
-            var hospitalization = request.ToHospitalization();
-            return _hospitalizationRepository.Add(hospitalization);
+            return _hospitalizationRepository.Add(request);
         }
 
-        public bool UpdateHospitalization(HospitalizationUpdateRequest? request)
+        public bool UpdateHospitalization(int id,Hospitalization? request)
         {
-            if (_hospitalizationRepository.GetById(request.HospitalizationId) == null)
+            var existingHospitalization = _hospitalizationRepository.GetById(id);
+            if (existingHospitalization == null || request == null)
             {
                 return false;
             }
-            return _hospitalizationRepository.Update(request.ToHospitalization());
+            existingHospitalization.PetId = request.PetId;
+            existingHospitalization.KennelId = request.KennelId;
+            existingHospitalization.VetId = request.VetId;
+            existingHospitalization.AdmissionDate = request.AdmissionDate;
+            existingHospitalization.DischargeDate = request.DischargeDate;
+            existingHospitalization.TotalCost = request.TotalCost;
+
+            return _hospitalizationRepository.Update(existingHospitalization);
         }
 
         public bool RemoveHospitalization(int id)

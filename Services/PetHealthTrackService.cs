@@ -12,7 +12,7 @@ namespace Services
 {
     public class PetHealthTrackService : IPetHealthTrackService
     {
-        private readonly IPetHealthTrackRepository _petHealthTrackRepository
+        private readonly IPetHealthTrackRepository _petHealthTrackRepository;
         public bool AddPetHealthTrack(PetHealthTrackAddRequest request)
         {
             throw new NotImplementedException();

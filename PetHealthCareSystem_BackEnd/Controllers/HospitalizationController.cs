@@ -7,6 +7,8 @@ using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.HospitalizationDTO;
+using ServiceContracts.DTO.AppointmentDTO;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -25,105 +27,74 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public ActionResult<BusinessResult> AddHospitalization(HospitalizationAddRequest? hospitalizationAddRequest)
+        public ActionResult<BusinessResult> AddHospitalization([FromQuery] int petId, int kennelId, int vetId,double totalCost, [FromBody] HospitalizationAddRequest hospitalizationAddRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
-            if (hospitalizationAddRequest == null)
+            if (hospitalizationAddRequest == null || !ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Hospitalization request is null";
-                return BadRequest(businessResult);
+                return BadRequest(ModelState);
             }
 
-            _hospitalizationService.AddHospitalization(hospitalizationAddRequest);
-            businessResult.Status = 404;
-            businessResult.Data = null;
-            businessResult.Message = "No Hospitalization found";
-            return Ok(businessResult);
+            _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd(petId, kennelId, vetId, totalCost));
+            return Ok("Added Hospitalization Successfully");
         }
 
         //Read
         [HttpGet]
         public ActionResult<BusinessResult> GetHospitalizations()
         {
-            BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _hospitalizationService.GetHospitalizations(); ;
-            businessResult.Message = "Successful";
-            businessResult.Status = 200;
-            return Ok(businessResult);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var hospitalizations = _hospitalizationService.GetHospitalizations();
+            var hospitalizationDtos = hospitalizations.Select(x => x.ToHospitalizationDto());
+            return Ok(hospitalizationDtos);
         }
 
         [HttpGet("id/{id}")]
         public ActionResult<BusinessResult> GetHospitalizationById(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             var hospitalization = _hospitalizationService.GetHospitalizationById(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (hospitalization == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "No Hospitalization found";
-                return NotFound(businessResult);
+                return NotFound();
             }
-            businessResult.Status = 200;
-            businessResult.Data = hospitalization;
-            businessResult.Message = "Hospitalization found";
-            return Ok(businessResult);
+            return Ok(hospitalization);
         }
 
 
         //Update
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdateHospitalizationById(int id, HospitalizationUpdateRequest? hospitalizationUpdateRequest)
+        public ActionResult<BusinessResult> UpdateHospitalizationById(int id, Hospitalization? hospitalizationUpdateRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
-            if (hospitalizationUpdateRequest == null)
+
+            if (hospitalizationUpdateRequest == null || !ModelState.IsValid || id != hospitalizationUpdateRequest.HospitalizationId)
             {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Request is null";
-                return BadRequest(businessResult);
+                return BadRequest(ModelState);
             }
-            if (id != hospitalizationUpdateRequest.HospitalizationId)
-            {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Mismatched id";
-                return BadRequest(businessResult);
-            }
-            var isUpdated = _hospitalizationService.UpdateHospitalization(hospitalizationUpdateRequest);
+            var isUpdated = _hospitalizationService.UpdateHospitalization(id,hospitalizationUpdateRequest);
             if (!isUpdated)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "Hospitalization not found";
-                return NotFound(businessResult);
+                return BadRequest(ModelState);
             }
-            businessResult.Status = 200;
-            businessResult.Data = hospitalizationUpdateRequest.ToHospitalization();
-            businessResult.Message = "Hospitalization updated";
-            return Ok(businessResult);
+            return Ok("Updated Successfully");
         }
 
         //Delete
-        [HttpDelete("{hospitalizationname}")]
-        public ActionResult<BusinessResult> DeleteHospitalizationByHospitalizationname(int id)
+        [HttpDelete("{id}")]
+        public ActionResult<BusinessResult> DeleteHospitalizationByHospitalizationByID(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             var hospitalizationData = _hospitalizationService.GetHospitalizationById(id);
             var isDeleted = _hospitalizationService.RemoveHospitalization(id);
-            if (!isDeleted)
+            if (!ModelState.IsValid || !isDeleted)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "Hospitalization not found";
-                return NotFound(businessResult);
+                return BadRequest(ModelState);
             }
-            businessResult.Status = 200;
-            businessResult.Data = hospitalizationData;
-            businessResult.Message = "Hospitalization deleted";
-            return Ok(businessResult);
+            return Ok("Nuke Success");
         }
     }
 }

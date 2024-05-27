@@ -10,27 +10,8 @@ namespace ServiceContracts.DTO.HospitalizationDTO
 {
     public class HospitalizationUpdateRequest
     {
-        [Required]
-        public int HospitalizationId { get; set; }
-        public int? PetId { get; set; }
-        public int? KennelId { get; set; }
-        public int? VetId { get; set; }
-        public DateOnly? AdmissionDate { get; set; }
-        public DateOnly? DischargeDate { get; set; }
-        public double? TotalCost { get; set; }
-
-        public Hospitalization ToHospitalization()
-        {
-            return new Hospitalization
-            {
-                HospitalizationId = HospitalizationId,
-                PetId = PetId,
-                KennelId = KennelId,
-                VetId = VetId,
-                AdmissionDate = AdmissionDate,
-                DischargeDate = DischargeDate,
-                TotalCost = TotalCost
-            };
-        }
+        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
+        public string? AdmissionDate { get; set; }
+        public string? DischargeDate { get; set; }
     }
 }
