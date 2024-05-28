@@ -24,12 +24,11 @@ namespace Services
 
         public Pet? AddPet(PetAddRequest petAddRequest)
         {
-            var pet = petAddRequest.ToPet();
-            pet.Customer = _userRepository.GetUserById(petAddRequest.CustomerId) as Customer;
-            var isAdded = _petRepository.AddPet(pet);
+            var request = petAddRequest.ToPet();
+            var isAdded = _petRepository.AddPet(request);
             if(isAdded)
             {
-                return pet;
+                return request;
             }
             return null;
 
@@ -53,7 +52,6 @@ namespace Services
                 return null; 
             }
             var request = petUpdateRequest.ToPet();
-            request.Customer = _userRepository.GetUserById(petUpdateRequest.CustomerId) as Customer;
             return _petRepository.UpdatePet(id, request);
         }
 

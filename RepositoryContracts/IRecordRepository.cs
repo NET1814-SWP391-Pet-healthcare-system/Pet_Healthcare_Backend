@@ -10,6 +10,7 @@ namespace RepositoryContracts
     public interface IRecordRepository
     {
         IEnumerable<Record> GetAll();
+        IEnumerable<AppointmentDetail> GetAllAppointmentDetail();
         Record? GetById(int id);
         bool Add(Record record);
         bool Update(Record record);

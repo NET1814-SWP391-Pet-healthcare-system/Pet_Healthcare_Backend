@@ -32,40 +32,40 @@ namespace Services
                 case 2:
                     Customer customer = new Customer
                     {
-                        RoleId = request.RoleId,
-                        FirstName = request.FirstName,
-                        LastName = request.LastName,
-                        Gender = request.Gender,
-                        Email = request.Email,
-                        Username = request.Username,
-                        Password = request.Password,
-                        Address = request.Address,
-                        Country = request.Country,
-                        ImageURL = request.ImageURL,
-                        IsActive = request.IsActice
+                        //RoleId = request.RoleId,
+                        //FirstName = request.FirstName,
+                        //LastName = request.LastName,
+                        //Gender = request.Gender,
+                        //Email = request.Email,
+                        //Username = request.Username,
+                        //Password = request.Password,
+                        //Address = request.Address,
+                        //Country = request.Country,
+                        //ImageURL = request.ImageURL,
+                        //IsActive = request.IsActice
                     };
-                    _userRepository.AddCustomer(customer);
+                    //_userRepository.AddCustomer(customer);
                     break;
 
                 //Vet
                 case 3:
-                    Vet vet = new Vet
-                    {
-                        RoleId = request.RoleId,
-                        FirstName = request.FirstName,
-                        LastName = request.LastName,
-                        Gender = request.Gender,
-                        Email = request.Email,
-                        Username = request.Username,
-                        Password = request.Password,
-                        Address = request.Address,
-                        Country = request.Country,
-                        ImageURL = request.ImageURL,
-                        IsActive = request.IsActice,
-                        Rating = request.Rating,
-                        YearsOfExperience = request.YearsOfExperience
-                    };
-                    _userRepository.AddVet(vet);
+                    //Vet vet = new Vet
+                    //{
+                    //    RoleId = request.RoleId,
+                    //    FirstName = request.FirstName,
+                    //    LastName = request.LastName,
+                    //    Gender = request.Gender,
+                    //    Email = request.Email,
+                    //    Username = request.Username,
+                    //    Password = request.Password,
+                    //    Address = request.Address,
+                    //    Country = request.Country,
+                    //    ImageURL = request.ImageURL,
+                    //    IsActive = request.IsActice,
+                    //    Rating = request.Rating,
+                    //    YearsOfExperience = request.YearsOfExperience
+                    //};
+                    //_userRepository.AddVet(vet);
                     break;
 
                 //Employee
@@ -103,12 +103,14 @@ namespace Services
         }
         public IEnumerable<Customer> GetCustomers()
         {
-            return _userRepository.GetAllCustomer();
+            //return _userRepository.GetAllCustomer();
+            return null;
         }
 
         public IEnumerable<Vet> GetVets()
         {
-            return _userRepository.GetAllVet();
+            //return _userRepository.GetAllVet();
+            return null;
         }
 
         public bool RemoveUser(int id)

@@ -14,6 +14,52 @@ namespace Entities.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<bool>(type: "bit", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Kennel",
                 columns: table => new
                 {
@@ -26,19 +72,6 @@ namespace Entities.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Kennel", x => x.KennelId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Role",
-                columns: table => new
-                {
-                    RoleId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Role", x => x.RoleId);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,34 +119,145 @@ namespace Entities.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<int>(type: "int", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<bool>(type: "bit", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customer",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customer_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vet",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: true),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.UserId);
+                    table.PrimaryKey("PK_Vet", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "RoleId");
+                        name: "FK_Vet_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,7 +266,7 @@ namespace Entities.Migrations
                 {
                     PetId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Species = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Breed = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -134,10 +278,10 @@ namespace Entities.Migrations
                 {
                     table.PrimaryKey("PK_Pet", x => x.PetId);
                     table.ForeignKey(
-                        name: "FK_Pet_User_CustomerId",
+                        name: "FK_Pet_Customer_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "User",
-                        principalColumn: "UserId");
+                        principalTable: "Customer",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -146,9 +290,9 @@ namespace Entities.Migrations
                 {
                     AppointmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PetId = table.Column<int>(type: "int", nullable: true),
-                    VetId = table.Column<int>(type: "int", nullable: true),
+                    VetId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     SlotId = table.Column<int>(type: "int", nullable: true),
                     ServiceId = table.Column<int>(type: "int", nullable: true),
                     Date = table.Column<DateOnly>(type: "date", nullable: true),
@@ -162,6 +306,12 @@ namespace Entities.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointment", x => x.AppointmentId);
+                    table.ForeignKey(
+                        name: "FK_Appointment_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Appointment_Pet_PetId",
                         column: x => x.PetId,
@@ -178,16 +328,10 @@ namespace Entities.Migrations
                         principalTable: "Slot",
                         principalColumn: "SlotId");
                     table.ForeignKey(
-                        name: "FK_Appointment_User_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Appointment_User_VetId",
+                        name: "FK_Appointment_Vet_VetId",
                         column: x => x.VetId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "Vet",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -199,7 +343,7 @@ namespace Entities.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PetId = table.Column<int>(type: "int", nullable: true),
                     KennelId = table.Column<int>(type: "int", nullable: true),
-                    VetId = table.Column<int>(type: "int", nullable: true),
+                    VetId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     AdmissionDate = table.Column<DateOnly>(type: "date", nullable: true),
                     DischargeDate = table.Column<DateOnly>(type: "date", nullable: true),
                     TotalCost = table.Column<double>(type: "float", nullable: true)
@@ -218,10 +362,10 @@ namespace Entities.Migrations
                         principalTable: "Pet",
                         principalColumn: "PetId");
                     table.ForeignKey(
-                        name: "FK_Hospitalization_User_VetId",
+                        name: "FK_Hospitalization_Vet_VetId",
                         column: x => x.VetId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
+                        principalTable: "Vet",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -319,166 +463,14 @@ namespace Entities.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Kennel",
-                columns: new[] { "KennelId", "Capacity", "DailyCost", "Description" },
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, 20, 25.0, "Comfortable and secure kennel for your pet." },
-                    { 2, 10, 40.0, "Luxury kennel with premium amenities." },
-                    { 3, 30, 15.0, "Budget-friendly kennel for short-term stays." },
-                    { 4, 25, 30.0, "Large kennel with outdoor play area." },
-                    { 5, 15, 35.0, "Climate-controlled kennel for exotic pets." }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Role",
-                columns: new[] { "RoleId", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Admin" },
-                    { 2, "Customer" },
-                    { 3, "Vet" },
-                    { 4, "Employee" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Service",
-                columns: new[] { "ServiceId", "Cost", "Description", "Name" },
-                values: new object[,]
-                {
-                    { 1, 50.0, "Comprehensive health check-up for your pet.", "Annual Check-Up" },
-                    { 2, 30.0, "Essential vaccines to keep your pet healthy.", "Vaccination" },
-                    { 3, 40.0, "Addressing behavioral issues with your pet.", "Behavioral Consultation" },
-                    { 4, 75.0, "Advanced surgical procedures for complex conditions.", "Specialized Surgery" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Slot",
-                columns: new[] { "SlotId", "EndTime", "StartTime" },
-                values: new object[,]
-                {
-                    { 1, new TimeOnly(10, 0, 0), new TimeOnly(9, 0, 0) },
-                    { 2, new TimeOnly(11, 0, 0), new TimeOnly(10, 0, 0) },
-                    { 3, new TimeOnly(12, 0, 0), new TimeOnly(11, 0, 0) },
-                    { 4, new TimeOnly(13, 0, 0), new TimeOnly(12, 0, 0) },
-                    { 5, new TimeOnly(14, 0, 0), new TimeOnly(13, 0, 0) },
-                    { 6, new TimeOnly(15, 0, 0), new TimeOnly(14, 0, 0) },
-                    { 7, new TimeOnly(16, 0, 0), new TimeOnly(15, 0, 0) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Vaccine",
-                columns: new[] { "VaccineId", "Description", "IsAnnualVaccine", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Prevents rabies infection.", null, "Rabies Vaccine" },
-                    { 2, "Prevents canine distemper.", null, "Distemper Vaccine" },
-                    { 3, "Prevents feline leukemia.", null, "Feline Leukemia Vaccine" },
-                    { 4, "Prevents canine parvovirus.", null, "Parvovirus Vaccine" },
-                    { 5, "Prevents avian influenza.", null, "Avian Influenza Vaccine" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "UserId", "Address", "Country", "Discriminator", "Email", "FirstName", "Gender", "ImageURL", "IsActive", "LastName", "Password", "RoleId", "Username" },
-                values: new object[,]
-                {
-                    { 1, "123 Main St, Anytown USA", "United States", "Customer", "john.doe@example.com", "John", true, "https://example.com/user_images/jdoe.jpg", true, "Doe", "password123", 2, "jdoe" },
-                    { 2, "456 Oak Rd, Anytown USA", "United States", "Customer", "jane.smith@example.com", "Jane", false, "https://example.com/user_images/jsmith.jpg", true, "Smith", "password456", 2, "jsmith" },
-                    { 3, "789 Elm St, Anytown USA", "United States", "User", "bob.johnson@example.com", "Bob", true, "https://example.com/user_images/bjohnson.jpg", true, "Johnson", "password789", 1, "bjohnson" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "UserId", "Address", "Country", "Discriminator", "Email", "FirstName", "Gender", "ImageURL", "IsActive", "LastName", "Password", "Rating", "RoleId", "Username", "YearsOfExperience" },
-                values: new object[,]
-                {
-                    { 4, "456 Pine Ave, Anytown USA", "United States", "Vet", "emily.wilson@example.com", "Emily", false, "https://example.com/user_images/ewilson.jpg", true, "Wilson", "password321", 4, 3, "ewilson", 10 },
-                    { 5, "789 Maple Ln, Anytown USA", "United States", "Vet", "michael.brown@example.com", "Michael", true, "https://example.com/user_images/mbrown.jpg", true, "Brown", "password654", 5, 3, "mbrown", 7 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Pet",
-                columns: new[] { "PetId", "Breed", "CustomerId", "Gender", "ImageURL", "Name", "Species", "Weight" },
-                values: new object[,]
-                {
-                    { 1, "Labrador Retriever", 1, true, "https://example.com/pet_images/buddy.jpg", "Buddy", "Dog", 30.5 },
-                    { 2, "Siamese", 2, false, "https://example.com/pet_images/whiskers.jpg", "Whiskers", "Cat", 4.2000000000000002 },
-                    { 3, "Cockatiel", 2, true, "https://example.com/pet_images/rocky.jpg", "Rocky", "Bird", 0.29999999999999999 },
-                    { 4, "Goldfish", 1, false, "https://example.com/pet_images/finny.jpg", "Finny", "Fish", 0.10000000000000001 },
-                    { 5, "Lop", 1, true, "https://example.com/pet_images/fluffy.jpg", "Fluffy", "Rabbit", 2.7999999999999998 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Appointment",
-                columns: new[] { "AppointmentId", "CancellationDate", "Comments", "CustomerId", "Date", "PetId", "Rating", "RefundAmount", "ServiceId", "SlotId", "Status", "TotalCost", "VetId" },
-                values: new object[,]
-                {
-                    { 1, null, null, 1, new DateOnly(2023, 6, 15), 1, null, null, 1, 1, 0, 50.0, 4 },
-                    { 2, null, null, 2, new DateOnly(2023, 7, 1), 2, null, null, 2, 2, 1, 30.0, 4 },
-                    { 3, null, "Friendly staff, great service.", 2, new DateOnly(2023, 8, 10), 3, 4, null, 3, 3, 2, 40.0, 5 },
-                    { 4, null, null, 1, new DateOnly(2023, 9, 1), 4, null, null, 4, 4, 0, 75.0, 5 },
-                    { 5, null, null, 1, new DateOnly(2023, 10, 15), 5, null, null, 1, 5, 0, 500.0, 4 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Hospitalization",
-                columns: new[] { "HospitalizationId", "AdmissionDate", "DischargeDate", "KennelId", "PetId", "TotalCost", "VetId" },
-                values: new object[,]
-                {
-                    { 1, new DateOnly(2023, 5, 1), new DateOnly(2023, 5, 5), 1, 1, 125.0, 4 },
-                    { 2, new DateOnly(2023, 6, 10), new DateOnly(2023, 6, 12), 2, 2, 120.0, 4 },
-                    { 3, new DateOnly(2023, 7, 15), new DateOnly(2023, 7, 18), 3, 3, 60.0, 5 },
-                    { 4, new DateOnly(2023, 8, 1), new DateOnly(2023, 8, 3), 4, 4, 90.0, 5 },
-                    { 5, new DateOnly(2023, 9, 10), new DateOnly(2023, 9, 12), 5, 5, 105.0, 5 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "PetVaccination",
-                columns: new[] { "PetId", "VaccineId", "VaccinationDate" },
-                values: new object[,]
-                {
-                    { 1, 1, new DateOnly(2023, 4, 1) },
-                    { 1, 2, new DateOnly(2022, 8, 15) },
-                    { 1, 4, new DateOnly(2023, 1, 10) },
-                    { 2, 3, new DateOnly(2023, 3, 1) },
-                    { 3, 5, new DateOnly(2023, 2, 20) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Record",
-                columns: new[] { "RecordId", "NumberOfVisits", "PetId" },
-                values: new object[,]
-                {
-                    { 1, 1, 1 },
-                    { 2, 1, 2 },
-                    { 3, 1, 3 },
-                    { 4, 1, 4 },
-                    { 5, 1, 5 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AppointmentDetail",
-                columns: new[] { "AppointmentDetailId", "AppointmentId", "Diagnosis", "Medication", "RecordId", "Treatment" },
-                values: new object[,]
-                {
-                    { 1, 1, "Healthy", null, 1, null },
-                    { 2, 2, "Ear Infection", "Otomax Otic Solution", 2, "Antibiotic Ear Drops" },
-                    { 3, 3, "Feather Plucking", null, 3, "Environmental Enrichment" },
-                    { 4, 4, "Swim Bladder Disorder", "Antibiotics and Anti-inflammatory", 4, "Medication and Diet Change" },
-                    { 5, 5, "Gastrointestinal Stasis", "CisaprIde and Simethicone", 5, "Motility Medication and Massage" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "PetHealthTrack",
-                columns: new[] { "PetHealthTrackId", "Date", "Description", "HospitalizationId", "Status" },
-                values: new object[,]
-                {
-                    { 1, new DateOnly(2023, 5, 3), "Recovering from surgery", 1, 0 },
-                    { 2, new DateOnly(2023, 6, 11), "Monitoring for dehydration", 2, 1 },
-                    { 3, new DateOnly(2023, 7, 16), "Treating respiratory infection", 3, 2 },
-                    { 4, new DateOnly(2023, 8, 2), "Observing swim bladder disorder", 4, 0 },
-                    { 5, new DateOnly(2023, 9, 11), "Managing gastrointestinal stasis", 5, 1 }
+                    { "3f5e4236-c7ce-4c0b-b352-05c6c82bb630", null, "Customer", "CUSTOMER" },
+                    { "60edf088-fd2c-47c4-a07c-1f583015ac43", null, "Vet", "VET" },
+                    { "b90340c2-bdef-4788-95ef-5b147ed6b337", null, "Employee", "EMPLOYEE" },
+                    { "bbcac0cf-bc13-43b1-9b44-e2978916acac", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -517,6 +509,45 @@ namespace Entities.Migrations
                 column: "RecordId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Hospitalization_KennelId",
                 table: "Hospitalization",
                 column: "KennelId");
@@ -550,11 +581,6 @@ namespace Entities.Migrations
                 name: "IX_Record_PetId",
                 table: "Record",
                 column: "PetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_RoleId",
-                table: "User",
-                column: "RoleId");
         }
 
         /// <inheritdoc />
@@ -562,6 +588,21 @@ namespace Entities.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AppointmentDetail");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
                 name: "PetHealthTrack");
@@ -574,6 +615,9 @@ namespace Entities.Migrations
 
             migrationBuilder.DropTable(
                 name: "Record");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Hospitalization");
@@ -594,10 +638,13 @@ namespace Entities.Migrations
                 name: "Pet");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Vet");
 
             migrationBuilder.DropTable(
-                name: "Role");
+                name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

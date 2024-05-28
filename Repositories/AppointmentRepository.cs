@@ -16,54 +16,59 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Appointment? appointment)
+
+        public async Task<Appointment> AddAsync(Appointment appointmentModel)
         {
-            if (appointment == null) return false;
-            _context.Appointments.Add(appointment);
-            return SaveChanges();
+            await _context.Appointments.AddAsync(appointmentModel);
+            await _context.SaveChangesAsync();
+            return appointmentModel;
         }
 
-        public IEnumerable<Appointment> GetAll()
+        public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
-            return _context.Appointments
+            return await _context.Appointments
                 .Include(a => a.Customer)
                 .Include(a => a.Pet)
                 .Include(a => a.Vet)
                 .Include(a => a.Slot)
                 .Include(a => a.Service)
-                .ToList();
+                .ToListAsync();
         }
 
-        public Appointment? GetById(int id)
+        public async Task<IEnumerable<Appointment>> GetByDateAsync(DateOnly date)
         {
-            return _context.Appointments
+            return await _context.Appointments
+                .Where(a => a.Date == date)
+                .ToListAsync();
+        }
+
+        public async Task<Appointment?> GetByIdAsync(int id)
+        {
+            return await _context.Appointments
                 .Include(a => a.Customer)
                 .Include(a => a.Pet)
                 .Include(a => a.Vet)
                 .Include(a => a.Slot)
                 .Include(a => a.Service)
-                .FirstOrDefault(a => a.AppointmentId == id);
+                .FirstOrDefaultAsync(a => a.AppointmentId == id);
         }
 
-        public bool Remove(int id)
+        public async Task<Appointment?> RemoveAsync(int id)
         {
-            var appointment = _context.Appointments.Find(id);
-            if (appointment == null) return false;
-            _context.Appointments.Remove(appointment);
-            return SaveChanges();
+            var appointmentModel = await _context.Appointments.FindAsync(id);
+            if (appointmentModel == null)
+            {
+                return null;
+            }
+            _context.Remove(appointmentModel);
+            await _context.SaveChangesAsync();
+            return appointmentModel;
         }
 
-        public bool SaveChanges()
+        public async Task<Appointment?> UpdateAsync(Appointment appointmentModel)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool Update(Appointment? appointment)
-        {
-            if (appointment == null) return false;
-            _context.Appointments.Update(appointment);
-            return SaveChanges();
+            await _context.SaveChangesAsync();
+            return appointmentModel;
         }
     }
 }

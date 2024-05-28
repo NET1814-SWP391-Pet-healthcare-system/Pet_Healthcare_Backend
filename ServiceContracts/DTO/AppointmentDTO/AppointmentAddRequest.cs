@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.AppointmentDTO
 {
+    // Add request as a customer
     public class AppointmentAddRequest
     {
-        public int CustomerId { get; set; }   
         [Required(ErrorMessage = "Pet ID is required.")]
         public int PetId { get; set; }
 
-        public int? VetId { get; set; }
+        public string? VetUserName { get; set; }
 
         [Required(ErrorMessage = "Slot ID is required.")]
         public int SlotId { get; set; }

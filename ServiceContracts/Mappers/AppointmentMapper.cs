@@ -16,32 +16,31 @@ namespace ServiceContracts.Mappers
     {
         public static AppointmentDto ToAppointmentDto(this Appointment appointmentModel)
         {
-            return new AppointmentDto()
+            return new AppointmentDto
             {
-                AppointmentId = appointmentModel.AppointmentId,
-                Customer = appointmentModel.Customer?.Username,
-                Pet = appointmentModel.Pet?.Name,
-                Vet = appointmentModel.Vet?.Username,
-                SlotStartTime = appointmentModel.Slot?.StartTime,
-                SlotEndTime = appointmentModel.Slot?.EndTime,
-                Service = appointmentModel.Service?.Name,
-                Date = appointmentModel.Date,
-                TotalCost = appointmentModel.TotalCost,
-                CancellationDate = appointmentModel.CancellationDate,
-                RefundAmount = appointmentModel.RefundAmount,
-                Rating = appointmentModel.Rating,
-                Comments = appointmentModel.Comments,
-                Status = appointmentModel.Status.ToString(),
+                //AppointmentId = appointmentModel.AppointmentId,
+                //Customer = appointmentModel.Customer?.Username,
+                //Pet = appointmentModel.Pet?.Name,
+                //Vet = appointmentModel.Vet?.Username,
+                //SlotStartTime = appointmentModel.Slot?.StartTime,
+                //SlotEndTime = appointmentModel.Slot?.EndTime,
+                //Service = appointmentModel.Service?.Name,
+                //Date = appointmentModel.Date,
+                //TotalCost = appointmentModel.TotalCost,
+                //CancellationDate = appointmentModel.CancellationDate,
+                //RefundAmount = appointmentModel.RefundAmount,
+                //Rating = appointmentModel.Rating,
+                //Comments = appointmentModel.Comments,
+                //Status = appointmentModel.Status.ToString(),
             };
         }
 
-        public static Appointment ToAppointmentFromAdd(this AppointmentAddRequest appointmentAddRequest)
+        public static Appointment ToAppointmentFromAdd(this AppointmentAddRequest appointmentAddRequest, Vet vet)
         {
-            return new Appointment()
+            return new Appointment
             {
-                CustomerId = appointmentAddRequest.CustomerId,
                 PetId = appointmentAddRequest.PetId,
-                VetId = appointmentAddRequest.VetId,
+                VetId = vet.Id,
                 SlotId = appointmentAddRequest.SlotId,
                 ServiceId = appointmentAddRequest.ServiceId,
                 Date = DateOnly.FromDateTime(appointmentAddRequest.Date),
@@ -51,7 +50,7 @@ namespace ServiceContracts.Mappers
 
         public static Appointment ToAppointmentFromRating(this AppointmentRatingRequest appointmentRatingRequest)
         {
-            return new Appointment()
+            return new Appointment
             {
                 Rating = appointmentRatingRequest.Rating,
                 Comments = appointmentRatingRequest.Comments,

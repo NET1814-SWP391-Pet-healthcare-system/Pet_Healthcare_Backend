@@ -29,17 +29,17 @@ namespace ServiceContracts.DTO.UserDTO
         {
             return new User
             {
-                UserId = UserId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Gender = Gender,
-                Email = Email,
-                Username = Username,
-                Password = Password,
-                Address = Address,
-                Country = Country,
-                ImageURL = ImageURL,
-                IsActive = IsActive
+                //UserId = UserId,
+                //FirstName = FirstName,
+                //LastName = LastName,
+                //Gender = Gender,
+                //Email = Email,
+                //Username = Username,
+                //Password = Password,
+                //Address = Address,
+                //Country = Country,
+                //ImageURL = ImageURL,
+                //IsActive = IsActive
             };
         }
 
@@ -47,17 +47,17 @@ namespace ServiceContracts.DTO.UserDTO
         {
             return new Customer
             {
-                UserId = UserId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Gender = Gender,
-                Email = Email,
-                Username = Username,
-                Password = Password,
-                Address = Address,
-                Country = Country,
-                ImageURL = ImageURL,
-                IsActive = IsActive
+                //UserId = UserId,
+                //FirstName = FirstName,
+                //LastName = LastName,
+                //Gender = Gender,
+                //Email = Email,
+                //Username = Username,
+                //Password = Password,
+                //Address = Address,
+                //Country = Country,
+                //ImageURL = ImageURL,
+                //IsActive = IsActive
             };
         }
 
@@ -65,19 +65,19 @@ namespace ServiceContracts.DTO.UserDTO
         {
             return new Vet
             {
-                UserId = UserId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Gender = Gender,
-                Email = Email,
-                Username = Username,
-                Password = Password,
-                Address = Address,
-                Country = Country,
-                ImageURL = ImageURL,
-                IsActive = IsActive,
-                Rating = Rating,
-                YearsOfExperience = YearsOfExperience
+                //UserId = UserId,
+                //FirstName = FirstName,
+                //LastName = LastName,
+                //Gender = Gender,
+                //Email = Email,
+                //Username = Username,
+                //Password = Password,
+                //Address = Address,
+                //Country = Country,
+                //ImageURL = ImageURL,
+                //IsActive = IsActive,
+                //Rating = Rating,
+                //YearsOfExperience = YearsOfExperience
             };
         }
     }

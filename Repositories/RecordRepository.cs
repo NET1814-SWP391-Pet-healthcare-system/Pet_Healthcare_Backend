@@ -30,6 +30,11 @@ namespace Repositories
             return _context.Records.ToList();
         }
 
+        public IEnumerable<AppointmentDetail> GetAllAppointmentDetail()
+        {
+            return _context.AppointmentDetails.ToList();
+        }
+
         public Record? GetById(int id)
         {
             
