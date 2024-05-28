@@ -11,6 +11,7 @@ using PetHealthCareSystem_BackEnd.Extensions;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize(Policy = "AdminPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AppointmentController : Controller
@@ -24,7 +25,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAppointments()
         {
             if (!ModelState.IsValid)
