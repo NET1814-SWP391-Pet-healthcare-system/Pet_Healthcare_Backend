@@ -1,5 +1,4 @@
-﻿using Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.RecordDTO
 {
-    public class RecordAddRequest
+    public class RecordUpdateRequest
     {
         [Required]
         public int RecordId { get; set; }
-
         [Required]
         public int PetId { get; set; }
-
+        [Required]
         public int NumberOfVisits { get; set; }
-
     }
 }
