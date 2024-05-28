@@ -4,6 +4,7 @@ using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.VaccineDTO;
+using System.Net;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {

@@ -55,6 +55,8 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
 builder.Services.AddScoped<IVaccineService, VaccineService>(); 
+builder.Services.AddScoped<IPetVaccinationRepository, PetVaccinationRepository>();
+builder.Services.AddScoped<IPetVaccinationService, PetVaccinationService>();
 
 var app = builder.Build();
 

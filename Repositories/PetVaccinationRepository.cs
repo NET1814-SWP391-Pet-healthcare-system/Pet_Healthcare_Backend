@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -10,34 +11,52 @@ namespace Repositories
 {
     public class PetVaccinationRepository : IPetVaccinationRepository
     {
-        public bool Add(PetVaccination petVaccination)
+        private readonly ApplicationDbContext _context;
+
+        public PetVaccinationRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public IEnumerable<PetVaccination> GetAll()
+        public async Task<bool> AddAsync(PetVaccination petVaccination)
         {
-            throw new NotImplementedException();
+            await _context.PetVaccinations.AddAsync(petVaccination);
+            return await SaveChangesAsync();
         }
 
-        public PetVaccination? GetById(int id)
+        public async Task<IEnumerable<PetVaccination>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.PetVaccinations
+                .Include(pv => pv.Pet)
+                .Include(pv => pv.Vaccine)
+                .ToListAsync();
         }
 
-        public bool Remove(int id)
+        public async Task<PetVaccination?> GetByIdAsync(int petId, int vaccineId)
         {
-            throw new NotImplementedException();
+            return await _context.PetVaccinations
+                .Include(pv => pv.Pet)
+                .Include(pv => pv.Vaccine)
+                .FirstOrDefaultAsync(pv => pv.PetId == petId && pv.VaccineId == vaccineId);
         }
 
-        public bool SaveChanges()
+        public async Task<bool> Remove(PetVaccination petVaccination)
         {
-            throw new NotImplementedException();
+            _context.Remove(petVaccination);
+            return await SaveChangesAsync();
         }
 
-        public bool Update(PetVaccination petVaccination)
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<PetVaccination> UpdateAsync(int petId, int vaccineId, PetVaccination petVaccination)
+        {
+            var existingPetVaccination = await GetByIdAsync(petId, vaccineId);
+            existingPetVaccination.VaccinationDate = petVaccination.VaccinationDate;
+            await SaveChangesAsync();
+            return existingPetVaccination;
         }
     }
 }
