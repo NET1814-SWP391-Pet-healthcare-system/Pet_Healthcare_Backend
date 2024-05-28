@@ -9,11 +9,11 @@ namespace RepositoryContracts
 {
     public interface IVaccineRepository
     {
-        IEnumerable<Vaccine> GetAll();
-        Vaccine? GetById(int id);
-        bool Add(Vaccine vaccine);
-        bool Update(Vaccine vaccine);
-        bool Remove(int id);
-        bool SaveChanges();
+        Task<IEnumerable<Vaccine>> GetAllAsync();
+        Task<Vaccine?> GetByIdAsync(int id);
+        Task<bool> AddAsync(Vaccine vaccine);
+        Task<Vaccine?> Update(int id, Vaccine vaccine);
+        Task<bool> Remove(Vaccine vaccine);
+        Task<bool> SaveChangesAsync();
     }
 }

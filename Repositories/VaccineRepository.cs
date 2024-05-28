@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -10,34 +11,53 @@ namespace Repositories
 {
     public class VaccineRepository : IVaccineRepository
     {
-        public bool Add(Vaccine vaccine)
+        private readonly ApplicationDbContext _context;
+
+        public VaccineRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public IEnumerable<Vaccine> GetAll()
+        public async Task<bool> AddAsync(Vaccine vaccine)
         {
-            throw new NotImplementedException();
+                await _context.AddAsync(vaccine);
+                return await SaveChangesAsync();
         }
 
-        public Vaccine? GetById(int id)
+        public async Task<IEnumerable<Vaccine>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Vaccines.Include(v => v.PetVaccinations).ToListAsync();
         }
 
-        public bool Remove(int id)
+        public async Task<Vaccine?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Vaccines.Include(v => v.PetVaccinations).FirstOrDefaultAsync(v => v.VaccineId == id);
         }
 
-        public bool SaveChanges()
+        public async Task<bool> Remove(Vaccine vaccine)
         {
-            throw new NotImplementedException();
+            _context.Remove(vaccine);
+            return await SaveChangesAsync();
         }
 
-        public bool Update(Vaccine vaccine)
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<Vaccine?> Update(int id, Vaccine vaccine)
+        {
+            var existingVaccine = await GetByIdAsync(id);
+            if (existingVaccine == null)
+            {
+                return null;
+            }
+            existingVaccine.Name = vaccine.Name;
+            existingVaccine.Description = vaccine.Description;
+            existingVaccine.IsAnnualVaccine = vaccine.IsAnnualVaccine;
+
+            await SaveChangesAsync();
+            return existingVaccine;
         }
     }
 }
