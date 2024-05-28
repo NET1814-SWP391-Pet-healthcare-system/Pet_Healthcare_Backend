@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,11 @@ namespace Repositories
 
         public IEnumerable<AppointmentDetail> GetAll()
         {
-            return _context.AppointmentDetails.ToList();
+            return _context.AppointmentDetails
+                .Include(a=>a.Appointment)
+                .Include(r=>r.Record)
+                .ToList();
+
         }
 
         public AppointmentDetail? GetById(int id)
