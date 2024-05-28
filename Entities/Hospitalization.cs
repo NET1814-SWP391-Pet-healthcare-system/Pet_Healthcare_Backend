@@ -18,7 +18,7 @@ namespace Entities
         public int? KennelId { get; set; }
         [ForeignKey("KennelId")]
         public Kennel? Kennel{ get; set; }
-        public int? VetId { get; set; }
+        public string? VetId { get; set; }
         [ForeignKey("VetId")]
         public Vet? Vet { get; set; }
         public DateOnly? AdmissionDate { get; set; }

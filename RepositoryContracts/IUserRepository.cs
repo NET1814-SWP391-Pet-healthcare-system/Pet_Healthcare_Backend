@@ -10,12 +10,12 @@ namespace RepositoryContracts
     public interface IUserRepository
     {
         IEnumerable<User> GetAll(); 
-        IEnumerable<Customer> GetAllCustomer();
-        IEnumerable<Vet> GetAllVet();
+        //IEnumerable<Customer> GetAllCustomer();
+        //IEnumerable<Vet> GetAllVet();
         Object? GetUserById(int id);
         bool AddUser(User user);
-        bool AddCustomer(Customer customer);
-        bool AddVet(Vet vet);
+        //bool AddCustomer(Customer customer);
+        //bool AddVet(Vet vet);
         Object? UpdateUser(int id, Object user);
         bool RemoveUser(Object? user);
         bool SaveChanges();

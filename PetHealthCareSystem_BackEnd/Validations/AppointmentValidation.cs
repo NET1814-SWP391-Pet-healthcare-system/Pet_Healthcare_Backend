@@ -16,5 +16,17 @@ namespace PetHealthCareSystem_BackEnd.Validations
             }
             return false;
         }
+
+        public static bool IsUserPet(Customer customer, int petId)
+        {
+            foreach (var pet in customer.Pets)
+            {
+                if (petId == pet.PetId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

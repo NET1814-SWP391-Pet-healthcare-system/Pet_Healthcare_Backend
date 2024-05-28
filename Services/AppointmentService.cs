@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Azure.Core;
+using Entities;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.AppointmentDTO;
@@ -17,36 +18,43 @@ namespace Services
         {
             _appointmentRepository = appointmentRepository;
         }
-        public bool AddAppointment(Appointment? request)
+
+        public async Task<Appointment> AddAppointmentAsync(Appointment appointmentModel)
         {
-            return _appointmentRepository.Add(request);
+            return await _appointmentRepository.AddAsync(appointmentModel);
         }
 
-        public Appointment? GetAppointmentById(int id)
+        public async Task<Appointment?> GetAppointmentByIdAsync(int id)
         {
-            return _appointmentRepository.GetById(id);
+            return await _appointmentRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Appointment> GetAppointments()
+        public async Task<IEnumerable<Appointment>> GetAppointmentsAsync()
         {
-            return _appointmentRepository.GetAll();
+            return await _appointmentRepository.GetAllAsync();
         }
 
-        public bool RemoveAppointment(int id)
+        public async Task<Appointment?> RemoveAppointmentAsync(int id)
         {
-            return _appointmentRepository.Remove(id);
+            return await _appointmentRepository.RemoveAsync(id);
         }
 
-        public bool UpdateAppointment(int id, Appointment? request)
+        public async Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel)
         {
-            var existingAppointment = _appointmentRepository.GetById(id);
-            if (existingAppointment == null) { return false; }
-            if (request == null) { return false; }
+            var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
+            if (existingAppointment == null) 
+            {
+                return null;
+            }
+            existingAppointment.Comments = appointmentModel.Comments;
+            existingAppointment.Rating = appointmentModel.Rating;
+            existingAppointment.Status = appointmentModel.Status;
+            return await _appointmentRepository.UpdateAsync(existingAppointment);
+        }
 
-            existingAppointment.Comments = request.Comments;
-            existingAppointment.Rating = request.Rating;
-            existingAppointment.Status = request.Status;
-            return _appointmentRepository.Update(existingAppointment);
+        public async Task<IEnumerable<Appointment>> GetAppointmentsInDateAsync(DateOnly date)
+        {
+            return await _appointmentRepository.GetByDateAsync(date);
         }
     }
 }

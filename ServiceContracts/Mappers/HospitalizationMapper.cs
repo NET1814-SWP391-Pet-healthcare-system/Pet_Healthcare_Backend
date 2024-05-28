@@ -15,13 +15,13 @@ namespace ServiceContracts.Mappers
         {
             return new HospitalizationDTO()
             {
-                HospitalizationId = hospitalizationModel.HospitalizationId,
-                PetId = hospitalizationModel.PetId,
-                KennelId = hospitalizationModel.KennelId,
-                VetId = hospitalizationModel.VetId,
-                AdmissionDate = hospitalizationModel.AdmissionDate,
-                DischargeDate = hospitalizationModel.DischargeDate,
-                TotalCost = hospitalizationModel.TotalCost
+                //HospitalizationId = hospitalizationModel.HospitalizationId,
+                //PetId = hospitalizationModel.PetId,
+                //KennelId = hospitalizationModel.KennelId,
+                //VetId = hospitalizationModel.VetId,
+                //AdmissionDate = hospitalizationModel.AdmissionDate,
+                //DischargeDate = hospitalizationModel.DischargeDate,
+                //TotalCost = hospitalizationModel.TotalCost
             };
         }
 
@@ -29,12 +29,12 @@ namespace ServiceContracts.Mappers
         {
             return new Hospitalization()
             {
-                PetId = petId,
-                KennelId = kennelId,
-                VetId = vetId,
-                AdmissionDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate),
-                DischargeDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate),
-                TotalCost = totalCost,
+                //PetId = petId,
+                //KennelId = kennelId,
+                //VetId = vetId,
+                //AdmissionDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate),
+                //DischargeDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate),
+                //TotalCost = totalCost,
             };
         }
     }

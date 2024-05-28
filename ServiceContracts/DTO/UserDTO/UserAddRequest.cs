@@ -33,17 +33,17 @@ namespace ServiceContracts.DTO.UserDTO
         {
             return new User
             {
-                RoleId = RoleId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Gender = Gender,
-                Email = Email,
-                Username = Username,
-                Password = Password,
-                Address = Address,
-                Country = Country,
-                ImageURL = ImageURL,
-                IsActive = IsActice
+                //RoleId = RoleId,
+                //FirstName = FirstName,
+                //LastName = LastName,
+                //Gender = Gender,
+                //Email = Email,
+                //Username = Username,
+                //Password = Password,
+                //Address = Address,
+                //Country = Country,
+                //ImageURL = ImageURL,
+                //IsActive = IsActice
             };
         }
     }

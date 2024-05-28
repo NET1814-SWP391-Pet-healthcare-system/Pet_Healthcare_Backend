@@ -10,10 +10,11 @@ namespace ServiceContracts
 {
     public interface IAppointmentService
     {
-        bool AddAppointment(Appointment? request);
-        Appointment? GetAppointmentById(int id);
-        IEnumerable<Appointment> GetAppointments();
-        bool UpdateAppointment(int id, Appointment? request);
-        bool RemoveAppointment(int id);
+        Task<Appointment> AddAppointmentAsync(Appointment appointmentModel);
+        Task<Appointment?> GetAppointmentByIdAsync(int id);
+        Task<IEnumerable<Appointment>> GetAppointmentsAsync();
+        Task<IEnumerable<Appointment>> GetAppointmentsInDateAsync(DateOnly date);
+        Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel);
+        Task<Appointment?> RemoveAppointmentAsync(int id);
     }
 }
