@@ -13,7 +13,7 @@ namespace Entities
     {
         [Key]
         public int PetId { get; set; }
-        public int? CustomerId { get; set; }
+        public string? CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public Customer? Customer { get; set; }
         public string? Name { get; set; } 

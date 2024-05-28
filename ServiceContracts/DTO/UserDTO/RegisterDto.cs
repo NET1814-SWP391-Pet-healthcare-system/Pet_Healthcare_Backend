@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.UserDTO
 {
-    public class LoginDto
+    public class RegisterDto
     {
         [Required]
-        public string Username { get; set; } = string.Empty;
+        public string? Username { get; set; }
         [Required]
-        public string Password { get; set; } = string.Empty;
+        [EmailAddress]
+        public string? Email { get; set;}
+        [Required]
+        public string? Password { get; set; }   
     }
 }

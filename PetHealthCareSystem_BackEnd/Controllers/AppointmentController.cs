@@ -4,6 +4,10 @@ using ServiceContracts.DTO.AppointmentDTO;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.Mappers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Entities;
+using PetHealthCareSystem_BackEnd.Extensions;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -11,32 +15,35 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class AppointmentController : Controller
     {
-        private readonly IAppointmentService _AppointmentService;
-        public AppointmentController(IAppointmentService AppointmentService)
+        private readonly IAppointmentService _appointmentService;
+        private readonly UserManager<User> _userManager;
+        public AppointmentController(IAppointmentService appointmentService, UserManager<User> userManager)
         {
-            _AppointmentService = AppointmentService;
+            _appointmentService = appointmentService;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public IActionResult GetAppointments()
+        [Authorize]
+        public async Task<IActionResult> GetAppointments()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var appointments = _AppointmentService.GetAppointments();
+            var appointments = await _appointmentService.GetAppointmentsAsync();
             var appointmentDtos = appointments.Select(x => x.ToAppointmentDto());
             return Ok(appointmentDtos);
         }
 
-        [HttpGet("{appointmentId}")]
-        public IActionResult GetAppointmentById(int appointmentId)
+        [HttpGet("{appointmentId:int}")]
+        public async Task<IActionResult> GetAppointmentById(int appointmentId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var appointment = _AppointmentService.GetAppointmentById(appointmentId);
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
             if (appointment == null)
             {
                 return NotFound();
@@ -44,42 +51,68 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointment.ToAppointmentDto());
         }
 
-        [HttpPost("Book")]
-        public IActionResult AddAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
+        [HttpPost("book")]
+        public async Task<IActionResult> AddAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
         {
             if (!ModelState.IsValid) 
             { 
                 return BadRequest(ModelState); 
             }
-            if (appointmentAddRequest == null) { return BadRequest(ModelState); }
-            _AppointmentService.AddAppointment(appointmentAddRequest.ToAppointmentFromAdd());
-            return Ok("successfully created");
+            var customerUsername = User.GetUsername();
+            var customer = await _userManager.FindByNameAsync(customerUsername) as Customer;
+
+            var vetUsername = appointmentAddRequest.VetUserName;
+            var vet = await _userManager.FindByNameAsync(vetUsername) as Vet;
+
+            var appointmentModel = appointmentAddRequest.ToAppointmentFromAdd(vet);
+            appointmentModel.CustomerId = customer.Id;
+
+            var appointmentDate = appointmentModel.Date;
+            var appointmentsInDate = await _appointmentService.GetAppointmentsInDateAsync((DateOnly)appointmentDate);
+            
+            if (AppointmentValidation.IsDuplicateBooking(appointmentModel, appointmentsInDate))
+            {
+                return BadRequest("This slot has already been booked");
+            }
+            if (!AppointmentValidation.IsUserPet(customer, (int)appointmentModel.PetId))
+            {
+                return BadRequest("This is not this user's pet");
+            }
+            
+            await _appointmentService.AddAppointmentAsync(appointmentModel);
+            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
         }
 
-        [HttpPut("Rate/{AppointmentId}")]
-        public IActionResult RateAppointment(int AppointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
+        [HttpPut]
+        [Route("rate/{appointmentId}")]
+        public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
             if (!ModelState.IsValid) 
             { 
                 return BadRequest(ModelState); 
             }
-            if (!_AppointmentService.UpdateAppointment(AppointmentId, AppointmentRatingRequest.ToAppointmentFromRating()))
+            var appointmentModel = await _appointmentService.RateAppointmentAsync(appointmentId, AppointmentRatingRequest.ToAppointmentFromRating());
+            if (appointmentModel == null)
             {
-                ModelState.AddModelError("", "Something went wrong updating Appointment");
-                return StatusCode(500, ModelState);
+                return NotFound("Appointment not found");
             }
-            return Ok("successfully updated");
+            return Ok(appointmentModel.ToAppointmentDto());
         }
 
-        [HttpDelete("{AppointmentId}")]
-        public IActionResult DeleteAppointment(int AppointmentId)
+        [HttpDelete]
+        [Route("{appointmentId}")]
+        public async Task<IActionResult> DeleteAppointment([FromRoute] int appointmentId)
         {
-            if (_AppointmentService.GetAppointmentById(AppointmentId) == null) { return NotFound(); }
-            if (!_AppointmentService.RemoveAppointment(AppointmentId))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting Appointment");
+            if (_appointmentService.GetAppointmentByIdAsync(appointmentId) == null) 
+            { 
+                return NotFound(); 
             }
-            return Ok("successfully deleted");
+            var appointmentModel = await _appointmentService.RemoveAppointmentAsync(appointmentId);
+            if (appointmentModel == null)
+            {
+                return NotFound("Appointment does not exist");
+            }
+            return Ok(appointmentModel.ToAppointmentDto());
         }
     }
 }

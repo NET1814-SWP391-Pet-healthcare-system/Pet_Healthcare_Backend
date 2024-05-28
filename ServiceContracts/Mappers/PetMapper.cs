@@ -14,13 +14,13 @@ namespace ServiceContracts.Mappers
         {
             return new Pet()
             {
-                CustomerId = petAddRequest.CustomerId,
-                Name = petAddRequest.Name,
-                Species = petAddRequest.Species,
-                Breed = petAddRequest.Breed,
-                Gender = petAddRequest.Gender,
-                Weight = petAddRequest.Weight,
-                ImageURL = petAddRequest.ImageURL
+                //CustomerId = petAddRequest.CustomerId,
+                //Name = petAddRequest.Name,
+                //Species = petAddRequest.Species,
+                //Breed = petAddRequest.Breed,
+                //Gender = petAddRequest.Gender,
+                //Weight = petAddRequest.Weight,
+                //ImageURL = petAddRequest.ImageURL
             }; 
         }
 
@@ -28,14 +28,14 @@ namespace ServiceContracts.Mappers
         {
             return new Pet()
             {
-                PetId = petUpdateRequest.PetId,
-                CustomerId = petUpdateRequest.CustomerId,
-                Name = petUpdateRequest.Name,
-                Species = petUpdateRequest.Species,
-                Breed = petUpdateRequest.Breed,
-                Gender = petUpdateRequest.Gender,
-                Weight = petUpdateRequest.Weight,
-                ImageURL = petUpdateRequest.ImageURL
+                //PetId = petUpdateRequest.PetId,
+                //CustomerId = petUpdateRequest.CustomerId,
+                //Name = petUpdateRequest.Name,
+                //Species = petUpdateRequest.Species,
+                //Breed = petUpdateRequest.Breed,
+                //Gender = petUpdateRequest.Gender,
+                //Weight = petUpdateRequest.Weight,
+                //ImageURL = petUpdateRequest.ImageURL
             };
         }
     }
