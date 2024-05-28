@@ -1,38 +1,66 @@
 ﻿using RepositoryContracts;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
     public class HospitalizationRepository : IHospitalizationRepository
     {
+        private readonly ApplicationDbContext _context;
+        public HospitalizationRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public bool Add(Hospitalization hospitalization)
         {
-            throw new NotImplementedException();
+                if (hospitalization == null)
+                {
+                    return false;
+                }
+                _context.Hospitalizations.Add(hospitalization);
+            SaveChanges();
+            return true;
         }
 
         public IEnumerable<Hospitalization> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Hospitalizations.ToList();
         }
 
         public Hospitalization? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Hospitalizations.Find(id);
         }
 
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            if(GetById(id)==null)
+            {
+                return false;
+            }
+            _context.Hospitalizations.Remove(GetById(id));
+            SaveChanges();
+            return true;
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            if (_context.SaveChanges() == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public bool Update(Hospitalization hospitalization)
         {
-            throw new NotImplementedException();
+                if (hospitalization == null)
+                {
+                    return false;
+                }
+                _context.Hospitalizations.Update(hospitalization);
+            SaveChanges();
+            return true;
         }
     }
 }

@@ -5,39 +5,67 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
     public class ServiceRepository : IServiceRepository
     {
+        private readonly ApplicationDbContext _context;
+        public ServiceRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public bool Add(Service service)
         {
-            throw new NotImplementedException();
+            if(service == null)
+            {
+                return false;
+            }
+            _context.Services.Add(service);
+            SaveChanges();
+            return true;
         }
 
         public IEnumerable<Service> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Services.ToList();  
         }
 
         public Service? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Services.Find(id);
         }
 
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            if(GetById(id)==null)
+            {
+                return false;
+            }
+            _context.Services.Remove(GetById(id));
+            SaveChanges();
+            return true;
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            if (_context.SaveChanges() == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public bool Update(Service service)
         {
-            throw new NotImplementedException();
+            if(service == null)
+            {
+                return false;
+            }
+            _context.Services.Update(service);
+            SaveChanges();
+            return true;
         }
     }
 }

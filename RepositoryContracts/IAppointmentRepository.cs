@@ -11,8 +11,8 @@ namespace RepositoryContracts
     {
         IEnumerable<Appointment> GetAll();
         Appointment? GetById(int id);
-        bool Add(Appointment appointment);
-        bool Update(Appointment appointment);
+        bool Add(Appointment? appointment);
+        bool Update(Appointment? appointment);
         bool Remove(int id);
         bool SaveChanges();
     }

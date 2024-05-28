@@ -11,8 +11,8 @@ namespace RepositoryContracts
     {
         IEnumerable<PetHealthTrack> GetAll();
         PetHealthTrack? GetById(int id);
-        bool Add(PetHealthTrack petHealthTrack);
-        bool Update(PetHealthTrack petHealthTrack);
+        bool Add(PetHealthTrack? petHealthTrack);
+        bool Update(PetHealthTrack? petHealthTrack);
         bool Remove(int id);
         bool SaveChanges();
     }
