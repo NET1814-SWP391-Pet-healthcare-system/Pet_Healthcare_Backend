@@ -71,7 +71,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         var customer = new Customer
                         {
                             UserName = userAddDto.Username,
-                            Email = userAddDto.Email
+                            Email = userAddDto.Email,
+                            FirstName = userAddDto.FirstName,
+                            LastName = userAddDto.LastName,
+                            Gender = userAddDto.Gender,
+                            Address = userAddDto.Address,
+                            Country = userAddDto.Country,
+                            ImageURL = userAddDto.ImageURL,
+                            IsActive = userAddDto.IsActice
                         };
 
                         var createCustomer = await _userManager.CreateAsync(customer, userAddDto.Password);
@@ -105,7 +112,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             UserName = userAddDto.Username,
                             Email = userAddDto.Email,
                             Rating = userAddDto.Rating,
-                            YearsOfExperience = userAddDto.YearsOfExperience
+                            YearsOfExperience = userAddDto.YearsOfExperience,
+                            FirstName = userAddDto.FirstName,
+                            LastName = userAddDto.LastName,
+                            Gender = userAddDto.Gender,
+                            Address = userAddDto.Address,
+                            Country = userAddDto.Country,
+                            ImageURL = userAddDto.ImageURL,
+                            IsActive = userAddDto.IsActice
                         };
 
                         var createVet = await _userManager.CreateAsync(vet, userAddDto.Password);
@@ -137,7 +151,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         var employee = new User
                         {
                             UserName = userAddDto.Username,
-                            Email = userAddDto.Email
+                            Email = userAddDto.Email,
+                            FirstName = userAddDto.FirstName,
+                            LastName = userAddDto.LastName,
+                            Gender = userAddDto.Gender,
+                            Address = userAddDto.Address,
+                            Country = userAddDto.Country,
+                            ImageURL = userAddDto.ImageURL,
+                            IsActive = userAddDto.IsActice
                         };
 
                         var createEmployee = await _userManager.CreateAsync(employee, userAddDto.Password);
@@ -180,25 +201,38 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 var user = await _userManager.FindByNameAsync(username);
                 if (user == null)
                 {
                     return NotFound();
                 }
-                //user.UserName = userUpdateDto?.Username;
-                //user.Email = userUpdateDto?.Email;
+                user.UserName = (userUpdateDto.Username != null) ? userUpdateDto.Username : user.UserName;
+                user.Email = (userUpdateDto.Email != null) ? userUpdateDto.Email : user.Email;
+                user.FirstName = (userUpdateDto.FirstName != null) ? userUpdateDto.FirstName : user.FirstName;
+                user.LastName = (userUpdateDto.LastName != null) ? userUpdateDto.LastName : user.LastName;
+                user.Gender = (userUpdateDto.Gender != null) ? userUpdateDto.Gender : user.Gender;
+                user.Address = (userUpdateDto.Address != null) ? userUpdateDto.Address : user.Address;
+                user.Country = (userUpdateDto.Country != null) ? userUpdateDto.Country : user.Country;
+                user.ImageURL = (userUpdateDto.ImageURL != null) ? userUpdateDto.ImageURL : user.ImageURL;
+                user.IsActive = (userUpdateDto.IsActive != null) ? userUpdateDto.IsActive : user.IsActive;
                 if (user is Vet)
                 {
                     Vet vet = (Vet)user;
-                    vet.Rating = userUpdateDto.Rating;
-                    vet.YearsOfExperience = userUpdateDto.YearsOfExperience;
+                    vet.Rating = (userUpdateDto.Rating != null) ? userUpdateDto.Rating : vet.Rating;
+                    vet.YearsOfExperience = (userUpdateDto.YearsOfExperience != null) ? userUpdateDto.YearsOfExperience : vet.YearsOfExperience;
                     await _userManager.UpdateAsync(vet);
+                    await _userManager.UpdateAsync(user);
                     return Ok(vet);
                 }
                 else if (user is Customer)
                 {
                     Customer customer = (Customer)user;
                     await _userManager.UpdateAsync(customer);
+                    await _userManager.UpdateAsync(user);
                     return Ok(customer);
                 }
                 else
@@ -211,6 +245,22 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return StatusCode(500, e);
             }
+        }
+
+        [HttpDelete("delete-user/{username}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string username)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) 
+            { 
+                return NotFound();
+            }
+            var userModel = await _userManager.DeleteAsync(user);
+            return Ok(userModel);
         }
     }
 }

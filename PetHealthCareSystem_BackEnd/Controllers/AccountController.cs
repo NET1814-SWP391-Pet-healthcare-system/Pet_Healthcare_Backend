@@ -196,8 +196,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
                 var customer = new Customer
                 {
+                    FirstName = registerDto.FirstName,
+                    LastName = registerDto.LastName,
+                    Gender = registerDto.Gender,
+                    Address = registerDto.Address,
+                    Country = registerDto.Country,
+                    ImageURL = registerDto.ImageURL,
                     UserName = registerDto.Username,
-                    Email = registerDto.Email
+                    Email = registerDto.Email,
+                    IsActive = true
                 };
 
                 var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password);
