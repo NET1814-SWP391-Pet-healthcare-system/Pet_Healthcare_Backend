@@ -9,11 +9,10 @@ namespace RepositoryContracts
 {
     public interface IHospitalizationRepository
     {
-        IEnumerable<Hospitalization> GetAll();
-        Hospitalization? GetById(int id);
-        bool Add(Hospitalization hospitalization);
-        bool Update(Hospitalization hospitalization);
-        bool Remove(int id);
-        bool SaveChanges();
+        Task<Hospitalization> Add(Hospitalization hospitalization);
+        Task<Hospitalization?> GetById(int id);
+        Task<IEnumerable<Hospitalization>> GetAll();
+        Task<Hospitalization?> Update(int id, Hospitalization hospitalization);
+        Task<Hospitalization?> Remove(int id);
     }
 }

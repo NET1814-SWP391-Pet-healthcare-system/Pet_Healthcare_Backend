@@ -15,26 +15,34 @@ namespace ServiceContracts.Mappers
         {
             return new HospitalizationDTO()
             {
-                //HospitalizationId = hospitalizationModel.HospitalizationId,
-                //PetId = hospitalizationModel.PetId,
-                //KennelId = hospitalizationModel.KennelId,
-                //VetId = hospitalizationModel.VetId,
-                //AdmissionDate = hospitalizationModel.AdmissionDate,
-                //DischargeDate = hospitalizationModel.DischargeDate,
-                //TotalCost = hospitalizationModel.TotalCost
+                HospitalizationId = hospitalizationModel.HospitalizationId,
+                PetId = hospitalizationModel.PetId,
+                KennelId = hospitalizationModel.KennelId,
+                VetId = hospitalizationModel.VetId,
+                AdmissionDate = hospitalizationModel.AdmissionDate,
+                DischargeDate = hospitalizationModel.DischargeDate,
+                TotalCost = hospitalizationModel.TotalCost
             };
         }
 
-        public static Hospitalization ToHospitalizationFromAdd(this HospitalizationAddRequest hospitalizationAddRequest, int petId, int kennelId, int vetId,double totalCost)
+        public static Hospitalization ToHospitalizationFromAdd(this HospitalizationAddRequest hospitalizationAddRequest)
         {
             return new Hospitalization()
             {
-                //PetId = petId,
-                //KennelId = kennelId,
-                //VetId = vetId,
-                //AdmissionDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate),
-                //DischargeDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate),
-                //TotalCost = totalCost,
+                PetId = hospitalizationAddRequest.PetId,
+                KennelId = hospitalizationAddRequest.KennelId,
+                VetId = hospitalizationAddRequest.VetId,
+                AdmissionDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate),
+                DischargeDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate),
+                TotalCost = hospitalizationAddRequest.TotalCost,
+            };
+        }
+
+        public static Hospitalization ToHospitalizationUpdate(this HospitalizationUpdateRequest hospitalizationUpdateRequest)
+        {
+            return new Hospitalization()
+            {
+                DischargeDate = DateOnly.Parse(hospitalizationUpdateRequest.DischargeDate),
             };
         }
     }
