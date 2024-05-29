@@ -11,7 +11,7 @@ namespace ServiceContracts.DTO.PetDTO
 {
     public class PetAddRequest
     {
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
         public string? Name { get; set; }
         public string? Species { get; set; }
         public string? Breed { get; set; }

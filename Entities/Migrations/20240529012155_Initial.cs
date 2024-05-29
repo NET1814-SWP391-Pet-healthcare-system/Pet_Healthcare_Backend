@@ -467,10 +467,10 @@ namespace Entities.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3f5e4236-c7ce-4c0b-b352-05c6c82bb630", null, "Customer", "CUSTOMER" },
-                    { "60edf088-fd2c-47c4-a07c-1f583015ac43", null, "Vet", "VET" },
-                    { "b90340c2-bdef-4788-95ef-5b147ed6b337", null, "Employee", "EMPLOYEE" },
-                    { "bbcac0cf-bc13-43b1-9b44-e2978916acac", null, "Admin", "ADMIN" }
+                    { "03a98765-e02d-4f08-a86d-cbc5ae6a602e", null, "Vet", "VET" },
+                    { "9d00fde4-5288-4ea3-89f3-9478949587cf", null, "Employee", "EMPLOYEE" },
+                    { "a30ecd38-72ba-41e8-bb43-55c2a9cc51d9", null, "Admin", "ADMIN" },
+                    { "fd1ea79a-ccd1-4075-9cc6-8a9dbc67971e", null, "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

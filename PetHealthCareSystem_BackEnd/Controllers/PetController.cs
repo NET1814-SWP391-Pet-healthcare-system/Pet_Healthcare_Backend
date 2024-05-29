@@ -1,7 +1,9 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
@@ -14,10 +16,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class PetController : ControllerBase
     {
         private readonly IPetService _petService;
+        private readonly UserManager<User> _userManager;
 
-        public PetController(IPetService petService)
+        public PetController(IPetService petService, UserManager<User> userManager)
         {
             _petService = petService;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -30,8 +34,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
+        [HttpGet("current-user")]
+        public async Task<ActionResult<User>> GetCurrentUser()
+        {
+            var username = User.GetUsername();
+            var currenUser = await _userManager.FindByNameAsync(username);
+            return Ok(currenUser);
+        }
+
         [HttpPost]
-        public ActionResult<BusinessResult> AddPet(PetAddRequest? petAddRequest, [FromServices] IUserService userService)
+        public async Task<ActionResult<BusinessResult>> AddPet(PetAddRequest? petAddRequest, [FromServices] IUserService userService)
         {
             BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
@@ -41,7 +53,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Data = false;
                 return BadRequest(businessResult);
             }
-            var existingUser = userService.GetUserById(petAddRequest.CustomerId);
+            var username = User.GetUsername();
+            var existingUser = await _userManager.FindByNameAsync(username);
             if(existingUser == null)
             {
                 businessResult.Status = 400;
@@ -99,7 +112,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Data = false;
                 return BadRequest(businessResult);
             }
-            var existingUser = userService.GetUserById(petUpdateRequest.CustomerId);
+            var existingUser = _userManager.FindByNameAsync("string");
             if(existingUser == null)
             {
                 businessResult.Status = 400;
