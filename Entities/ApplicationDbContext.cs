@@ -201,13 +201,11 @@ namespace Entities
             //modelBuilder.Entity<Vet>().HasData(
             //    new Vet
             //    {
-            //        UserId = 4,
-            //        RoleId = 3,
             //        FirstName = "Emily",
             //        LastName = "Wilson",
             //        Gender = false,
             //        Email = "emily.wilson@example.com",
-            //        Username = "ewilson",
+            //        UserName = "ewilson",
             //        Password = "password321",
             //        Address = "456 Pine Ave, Anytown USA",
             //        Country = "United States",
@@ -218,13 +216,11 @@ namespace Entities
             //    },
             //    new Vet
             //    {
-            //        UserId = 5,
-            //        RoleId = 3,
             //        FirstName = "Michael",
             //        LastName = "Brown",
             //        Gender = true,
             //        Email = "michael.brown@example.com",
-            //        Username = "mbrown",
+            //        UserName = "mbrown",
             //        Password = "password654",
             //        Address = "789 Maple Ln, Anytown USA",
             //        Country = "United States",
@@ -238,13 +234,11 @@ namespace Entities
             //modelBuilder.Entity<User>().HasData(
             //    new User
             //    {
-            //        UserId = 3,
-            //        RoleId = 1,
             //        FirstName = "Bob",
             //        LastName = "Johnson",
             //        Gender = true,
             //        Email = "bob.johnson@example.com",
-            //        Username = "bjohnson",
+            //        UserName = "bjohnson",
             //        Password = "password789",
             //        Address = "789 Elm St, Anytown USA",
             //        Country = "United States",
@@ -256,13 +250,11 @@ namespace Entities
             //modelBuilder.Entity<Customer>().HasData(
             //    new Customer
             //    {
-            //        UserId = 1,
-            //        RoleId = 2,
             //        FirstName = "John",
             //        LastName = "Doe",
             //        Gender = true,
             //        Email = "john.doe@example.com",
-            //        Username = "jdoe",
+            //        UserName = "jdoe",
             //        Password = "password123",
             //        Address = "123 Main St, Anytown USA",
             //        Country = "United States",
@@ -271,13 +263,11 @@ namespace Entities
             //    },
             //    new Customer
             //    {
-            //        UserId = 2,
-            //        RoleId = 2,
             //        FirstName = "Jane",
             //        LastName = "Smith",
             //        Gender = false,
             //        Email = "jane.smith@example.com",
-            //        Username = "jsmith",
+            //        UserName = "jsmith",
             //        Password = "password456",
             //        Address = "456 Oak Rd, Anytown USA",
             //        Country = "United States",
