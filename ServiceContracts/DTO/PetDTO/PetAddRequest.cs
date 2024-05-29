@@ -18,5 +18,5 @@ namespace ServiceContracts.DTO.PetDTO
         public bool? Gender { get; set; }
         public double? Weight { get; set; }
         public string? ImageURL { get; set; }
-    }   
+    }
 }

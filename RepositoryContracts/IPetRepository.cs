@@ -9,11 +9,11 @@ namespace RepositoryContracts
 {
     public interface IPetRepository
     {
-        IEnumerable<Pet> GetAllPet();
-        Pet? GetPetById(int id);
-        bool AddPet(Pet pet);
-        Pet UpdatePet(int id, Pet pet);
-        bool RemovePet(Pet pet);
-        bool SaveChanges();
+        Task<IEnumerable<Pet>> GetAllPet();
+        Task<Pet?> GetPetById(int id);
+        Task<bool> AddPet(Pet pet);
+        Task<Pet> UpdatePet(int id, Pet pet);
+        Task<bool> RemovePet(Pet pet);
+        Task<bool> SaveChangesAsync();
     }
 }
