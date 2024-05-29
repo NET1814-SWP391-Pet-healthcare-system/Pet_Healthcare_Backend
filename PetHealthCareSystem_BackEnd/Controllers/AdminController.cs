@@ -37,6 +37,25 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(users);
         }
 
+        [HttpGet("users/{username}")]
+        public async Task<IActionResult> GetUsersByUsername([FromRoute] string username)
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var usersContainsUsername = new List<User>();
+            foreach (var user in users)
+            {
+                if (user.UserName.Contains(username))
+                {
+                    usersContainsUsername.Add(user);
+                }
+            }
+            if (usersContainsUsername == null)
+            {
+                return NoContent();
+            }
+            return Ok(usersContainsUsername);
+        }
+
         [HttpPost("register-user")]
         public async Task<IActionResult> RegisterUser([FromBody] UserAddRequest userAddDto)
         {
@@ -154,6 +173,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return StatusCode(500, e);
             }
+        }
+
+        [HttpPut("update-user/{username}")]
+        public Task<IActionResult> UpdateUser()
+        {
+            return null;
         }
     }
 }
