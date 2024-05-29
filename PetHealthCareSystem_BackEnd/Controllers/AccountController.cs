@@ -21,7 +21,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<User> userManager, 
+        public AccountController(UserManager<User> userManager,
             ITokenService tokenService, SignInManager<User> signInManager)
         {
             _userManager = userManager;
@@ -166,7 +166,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
-            
+
             if (user == null) { return Unauthorized("Invalid username!"); }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
@@ -177,7 +177,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             return Ok(
                 new NewUserDto
-                { 
+                {
                     UserName = user.UserName,
                     Email = user.Email,
                     Token = _tokenService.CreateToken(user, role[0])
@@ -221,17 +221,45 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                                 Email = customer.Email,
                                 Token = _tokenService.CreateToken(customer, "Customer")
                             }
-                        ); 
+                        );
                     }
                     else
                     {
                         return StatusCode(500, roleResult.Errors);
                     }
                 }
-                else 
+                else
                 {
                     return StatusCode(500, createCustomer.Errors);
                 }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("run-seed-data-only-run-once")]
+        public async Task<IActionResult> SeedUserRoles()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var admin = await _userManager.FindByNameAsync("bjohnson");
+                var customer1 = await _userManager.FindByNameAsync("jdoe");
+                var customer2 = await _userManager.FindByNameAsync("jsmith");
+                var vet1 = await _userManager.FindByNameAsync("ewilson");
+                var vet2 = await _userManager.FindByNameAsync("mbrown");
+
+                await _userManager.AddToRoleAsync(admin, "Admin");
+                await _userManager.AddToRoleAsync(customer1, "Customer");
+                await _userManager.AddToRoleAsync(customer2, "Customer");
+                await _userManager.AddToRoleAsync(vet1, "Vet");
+                await _userManager.AddToRoleAsync(vet2, "Vet");
+                return Ok("Role seeded");
             }
             catch (Exception e)
             {

@@ -83,8 +83,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return CreatedAtAction(nameof(GetAppointmentById), new { id = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
         }
 
-        [HttpPut]
-        [Route("rate/{appointmentId}")]
+        [HttpPut("rate/{appointmentId}")]
         public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
             if (!ModelState.IsValid) 
@@ -99,8 +98,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointmentModel.ToAppointmentDto());
         }
 
-        [HttpDelete]
-        [Route("{appointmentId}")]
+        [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> DeleteAppointment([FromRoute] int appointmentId)
         {
             if (_appointmentService.GetAppointmentByIdAsync(appointmentId) == null) 
