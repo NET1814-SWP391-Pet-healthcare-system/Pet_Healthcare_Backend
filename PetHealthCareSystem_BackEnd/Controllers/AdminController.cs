@@ -176,9 +176,41 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut("update-user/{username}")]
-        public Task<IActionResult> UpdateUser()
+        public async Task<IActionResult> UpdateUser([FromRoute] string username ,[FromBody] UserUpdateRequest userUpdateDto)
         {
-            return null;
+            try
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                //user.UserName = userUpdateDto?.Username;
+                //user.Email = userUpdateDto?.Email;
+                if (user is Vet)
+                {
+                    Vet vet = (Vet)user;
+                    vet.Rating = userUpdateDto.Rating;
+                    vet.YearsOfExperience = userUpdateDto.YearsOfExperience;
+                    await _userManager.UpdateAsync(vet);
+                    return Ok(vet);
+                }
+                else if (user is Customer)
+                {
+                    Customer customer = (Customer)user;
+                    await _userManager.UpdateAsync(customer);
+                    return Ok(customer);
+                }
+                else
+                {
+                    await _userManager.UpdateAsync(user);
+                    return Ok(user);
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
         }
     }
 }
