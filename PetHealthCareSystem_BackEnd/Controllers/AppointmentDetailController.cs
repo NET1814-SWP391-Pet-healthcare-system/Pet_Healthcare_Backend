@@ -18,10 +18,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public async Task<IActionResult> AddAppointmentDetail(AppointmentDetailAddRequest? appointmentDetailAddRequest)
+        public async Task<IActionResult> AddAppointmentDetail(AppointmentDetail? appointmentDetail)
         {
             BusinessResult businessResult = new BusinessResult();
-            if (appointmentDetailAddRequest == null)
+            if (appointmentDetail == null)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
@@ -29,7 +29,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            _appointmentDetailService.AddAppointmentDetail(appointmentDetailAddRequest);
+            _appointmentDetailService.AddAppointmentDetail(appointmentDetail);
             businessResult.Status = 404;
             businessResult.Data = null;
             businessResult.Message = "No AppointmentDetail found";
@@ -97,19 +97,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var userData = _appointmentDetailService.GetAppointmentDetailById(id);
-            var isDeleted = _appointmentDetailService.RemoveAppointmentDetail(id);
-            if (!isDeleted)
+            var userData = await _appointmentDetailService.GetAppointmentDetailById(id);
+            var isDeleted = await _appointmentDetailService.RemoveAppointmentDetail(id);
+            if (isDeleted == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "AppointmentDetail not found";
-                return NotFound(businessResult);
+                businessResult.Status = 200;
+                businessResult.Data = userData;
+                businessResult.Message = "AppointmentDetail deleted";
+                return Ok(businessResult);
             }
-            businessResult.Status = 200;
-            businessResult.Data = userData;
-            businessResult.Message = "AppointmentDetail deleted";
-            return Ok(businessResult);
+            businessResult.Status = 404;
+            businessResult.Data = null;
+            businessResult.Message = "AppointmentDetail not found";
+            return NotFound(businessResult);
         }
     }
 }
