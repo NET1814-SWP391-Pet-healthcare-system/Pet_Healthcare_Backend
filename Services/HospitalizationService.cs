@@ -21,10 +21,6 @@ namespace Services
         }
         public async Task<Hospitalization> AddHospitalization(Hospitalization request)
         {
-            if (request == null)
-            {
-                return null;
-            }
             return await _hospitalizationRepository.Add(request);
         }
 
@@ -42,10 +38,6 @@ namespace Services
 
         public async Task<Hospitalization?> RemoveHospitalization(int id)
         {
-            if (_hospitalizationRepository.GetById(id) == null)
-            {
-                return null;
-            }
             return await _hospitalizationRepository.Remove(id);
         }
 

@@ -20,10 +20,6 @@ namespace Services
         }
         public async Task<Service> AddService(Service request)
         {
-            if (request == null)
-            {
-                return null;
-            }
             return await _serviceRepository.Add(request);
         }
 
@@ -40,11 +36,6 @@ namespace Services
 
         public async Task<Service?> RemoveService(int id)
         {
-            var service = _serviceRepository.GetById(id);
-            if (service == null)
-            {
-                return null;
-            }
             return await _serviceRepository.Remove(id);
 
         }

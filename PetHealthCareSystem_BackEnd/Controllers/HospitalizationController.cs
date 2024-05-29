@@ -71,11 +71,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> UpdateHospitalization(int id, [FromBody] HospitalizationUpdateRequest hospitalizationUpdateRequest)
         {
             var existingHospitalization = await _hospitalizationService.GetHospitalizationById(id);
-            if (hospitalizationUpdateRequest == null || !ModelState.IsValid || id != existingHospitalization.HospitalizationId)
+            if (hospitalizationUpdateRequest == null || !ModelState.IsValid || existingHospitalization== null)
             {
                 return BadRequest(ModelState);
             }
-            var isUpdated  =await _hospitalizationService.UpdateHospitalization(id, hospitalizationUpdateRequest.ToHospitalzationFromUpdate());
+            var isUpdated  =await _hospitalizationService.UpdateHospitalization(id, hospitalizationUpdateRequest.ToHospitalizationUpdate());
             if (isUpdated==null)
             {
                 return BadRequest(ModelState);
@@ -87,13 +87,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHospitalizationByHospitalizationByID(int id)
         {
-            var hospitalizationData = await _hospitalizationService.GetHospitalizationById(id);
-            var isDeleted = _hospitalizationService.RemoveHospitalization(id);
+            var isDeleted = await _hospitalizationService.RemoveHospitalization(id);
             if (!ModelState.IsValid || isDeleted==null)
             {
                 return BadRequest(ModelState);
             }
-            return Ok("Nuke Success");
+            return Ok("Nuke successfully");
         }
     }
 }

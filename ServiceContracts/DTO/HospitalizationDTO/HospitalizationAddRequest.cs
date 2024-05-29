@@ -16,7 +16,7 @@ namespace ServiceContracts.DTO.HospitalizationDTO
         [Required(ErrorMessage = "Kennel ID is required.")]
         public int KennelId { get; set; }
         [Required(ErrorMessage = "Vet ID is required.")]
-        public int VetId { get; set; }
+        public string? VetId { get; set; }
         [Required(ErrorMessage = "Must choose a date for the hospitalization")]
         [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
         public string? AdmissionDate { get; set; }

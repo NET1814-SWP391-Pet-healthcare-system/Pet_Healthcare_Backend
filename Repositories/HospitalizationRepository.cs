@@ -43,7 +43,7 @@ namespace Repositories
 
         public async Task<Hospitalization?> Remove(int id)
         {
-            var hospitalization = await GetById(id);
+            var hospitalization = await _context.Hospitalizations.FindAsync(id); ;
             if(hospitalization == null)
             {
                 return null;

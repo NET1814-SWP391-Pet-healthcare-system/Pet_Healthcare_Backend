@@ -72,7 +72,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> UpdateService(int id, [FromBody]ServiceUpdateRequest serviceUpdateRequest)
         {
             var serviceData = await _serviceService.GetServiceById(id);
-            if (serviceUpdateRequest == null || !ModelState.IsValid || id != serviceData.ServiceId)
+            if (serviceUpdateRequest == null || !ModelState.IsValid || serviceData == null)
             {
                 return BadRequest(ModelState);
             }
@@ -88,7 +88,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {
-            var serviceData = _serviceService.GetServiceById(id);
             var isDeleted = await _serviceService.RemoveService(id);
             if (!ModelState.IsValid || isDeleted == null)
             {
