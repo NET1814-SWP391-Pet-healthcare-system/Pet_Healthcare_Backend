@@ -68,17 +68,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdateAppointmentDetail(AppointmentDetailUpdateRequest? appointmentDetailUpdateRequest)
+        public ActionResult<BusinessResult> UpdateDiagnosis([FromBody] AppointmentDetailUpdateDiagnosis appointmentDetailUpdateDiagnosis)
         {
             BusinessResult businessResult = new BusinessResult();
-            if (appointmentDetailUpdateRequest == null)
+            if (!ModelState.IsValid)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            var isUpdated = appointmentDetailUpdateRequest.UpdateAppointmentDetail();
+            var isUpdated = appointmentDetailUpdateDiagnosis;
             if (isUpdated == null)
             {
                 businessResult.Status = 404;
@@ -87,14 +87,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = appointmentDetailUpdateRequest.UpdateAppointmentDetail();
+            businessResult.Data = appointmentDetailUpdateDiagnosis;
             businessResult.Message = "User updated";
             return Ok(businessResult);
         }
 
         //Delete
-        [HttpDelete("{username}")]
-        public ActionResult<BusinessResult> DeleteUserByUsername(int id)
+        [HttpDelete("{appointmentDetail}")]
+        public ActionResult<BusinessResult> DeleteUserByUsername([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var userData = _appointmentDetailService.GetAppointmentDetailById(id);
