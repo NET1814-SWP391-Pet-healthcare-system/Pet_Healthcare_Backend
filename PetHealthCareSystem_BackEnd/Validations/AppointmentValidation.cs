@@ -17,9 +17,9 @@ namespace PetHealthCareSystem_BackEnd.Validations
             return false;
         }
 
-        public static bool IsUserPet(Customer customer, int petId)
+        public static bool IsUserPet(List<Pet> petList, int petId)
         {
-            foreach (var pet in customer.Pets)
+            foreach (var pet in petList)
             {
                 if (petId == pet.PetId)
                 {

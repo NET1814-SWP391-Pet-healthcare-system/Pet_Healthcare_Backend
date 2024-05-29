@@ -18,20 +18,20 @@ namespace ServiceContracts.Mappers
         {
             return new AppointmentDto
             {
-                //AppointmentId = appointmentModel.AppointmentId,
-                //Customer = appointmentModel.Customer?.Username,
-                //Pet = appointmentModel.Pet?.Name,
-                //Vet = appointmentModel.Vet?.Username,
-                //SlotStartTime = appointmentModel.Slot?.StartTime,
-                //SlotEndTime = appointmentModel.Slot?.EndTime,
-                //Service = appointmentModel.Service?.Name,
-                //Date = appointmentModel.Date,
-                //TotalCost = appointmentModel.TotalCost,
-                //CancellationDate = appointmentModel.CancellationDate,
-                //RefundAmount = appointmentModel.RefundAmount,
-                //Rating = appointmentModel.Rating,
-                //Comments = appointmentModel.Comments,
-                //Status = appointmentModel.Status.ToString(),
+                AppointmentId = appointmentModel.AppointmentId,
+                Customer = appointmentModel.Customer?.UserName,
+                Pet = appointmentModel.Pet?.Name,
+                Vet = appointmentModel.Vet?.UserName,
+                SlotStartTime = appointmentModel.Slot?.StartTime,
+                SlotEndTime = appointmentModel.Slot?.EndTime,
+                Service = appointmentModel.Service?.Name,
+                Date = appointmentModel.Date,
+                TotalCost = appointmentModel.TotalCost,
+                CancellationDate = appointmentModel.CancellationDate,
+                RefundAmount = appointmentModel.RefundAmount,
+                Rating = appointmentModel.Rating,
+                Comments = appointmentModel.Comments,
+                Status = appointmentModel.Status.ToString(),
             };
         }
 

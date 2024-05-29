@@ -108,6 +108,8 @@ builder.Services.AddCors(options =>
 );
 
 // Add Scoped for every repositories and services
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 builder.Services.AddScoped<ISlotService, SlotService>();
 builder.Services.AddScoped<IKennelRepository, KennelRepository>();
