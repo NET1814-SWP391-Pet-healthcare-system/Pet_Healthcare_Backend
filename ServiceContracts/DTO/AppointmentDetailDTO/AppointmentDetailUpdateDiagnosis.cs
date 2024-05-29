@@ -8,27 +8,18 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.AppointmentDetailDTO
 {
-    public class AppointmentDetailUpdateRequest
+    public class AppointmentDetailUpdateDiagnosis
     {
         [Required]
         public int AppointmentDetailId { get; set; }
         public int? AppointmentId { get; set; }
         public int? RecordId { get; set; }
+        [Required (ErrorMessage = "Please fill the Diagnosis")]
         public string? Diagnosis { get; set; }
+        [Required (ErrorMessage = "Please fill the Treatment")]
         public string? Treatment { get; set; }
+        [Required (ErrorMessage = "Please fill the Medication")]
         public string? Medication { get; set; }
         
-        public AppointmentDetail UpdateAppointmentDetail()
-        {
-            return new AppointmentDetail
-            {
-                AppointmentDetailId = AppointmentDetailId,
-                AppointmentId = AppointmentId,
-                RecordId = RecordId,
-                Diagnosis = Diagnosis,
-                Treatment = Treatment,
-                Medication = Medication
-            };
-        }
     }
 }
