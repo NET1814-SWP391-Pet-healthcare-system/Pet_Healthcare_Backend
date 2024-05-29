@@ -17,49 +17,53 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(AppointmentDetail appointmentDetail)
+        public async Task<AppointmentDetail> AddAsync(AppointmentDetail appointmentDetail)
         {
-            if(appointmentDetail == null) return false;
-
-            _context.AppointmentDetails.Add(appointmentDetail);
-            return true;
+            await _context.AppointmentDetails.AddAsync(appointmentDetail);
+            await _context.SaveChangesAsync();
+            return appointmentDetail;
         }
 
-        public IEnumerable<AppointmentDetail> GetAll()
+        public async Task<IEnumerable<AppointmentDetail>> GetAllAsync()
         {
-            return _context.AppointmentDetails
-                .Include(a=>a.Appointment)
-                .Include(r=>r.Record)
-                .ToList();
+            return await _context.AppointmentDetails
+                .Include(a => a.Appointment)
+                .Include(r => r.Record)
+                .ToListAsync();
 
         }
 
-        public AppointmentDetail? GetById(int id)
+        public async Task<AppointmentDetail>? GetByIdAsync(int id)
         {
             return _context.AppointmentDetails.FirstOrDefault(x => x.AppointmentDetailId == id);
         }
 
-        public bool Remove(int id)
+        public async Task<AppointmentDetail>? RemoveAsync(int id)
         {
-            if(GetById(id) == null) return false;
-
-            _context.AppointmentDetails.Remove(GetById(id));
-            return true;
+            var appointmentDetail = await GetByIdAsync(id);
+            if (appointmentDetail ==null)
+            {
+                return null;
+            }
+            _context.Remove(appointmentDetail);
+            await _context.SaveChangesAsync();
+            return appointmentDetail;
         }
 
-        public bool SaveChanges()
+        public async Task<AppointmentDetail> UpdateAsync(AppointmentDetail appointmentDetail)
         {
-           if(_context.SaveChanges() > 0) return true;
-
-           return false;
-        }
-
-        public bool Update(AppointmentDetail appointmentDetail)
-        {
-            if(appointmentDetail == null) return false;
-
-            _context.AppointmentDetails.Update(appointmentDetail);
-            return true;
+            if(appointmentDetail == null)
+            {
+                return null;
+            }
+            var existingAppointmentDetail = await GetByIdAsync(appointmentDetail.AppointmentDetailId);
+            if (existingAppointmentDetail == null)
+            {
+                return null;
+            }
+            _context.Update(appointmentDetail); 
+            await _context.SaveChangesAsync();
+            return existingAppointmentDetail;
         }
     }
 }

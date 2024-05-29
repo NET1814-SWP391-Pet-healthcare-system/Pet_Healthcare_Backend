@@ -18,7 +18,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public ActionResult<BusinessResult> AddAppointmentDetail(AppointmentDetailAddRequest? appointmentDetailAddRequest)
+        public async Task<IActionResult> AddAppointmentDetail(AppointmentDetailAddRequest? appointmentDetailAddRequest)
         {
             BusinessResult businessResult = new BusinessResult();
             if (appointmentDetailAddRequest == null)
@@ -38,7 +38,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Read
         [HttpGet]
-        public ActionResult<BusinessResult> GetAppointmentDetails()
+        public async Task<IActionResult> GetAppointmentDetails()
         {
             BusinessResult businessResult = new BusinessResult();
             businessResult.Data = _appointmentDetailService.GetAppointmentDetails();
@@ -48,7 +48,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet("id/{id}")]
-        public ActionResult<BusinessResult> GetAppointmentDetailById(int id)
+        public async Task<IActionResult> GetAppointmentDetailById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var user = _appointmentDetailService.GetAppointmentDetailById(id);
@@ -68,7 +68,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdateDiagnosis([FromBody] AppointmentDetailUpdateDiagnosis appointmentDetailUpdateDiagnosis)
+        public async Task<IActionResult> UpdateDiagnosis([FromBody] AppointmentDetailUpdateDiagnosis appointmentDetailUpdateDiagnosis)
         {
             BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
@@ -94,7 +94,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Delete
         [HttpDelete("{appointmentDetail}")]
-        public ActionResult<BusinessResult> DeleteUserByUsername([FromRoute] int id)
+        public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var userData = _appointmentDetailService.GetAppointmentDetailById(id);
