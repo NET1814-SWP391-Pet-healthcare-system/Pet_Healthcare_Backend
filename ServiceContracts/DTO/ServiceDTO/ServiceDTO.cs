@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.ServiceDTO
 {
-    public class ServiceAddRequest
+    public class ServiceDTO
     {
-        [Required(ErrorMessage = "Name is required.")]
+        public int ServiceId { get; set; }
         public string? Name { get; set; }
-        [Required(ErrorMessage = "Description is required.")]
         public string? Description { get; set; }
-        [Required(ErrorMessage = "Cost is required.")]
         public double? Cost { get; set; }
-
+        public ICollection<Appointment>? Appointments { get; set; }
     }
 }

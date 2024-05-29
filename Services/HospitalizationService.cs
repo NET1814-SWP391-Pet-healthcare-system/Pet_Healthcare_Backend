@@ -19,50 +19,36 @@ namespace Services
         {
             _hospitalizationRepository = hospitalizationRepository;
         }
-        public bool AddHospitalization(Hospitalization? request)
+        public async Task<Hospitalization> AddHospitalization(Hospitalization request)
         {
-            if (request == null)
-            {
-                return false;
-            }
-            return _hospitalizationRepository.Add(request);
+            return await _hospitalizationRepository.Add(request);
         }
 
-        public bool UpdateHospitalization(int id,Hospitalization? request)
+        public async Task<Hospitalization?> UpdateHospitalization(int id,Hospitalization request)
         {
-            var existingHospitalization = _hospitalizationRepository.GetById(id);
+            var existingHospitalization = await _hospitalizationRepository.GetById(id);
             if (existingHospitalization == null || request == null)
             {
-                return false;
+                return null;
             }
-            existingHospitalization.PetId = request.PetId;
-            existingHospitalization.KennelId = request.KennelId;
-            existingHospitalization.VetId = request.VetId;
-            existingHospitalization.AdmissionDate = request.AdmissionDate;
             existingHospitalization.DischargeDate = request.DischargeDate;
-            existingHospitalization.TotalCost = request.TotalCost;
 
-            return _hospitalizationRepository.Update(existingHospitalization);
+            return await _hospitalizationRepository.Update(id,existingHospitalization);
         }
 
-        public bool RemoveHospitalization(int id)
+        public async Task<Hospitalization?> RemoveHospitalization(int id)
         {
-            if (_hospitalizationRepository.GetById(id) == null)
-            {
-                return false;
-            }
-            var hospitalization = id;
-            return _hospitalizationRepository.Remove(id);
+            return await _hospitalizationRepository.Remove(id);
         }
 
-        public Hospitalization? GetHospitalizationById(int id)
+        public async Task<Hospitalization?> GetHospitalizationById(int id)
         {
-            return _hospitalizationRepository.GetById(id);
+            return await _hospitalizationRepository.GetById(id);
         }
 
-        public IEnumerable<Hospitalization> GetHospitalizations()
+        public async Task<IEnumerable<Hospitalization>> GetHospitalizations()
         {
-            return _hospitalizationRepository.GetAll();
+            return await _hospitalizationRepository.GetAll();
         }
     }
 }

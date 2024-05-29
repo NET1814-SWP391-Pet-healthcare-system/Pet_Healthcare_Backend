@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface IHospitalizationService
     {
-        bool AddHospitalization(Hospitalization? request);
-        Hospitalization? GetHospitalizationById(int id);
-        IEnumerable<Hospitalization> GetHospitalizations();
-        bool UpdateHospitalization(int id, Hospitalization? request);
-        bool RemoveHospitalization(int id);
+        Task<Hospitalization> AddHospitalization(Hospitalization request);
+        Task<Hospitalization?> GetHospitalizationById(int id);
+        Task <IEnumerable<Hospitalization>> GetHospitalizations();
+        Task<Hospitalization?> UpdateHospitalization(int id, Hospitalization request);
+        Task<Hospitalization?> RemoveHospitalization(int id);
     }
 }

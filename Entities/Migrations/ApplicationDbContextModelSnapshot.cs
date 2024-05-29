@@ -454,25 +454,25 @@ namespace Entities.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bbcac0cf-bc13-43b1-9b44-e2978916acac",
+                            Id = "a30ecd38-72ba-41e8-bb43-55c2a9cc51d9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3f5e4236-c7ce-4c0b-b352-05c6c82bb630",
+                            Id = "fd1ea79a-ccd1-4075-9cc6-8a9dbc67971e",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "60edf088-fd2c-47c4-a07c-1f583015ac43",
+                            Id = "03a98765-e02d-4f08-a86d-cbc5ae6a602e",
                             Name = "Vet",
                             NormalizedName = "VET"
                         },
                         new
                         {
-                            Id = "b90340c2-bdef-4788-95ef-5b147ed6b337",
+                            Id = "9d00fde4-5288-4ea3-89f3-9478949587cf",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });

@@ -9,11 +9,10 @@ namespace RepositoryContracts
 {
     public interface IServiceRepository
     {
-        IEnumerable<Service> GetAll();
-        Service? GetById(int id);
-        bool Add(Service service);
-        bool Update(Service service);
-        bool Remove(int id);
-        bool SaveChanges();
+        Task<IEnumerable<Service>> GetAll();
+        Task<Service?> GetById(int id);
+        Task<Service> Add(Service service);
+        Task<Service?> Update(int id,Service service);
+        Task<Service?> Remove(int id);
     }
 }

@@ -13,7 +13,7 @@ namespace ServiceContracts.DTO.HospitalizationDTO
         public int HospitalizationId { get; set; }
         public int? PetId { get; set; }
         public int? KennelId { get; set; }
-        public int? VetId { get; set; }
+        public string? VetId { get; set; }
         public DateOnly? AdmissionDate { get; set; }
         public DateOnly? DischargeDate { get; set; }
         public double? TotalCost { get; set; }
