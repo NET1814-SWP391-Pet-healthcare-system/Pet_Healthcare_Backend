@@ -43,7 +43,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BusinessResult>> AddPet(PetAddRequest? petAddRequest, [FromServices] IUserService userService)
+        public async Task<ActionResult<BusinessResult>> AddPet(PetAddRequest? petAddRequest)
         {
             BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
@@ -95,7 +95,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdatePet(int id, PetUpdateRequest? petUpdateRequest, [FromServices] IUserService userService)
+        public ActionResult<BusinessResult> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
         {
             BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)

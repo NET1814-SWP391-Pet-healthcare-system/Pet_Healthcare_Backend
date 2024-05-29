@@ -14,12 +14,10 @@ namespace Services
     public class PetService : IPetService
     {
         private readonly IPetRepository _petRepository;
-        private readonly IUserRepository _userRepository;
 
-        public PetService(IPetRepository petRepository, IUserRepository userRepository)
+        public PetService(IPetRepository petRepository)
         {
             _petRepository = petRepository;
-            _userRepository = userRepository;
         }
 
         public Pet? AddPet(PetAddRequest petAddRequest)
