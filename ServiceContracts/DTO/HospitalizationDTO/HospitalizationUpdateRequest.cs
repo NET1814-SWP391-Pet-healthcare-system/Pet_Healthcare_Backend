@@ -10,8 +10,8 @@ namespace ServiceContracts.DTO.HospitalizationDTO
 {
     public class HospitalizationUpdateRequest
     {
+        [Required(ErrorMessage = "The date is required.")]
         [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
-        public string? AdmissionDate { get; set; }
         public string? DischargeDate { get; set; }
     }
 }

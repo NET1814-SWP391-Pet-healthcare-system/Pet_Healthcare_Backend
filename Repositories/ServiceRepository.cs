@@ -16,56 +16,51 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Service service)
+        public async Task<Service> Add(Service service)
         {
             if(service == null)
             {
-                return false;
+                return null;
             }
-            _context.Services.Add(service);
-            SaveChanges();
-            return true;
+            await _context.Services.AddAsync(service);
+            await _context.SaveChangesAsync();
+            return service;
         }
 
-        public IEnumerable<Service> GetAll()
+        public async Task<IEnumerable<Service>>  GetAll()
         {
-            return _context.Services.ToList();  
+            return await _context.Services.ToListAsync();
         }
 
-        public Service? GetById(int id)
+        public async Task<Service?> GetById(int id)
         {
-            return _context.Services.Find(id);
+            return await _context.Services.FirstOrDefaultAsync(a => a.ServiceId == id);
         }
 
-        public bool Remove(int id)
+        public async Task<Service?> Remove(int id)
         {
-            if(GetById(id)==null)
+            var service = await GetById(id);
+            if (service == null)
             {
-                return false;
+                return null;
             }
-            _context.Services.Remove(GetById(id));
-            SaveChanges();
-            return true;
+            _context.Services.Remove(service);
+            await _context.SaveChangesAsync();
+            return service;
         }
 
-        public bool SaveChanges()
+        public async Task<Service?> Update(int id,Service service)
         {
-            if (_context.SaveChanges() == 0)
+            var existService = await GetById(id);
+            if(existService == null)
             {
-                return false;
+                return null;
             }
-            return true;
-        }
-
-        public bool Update(Service service)
-        {
-            if(service == null)
-            {
-                return false;
-            }
-            _context.Services.Update(service);
-            SaveChanges();
-            return true;
+            existService.Name = service.Name;
+            existService.Description = service.Description;
+            existService.Cost = service.Cost;
+            await _context.SaveChangesAsync();
+            return existService;
         }
     }
 }

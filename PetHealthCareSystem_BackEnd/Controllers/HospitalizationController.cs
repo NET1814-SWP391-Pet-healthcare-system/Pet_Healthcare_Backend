@@ -27,34 +27,33 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public ActionResult<BusinessResult> AddHospitalization([FromQuery] int petId, int kennelId, int vetId,double totalCost, [FromBody] HospitalizationAddRequest hospitalizationAddRequest)
+        public async Task<IActionResult> AddHospitalization([FromBody] HospitalizationAddRequest hospitalizationAddRequest)
         {
             if (hospitalizationAddRequest == null || !ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd(petId, kennelId, vetId, totalCost));
+            await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
             return Ok("Added Hospitalization Successfully");
         }
 
         //Read
         [HttpGet]
-        public ActionResult<BusinessResult> GetHospitalizations()
+        public async Task<IActionResult> GetHospitalizations()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var hospitalizations = _hospitalizationService.GetHospitalizations();
+            var hospitalizations = await _hospitalizationService.GetHospitalizations();
             var hospitalizationDtos = hospitalizations.Select(x => x.ToHospitalizationDto());
             return Ok(hospitalizationDtos);
         }
 
         [HttpGet("id/{id}")]
-        public ActionResult<BusinessResult> GetHospitalizationById(int id)
+        public async Task<IActionResult> GetHospitalizationById(int id)
         {
-            var hospitalization = _hospitalizationService.GetHospitalizationById(id);
+            var hospitalization =await _hospitalizationService.GetHospitalizationById(id);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -69,15 +68,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdateHospitalizationById(int id, Hospitalization? hospitalizationUpdateRequest)
+        public async Task<IActionResult> UpdateHospitalization(int id, [FromBody] HospitalizationUpdateRequest hospitalizationUpdateRequest)
         {
-
-            if (hospitalizationUpdateRequest == null || !ModelState.IsValid || id != hospitalizationUpdateRequest.HospitalizationId)
+            var existingHospitalization = await _hospitalizationService.GetHospitalizationById(id);
+            if (hospitalizationUpdateRequest == null || !ModelState.IsValid || id != existingHospitalization.HospitalizationId)
             {
                 return BadRequest(ModelState);
             }
-            var isUpdated = _hospitalizationService.UpdateHospitalization(id,hospitalizationUpdateRequest);
-            if (!isUpdated)
+            var isUpdated  =await _hospitalizationService.UpdateHospitalization(id, hospitalizationUpdateRequest.ToHospitalzationFromUpdate());
+            if (isUpdated==null)
             {
                 return BadRequest(ModelState);
             }
@@ -86,11 +85,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Delete
         [HttpDelete("{id}")]
-        public ActionResult<BusinessResult> DeleteHospitalizationByHospitalizationByID(int id)
+        public async Task<IActionResult> DeleteHospitalizationByHospitalizationByID(int id)
         {
-            var hospitalizationData = _hospitalizationService.GetHospitalizationById(id);
+            var hospitalizationData = await _hospitalizationService.GetHospitalizationById(id);
             var isDeleted = _hospitalizationService.RemoveHospitalization(id);
-            if (!ModelState.IsValid || !isDeleted)
+            if (!ModelState.IsValid || isDeleted==null)
             {
                 return BadRequest(ModelState);
             }
