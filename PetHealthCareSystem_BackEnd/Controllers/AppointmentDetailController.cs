@@ -29,7 +29,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            _appointmentDetailService.AddAppointmentDetail(appointmentDetail);
+            _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetail);
             businessResult.Status = 404;
             businessResult.Data = null;
             businessResult.Message = "No AppointmentDetail found";
@@ -41,7 +41,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetAppointmentDetails()
         {
             BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _appointmentDetailService.GetAppointmentDetails();
+            businessResult.Data = _appointmentDetailService.GetAppointmentDetailsAsync();
             businessResult.Message = "Successful";
             businessResult.Status = 200;
             return Ok(businessResult);
@@ -51,12 +51,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetAppointmentDetailById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var user = _appointmentDetailService.GetAppointmentDetailById(id);
+            var user = _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
             if (user == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
-                businessResult.Message = "No User found";
+                businessResult.Message = "No AppointmentDetail found";
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
@@ -97,12 +97,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var userData = await _appointmentDetailService.GetAppointmentDetailById(id);
-            var isDeleted = await _appointmentDetailService.RemoveAppointmentDetail(id);
+            var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(id);
             if (isDeleted == null)
             {
                 businessResult.Status = 200;
-                businessResult.Data = userData;
+                businessResult.Data = isDeleted;
                 businessResult.Message = "AppointmentDetail deleted";
                 return Ok(businessResult);
             }

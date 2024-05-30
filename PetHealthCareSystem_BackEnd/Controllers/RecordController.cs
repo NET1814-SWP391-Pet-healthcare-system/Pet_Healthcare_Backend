@@ -33,7 +33,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            _recordService.AddRecord(record);
+            _recordService.AddRecordAsync(record);
             businessResult.Data = record;
             businessResult.Message = "Successful";
             businessResult.Status = 200;
@@ -45,7 +45,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public ActionResult<BusinessResult> GetRecords()
         {
             BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _recordService.GetRecords();
+            businessResult.Data = _recordService.GetRecordsAsync();
             businessResult.Message = "Successful";
             businessResult.Status = 200;
             return Ok(businessResult);
@@ -55,7 +55,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public ActionResult<BusinessResult> GetRecordById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var user = _recordService.GetRecordById(id);
+            var user = _recordService.GetRecordByIdAsync(id);
             if (user == null)
             {
                 businessResult.Status = 404;
@@ -73,10 +73,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public ActionResult<BusinessResult> RemoveRecord(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            if (_recordService.RemoveRecord(id))
+            var record = _recordService.RemoveRecordAsync(id);
+            if (record!=null)
             {
                 businessResult.Status = 200;
-                businessResult.Data = null;
+                businessResult.Data = record;
                 businessResult.Message = "Record removed";
                 return Ok(businessResult);
             }
@@ -98,7 +99,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            if (_recordService.UpdateRecord(id, record))
+            var recordUpdated = _recordService.UpdateRecordAsync(id, record);
+
+            if (recordUpdated !=null)
             {
                 businessResult.Status = 200;
                 businessResult.Data = null;
