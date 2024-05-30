@@ -11,21 +11,11 @@ namespace ServiceContracts.DTO.KennelDTO
     public class KennelAddRequest
     {
         public string? Description { get; set; }
-        [Required(ErrorMessage = "must enter capacity")]
+        [Required]
         [Range(1, 4)]
         public int Capacity { get; set; }
-        [Required(ErrorMessage = "must enter daily cost")]
+        [Required]
         [Range(double.Epsilon, double.MaxValue)]
         public double DailyCost { get; set; }
-
-        public Kennel ToKennel()
-        {
-            return new Kennel
-            {
-                Description = Description,
-                Capacity = Capacity,
-                DailyCost = DailyCost
-            };
-        }
     }
 }

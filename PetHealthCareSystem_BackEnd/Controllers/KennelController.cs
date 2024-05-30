@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO.KennelDTO;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -15,59 +16,72 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetKennels()
+        public async Task<IActionResult> GetKennels()
         {
-            var Kennels = _kennelService.GetKennels();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(Kennels);
+            var kennels = await _kennelService.GetKennelsAsync();
+            var kennelDtos = kennels.Select(k => k.ToKennelDto()).ToList();
+            return Ok(kennelDtos);
         }
 
-        [HttpGet("{KennelId}")]
-        public IActionResult GetKennelById(int KennelId)
+        [HttpGet("{kennelId:int}")]
+        public async Task<IActionResult> GetKennelById([FromRoute] int kennelId)
         {
-            var Kennel = _kennelService.GetKennelById(KennelId);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(Kennel);
+            var kennelModel = await _kennelService.GetKennelByIdAsync(kennelId);
+            if (kennelModel == null)
+            {
+                return NotFound("Kennel does not exist");
+            }
+            return Ok(kennelModel.ToKennelDto());
         }
 
         [HttpPost]
-        public IActionResult AddKennel([FromBody] KennelAddRequest KennelAddRequest)
+        public async Task<IActionResult> AddKennel([FromBody] KennelAddRequest KennelAddRequest)
         {
-            if (KennelAddRequest == null) { return BadRequest(ModelState); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            _kennelService.AddKennel(KennelAddRequest);
-            return Ok("successfully created");
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
+            var kennelModel = KennelAddRequest.ToKennelFromAdd();
+            await _kennelService.AddKennelAsync(kennelModel);
+            return CreatedAtAction(nameof(GetKennelById), new { kennelId = kennelModel.KennelId }, kennelModel.ToKennelDto());
         }
 
-        [HttpPut("{KennelId}")]
-        public IActionResult UpdateKennel(int KennelId, [FromBody] KennelUpdateRequest KennelUpdateRequest)
+        [HttpPut("{kennelId:int}")]
+        public async Task<IActionResult> UpdateKennel([FromRoute] int kennelId, [FromBody] KennelUpdateRequest kennelUpdateRequest)
         {
-            if (KennelUpdateRequest == null) { return BadRequest(ModelState); }
-            if (_kennelService.GetKennelById(KennelId) == null) { return NotFound(); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            if (!_kennelService.UpdateKennel(KennelId, KennelUpdateRequest))
-            {
-                ModelState.AddModelError("", "Something went wrong updating Kennel");
-                return StatusCode(500, ModelState);
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
             }
-            return Ok("successfully updated");
+            var kennelModel = await _kennelService.UpdateKennelAsync(kennelId, kennelUpdateRequest.ToKennelFromUpdate());
+            if (kennelModel == null)
+            {
+                return NotFound("Kennel does not exist");
+            }
+            return Ok(kennelModel.ToKennelDto());
         }
 
-        [HttpDelete("{KennelId}")]
-        public IActionResult DeleteKennel(int KennelId)
+        [HttpDelete("{kennelId:int}")]
+        public async Task<IActionResult> DeleteKennel(int kennelId)
         {
-            if (_kennelService.GetKennelById(KennelId) == null) { return NotFound(); }
-            if (!_kennelService.RemoveKennel(KennelId))
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Something went wrong deleting Kennel");
+                return BadRequest(ModelState);
             }
-            return Ok("successfully deleted");
+            var kennelModel = await _kennelService.RemoveKennelAsync(kennelId);
+            if (kennelModel == null)
+            {
+                return NotFound("Kennel does not exist");
+            }
+            return Ok(kennelModel);
         }
     }
 }
