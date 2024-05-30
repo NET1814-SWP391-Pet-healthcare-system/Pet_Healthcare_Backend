@@ -18,48 +18,39 @@ namespace Services
         {
             _serviceRepository = serviceRepository;
         }
-        public bool AddService(ServiceAddRequest? request)
+        public async Task<Service> AddService(Service request)
         {
-            if (request == null)
-            {
-                return false;
-            }
-            var service = request.ToService();
-            _serviceRepository.Add(service);
-            return true;
+            return await _serviceRepository.Add(request);
         }
 
-        public Service? GetServiceById(int id)
+        public async Task<Service?> GetServiceById(int id)
         {
-            var service = _serviceRepository.GetById(id);
+            var service = await _serviceRepository.GetById(id);
             return service;
         }
 
-        public IEnumerable<Service> GetServices()
+        public async Task<IEnumerable<Service>> GetServices()
         {
-            return _serviceRepository.GetAll();
+            return await _serviceRepository.GetAll();
         }
 
-        public bool RemoveService(int id)
+        public async Task<Service?> RemoveService(int id)
         {
-            var service = _serviceRepository.GetById(id);
-            if (service == null)
-            {
-                return false;
-            }
-            return _serviceRepository.Remove(id);
+            return await _serviceRepository.Remove(id);
 
         }
 
-        public bool UpdateService(ServiceUpdateRequest request)
+        public async Task<Service?> UpdateService(int id, Service request)
         {
-            var service = _serviceRepository.GetById(request.ServiceId);
+            var service = await _serviceRepository.GetById(id);
             if (service == null)
             {
-                return false;
+                return null;
             }
-
-            return _serviceRepository.Update(request.ToService());
+            service.Name = request.Name;
+            service.Description = request.Description;
+            service.Cost = request.Cost;
+            return await _serviceRepository.Update(id,service);
 
         }
     }

@@ -1,6 +1,7 @@
 ﻿using RepositoryContracts;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Repositories
 {
@@ -11,56 +12,63 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Hospitalization hospitalization)
+        public async Task<Hospitalization> Add(Hospitalization hospitalization)
         {
                 if (hospitalization == null)
                 {
-                    return false;
+                    return null;
                 }
-                _context.Hospitalizations.Add(hospitalization);
-            SaveChanges();
-            return true;
+                await _context.Hospitalizations.AddAsync(hospitalization);
+                await _context.SaveChangesAsync();
+                return hospitalization;
         }
 
-        public IEnumerable<Hospitalization> GetAll()
+        public async Task<IEnumerable<Hospitalization>> GetAll()
         {
-            return _context.Hospitalizations.ToList();
+            return await _context.Hospitalizations
+                .Include(a => a.Pet)
+                .Include(a => a.Kennel)
+                .Include(a => a.Vet)
+                .ToListAsync();
         }
 
-        public Hospitalization? GetById(int id)
+        public async Task<Hospitalization?> GetById(int id)
         {
-            return _context.Hospitalizations.Find(id);
+            return await _context.Hospitalizations
+                .Include(a => a.Pet)
+                .Include(a => a.Kennel)
+                .Include(a => a.Vet)
+                .FirstOrDefaultAsync(a => a.HospitalizationId == id);
         }
 
-        public bool Remove(int id)
+        public async Task<Hospitalization?> Remove(int id)
         {
-            if(GetById(id)==null)
+            var hospitalization = await _context.Hospitalizations.FindAsync(id); ;
+            if(hospitalization == null)
             {
-                return false;
+                return null;
             }
-            _context.Hospitalizations.Remove(GetById(id));
-            SaveChanges();
-            return true;
+            _context.Hospitalizations.Remove(hospitalization);
+            await _context.SaveChangesAsync();
+            return hospitalization;
         }
 
-        public bool SaveChanges()
-        {
-            if (_context.SaveChanges() == 0)
-            {
-                return false;
-            }
-            return true;
-        }
 
-        public bool Update(Hospitalization hospitalization)
+        public async Task<Hospitalization?> Update(int id,Hospitalization hospitalization)
         {
-                if (hospitalization == null)
+                var existhospitalization = await GetById(id);
+                if (existhospitalization == null)
                 {
-                    return false;
+                    return null;
                 }
-                _context.Hospitalizations.Update(hospitalization);
-            SaveChanges();
-            return true;
+                existhospitalization.AdmissionDate = hospitalization.AdmissionDate;
+                existhospitalization.PetId = hospitalization.PetId;
+               existhospitalization.KennelId = hospitalization.KennelId;
+               existhospitalization.VetId = hospitalization.VetId;
+                existhospitalization.DischargeDate = hospitalization.DischargeDate;
+                existhospitalization.TotalCost = hospitalization.TotalCost;
+            await _context.SaveChangesAsync();
+            return hospitalization;
         }
     }
 }

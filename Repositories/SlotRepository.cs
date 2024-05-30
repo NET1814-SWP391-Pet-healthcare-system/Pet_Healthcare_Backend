@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using Entities.Enum;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
@@ -16,42 +17,39 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Slot? slot)
+        public async Task<Slot> AddAsync(Slot slotModel)
         {
-            if (slot == null) return false;
-            _context.Slots.Add(slot);
-            return SaveChanges();
+            await _context.Slots.AddAsync(slotModel);
+            await _context.SaveChangesAsync();
+            return slotModel;
         }
 
-        public IEnumerable<Slot> GetAll()
+        public async Task<IEnumerable<Slot>> GetAllAsync()
         {
-            return _context.Slots.ToList(); 
+            return await _context.Slots.ToListAsync();
         }
 
-        public Slot? GetById(int id)
+        public async Task<Slot?> GetByIdAsync(int id)
         {
-            return _context.Slots.Find(id);
+            return await _context.Slots.FindAsync(id);
         }
 
-        public bool Remove(int id)
+        public async Task<Slot?> RemoveAsync(int id)
         {
-            var slot = _context.Slots.Find(id);
-            if (slot == null) return false;
-            _context.Slots.Remove(slot);
-            return SaveChanges();
+            var slotModel = await _context.Slots.FindAsync(id);
+            if (slotModel == null) 
+            {
+                return null;
+            }
+            _context.Slots.Remove(slotModel);
+            await _context.SaveChangesAsync();
+            return slotModel;
         }
 
-        public bool SaveChanges()
+        public async Task<Slot?> UpdateAsync(Slot slotModel)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool Update(Slot? slot)
-        {
-            if (slot == null) return false;
-            _context.Slots.Update(slot);
-            return SaveChanges();
+            await _context.SaveChangesAsync();
+            return slotModel;
         }
     }
 }

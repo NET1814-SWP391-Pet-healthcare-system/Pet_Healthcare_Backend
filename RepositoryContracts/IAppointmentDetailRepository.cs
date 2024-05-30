@@ -9,12 +9,11 @@ namespace RepositoryContracts
 {
     public interface IAppointmentDetailRepository
     {
-        IEnumerable<AppointmentDetail> GetAll();
-        AppointmentDetail? GetById(int id);
-        bool Add(AppointmentDetail appointmentDetail);
-        bool Update(AppointmentDetail appointmentDetail);
-        bool Remove(int id);
-        bool SaveChanges();
+        Task<IEnumerable<AppointmentDetail>> GetAllAsync();
+        Task<AppointmentDetail>? GetByIdAsync(int id);
+        Task<AppointmentDetail>? AddAsync(AppointmentDetail appointmentDetail);
+        Task<AppointmentDetail>? UpdateAsync(AppointmentDetail appointmentDetail);
+        Task<AppointmentDetail>? RemoveAsync(int id);
     }
 }
 

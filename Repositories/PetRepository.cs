@@ -13,49 +13,50 @@ namespace Repositories
             _context = context;
         }
 
-        public bool AddPet(Pet pet)
+        public async Task<bool> AddPet(Pet pet)
         {
-            _context.Pets.Add(pet);
-            return SaveChanges();
+            await _context.Pets.AddAsync(pet);
+            return await SaveChangesAsync();
         }
 
-        public IEnumerable<Pet> GetAllPet()
+        public async Task<IEnumerable<Pet>> GetAllPet()
         {
-            return _context.Pets.Include(p => p.Customer).ToList();
+            return await _context.Pets
+                         .ToListAsync();
         }
 
-        public Pet? GetPetById(int id)
+        public async Task<Pet?> GetPetById(int id)
         {
-            return _context.Pets.Include(p => p.Customer).FirstOrDefault(p => p.PetId == id);
+            return await _context.Pets
+                         .FirstOrDefaultAsync(p => p.PetId == id);
         }
 
-        public bool RemovePet(Pet pet)
+        public async Task<bool> RemovePet(Pet pet)
         {
             _context.Pets.Remove(pet);
-            return SaveChanges();
+            return await SaveChangesAsync();
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChangesAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public Pet UpdatePet(int id, Pet pet)
+        public async Task<Pet> UpdatePet(int id, Pet pet)
         {
-            var existingPet = GetPetById(id);
+            var existingPet = await GetPetById(id);
             Pet result = null;
             //update
-            existingPet.CustomerId = pet.CustomerId;
             existingPet.Name = pet.Name;
             existingPet.Species = pet.Species;
             existingPet.Breed = pet.Breed;
             existingPet.Gender = pet.Gender;
             existingPet.Weight = pet.Weight;
             existingPet.ImageURL = pet.ImageURL;
-            
+
             result = existingPet;
-            SaveChanges();
+            await SaveChangesAsync();
             return result;
         }
     }

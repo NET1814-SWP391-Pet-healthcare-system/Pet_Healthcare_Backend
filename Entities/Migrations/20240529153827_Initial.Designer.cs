@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240528151528_Initial")]
+    [Migration("20240529153827_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -82,6 +82,70 @@ namespace Entities.Migrations
                     b.HasIndex("VetId");
 
                     b.ToTable("Appointment");
+
+                    b.HasData(
+                        new
+                        {
+                            AppointmentId = 1,
+                            CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            Date = new DateOnly(2023, 6, 15),
+                            PetId = 1,
+                            ServiceId = 1,
+                            SlotId = 1,
+                            Status = 0,
+                            TotalCost = 50.0,
+                            VetId = "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a"
+                        },
+                        new
+                        {
+                            AppointmentId = 2,
+                            CustomerId = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
+                            Date = new DateOnly(2023, 7, 1),
+                            PetId = 2,
+                            ServiceId = 2,
+                            SlotId = 2,
+                            Status = 1,
+                            TotalCost = 30.0,
+                            VetId = "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a"
+                        },
+                        new
+                        {
+                            AppointmentId = 3,
+                            Comments = "Friendly staff, great service.",
+                            CustomerId = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
+                            Date = new DateOnly(2023, 8, 10),
+                            PetId = 3,
+                            Rating = 4,
+                            ServiceId = 3,
+                            SlotId = 3,
+                            Status = 2,
+                            TotalCost = 40.0,
+                            VetId = "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d"
+                        },
+                        new
+                        {
+                            AppointmentId = 4,
+                            CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            Date = new DateOnly(2023, 9, 1),
+                            PetId = 4,
+                            ServiceId = 4,
+                            SlotId = 4,
+                            Status = 0,
+                            TotalCost = 75.0,
+                            VetId = "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d"
+                        },
+                        new
+                        {
+                            AppointmentId = 5,
+                            CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            Date = new DateOnly(2023, 10, 15),
+                            PetId = 5,
+                            ServiceId = 1,
+                            SlotId = 5,
+                            Status = 0,
+                            TotalCost = 500.0,
+                            VetId = "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a"
+                        });
                 });
 
             modelBuilder.Entity("Entities.AppointmentDetail", b =>
@@ -114,6 +178,50 @@ namespace Entities.Migrations
                     b.HasIndex("RecordId");
 
                     b.ToTable("AppointmentDetail");
+
+                    b.HasData(
+                        new
+                        {
+                            AppointmentDetailId = 1,
+                            AppointmentId = 1,
+                            Diagnosis = "Healthy",
+                            RecordId = 1
+                        },
+                        new
+                        {
+                            AppointmentDetailId = 2,
+                            AppointmentId = 2,
+                            Diagnosis = "Ear Infection",
+                            Medication = "Otomax Otic Solution",
+                            RecordId = 2,
+                            Treatment = "Antibiotic Ear Drops"
+                        },
+                        new
+                        {
+                            AppointmentDetailId = 3,
+                            AppointmentId = 3,
+                            Diagnosis = "Feather Plucking",
+                            RecordId = 3,
+                            Treatment = "Environmental Enrichment"
+                        },
+                        new
+                        {
+                            AppointmentDetailId = 4,
+                            AppointmentId = 4,
+                            Diagnosis = "Swim Bladder Disorder",
+                            Medication = "Antibiotics and Anti-inflammatory",
+                            RecordId = 4,
+                            Treatment = "Medication and Diet Change"
+                        },
+                        new
+                        {
+                            AppointmentDetailId = 5,
+                            AppointmentId = 5,
+                            Diagnosis = "Gastrointestinal Stasis",
+                            Medication = "CisaprIde and Simethicone",
+                            RecordId = 5,
+                            Treatment = "Motility Medication and Massage"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Hospitalization", b =>
@@ -151,6 +259,58 @@ namespace Entities.Migrations
                     b.HasIndex("VetId");
 
                     b.ToTable("Hospitalization");
+
+                    b.HasData(
+                        new
+                        {
+                            HospitalizationId = 1,
+                            AdmissionDate = new DateOnly(2023, 5, 1),
+                            DischargeDate = new DateOnly(2023, 5, 5),
+                            KennelId = 1,
+                            PetId = 1,
+                            TotalCost = 125.0,
+                            VetId = "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a"
+                        },
+                        new
+                        {
+                            HospitalizationId = 2,
+                            AdmissionDate = new DateOnly(2023, 6, 10),
+                            DischargeDate = new DateOnly(2023, 6, 12),
+                            KennelId = 2,
+                            PetId = 2,
+                            TotalCost = 120.0,
+                            VetId = "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a"
+                        },
+                        new
+                        {
+                            HospitalizationId = 3,
+                            AdmissionDate = new DateOnly(2023, 7, 15),
+                            DischargeDate = new DateOnly(2023, 7, 18),
+                            KennelId = 3,
+                            PetId = 3,
+                            TotalCost = 60.0,
+                            VetId = "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d"
+                        },
+                        new
+                        {
+                            HospitalizationId = 4,
+                            AdmissionDate = new DateOnly(2023, 8, 1),
+                            DischargeDate = new DateOnly(2023, 8, 3),
+                            KennelId = 4,
+                            PetId = 4,
+                            TotalCost = 90.0,
+                            VetId = "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d"
+                        },
+                        new
+                        {
+                            HospitalizationId = 5,
+                            AdmissionDate = new DateOnly(2023, 9, 10),
+                            DischargeDate = new DateOnly(2023, 9, 12),
+                            KennelId = 5,
+                            PetId = 5,
+                            TotalCost = 105.0,
+                            VetId = "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Kennel", b =>
@@ -173,6 +333,43 @@ namespace Entities.Migrations
                     b.HasKey("KennelId");
 
                     b.ToTable("Kennel");
+
+                    b.HasData(
+                        new
+                        {
+                            KennelId = 1,
+                            Capacity = 20,
+                            DailyCost = 25.0,
+                            Description = "Comfortable and secure kennel for your pet."
+                        },
+                        new
+                        {
+                            KennelId = 2,
+                            Capacity = 10,
+                            DailyCost = 40.0,
+                            Description = "Luxury kennel with premium amenities."
+                        },
+                        new
+                        {
+                            KennelId = 3,
+                            Capacity = 30,
+                            DailyCost = 15.0,
+                            Description = "Budget-friendly kennel for short-term stays."
+                        },
+                        new
+                        {
+                            KennelId = 4,
+                            Capacity = 25,
+                            DailyCost = 30.0,
+                            Description = "Large kennel with outdoor play area."
+                        },
+                        new
+                        {
+                            KennelId = 5,
+                            Capacity = 15,
+                            DailyCost = 35.0,
+                            Description = "Climate-controlled kennel for exotic pets."
+                        });
                 });
 
             modelBuilder.Entity("Entities.Pet", b =>
@@ -209,6 +406,63 @@ namespace Entities.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Pet");
+
+                    b.HasData(
+                        new
+                        {
+                            PetId = 1,
+                            Breed = "Labrador Retriever",
+                            CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            Gender = true,
+                            ImageURL = "https://example.com/pet_images/buddy.jpg",
+                            Name = "Buddy",
+                            Species = "Dog",
+                            Weight = 30.5
+                        },
+                        new
+                        {
+                            PetId = 2,
+                            Breed = "Siamese",
+                            CustomerId = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
+                            Gender = false,
+                            ImageURL = "https://example.com/pet_images/whiskers.jpg",
+                            Name = "Whiskers",
+                            Species = "Cat",
+                            Weight = 4.2000000000000002
+                        },
+                        new
+                        {
+                            PetId = 3,
+                            Breed = "Cockatiel",
+                            CustomerId = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
+                            Gender = true,
+                            ImageURL = "https://example.com/pet_images/rocky.jpg",
+                            Name = "Rocky",
+                            Species = "Bird",
+                            Weight = 0.29999999999999999
+                        },
+                        new
+                        {
+                            PetId = 4,
+                            Breed = "Goldfish",
+                            CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            Gender = false,
+                            ImageURL = "https://example.com/pet_images/finny.jpg",
+                            Name = "Finny",
+                            Species = "Fish",
+                            Weight = 0.10000000000000001
+                        },
+                        new
+                        {
+                            PetId = 5,
+                            Breed = "Lop",
+                            CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            Gender = true,
+                            ImageURL = "https://example.com/pet_images/fluffy.jpg",
+                            Name = "Fluffy",
+                            Species = "Rabbit",
+                            Weight = 2.7999999999999998
+                        });
                 });
 
             modelBuilder.Entity("Entities.PetHealthTrack", b =>
@@ -236,6 +490,48 @@ namespace Entities.Migrations
                     b.HasIndex("HospitalizationId");
 
                     b.ToTable("PetHealthTrack");
+
+                    b.HasData(
+                        new
+                        {
+                            PetHealthTrackId = 1,
+                            Date = new DateOnly(2023, 5, 3),
+                            Description = "Recovering from surgery",
+                            HospitalizationId = 1,
+                            Status = 0
+                        },
+                        new
+                        {
+                            PetHealthTrackId = 2,
+                            Date = new DateOnly(2023, 6, 11),
+                            Description = "Monitoring for dehydration",
+                            HospitalizationId = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            PetHealthTrackId = 3,
+                            Date = new DateOnly(2023, 7, 16),
+                            Description = "Treating respiratory infection",
+                            HospitalizationId = 3,
+                            Status = 2
+                        },
+                        new
+                        {
+                            PetHealthTrackId = 4,
+                            Date = new DateOnly(2023, 8, 2),
+                            Description = "Observing swim bladder disorder",
+                            HospitalizationId = 4,
+                            Status = 0
+                        },
+                        new
+                        {
+                            PetHealthTrackId = 5,
+                            Date = new DateOnly(2023, 9, 11),
+                            Description = "Managing gastrointestinal stasis",
+                            HospitalizationId = 5,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("Entities.PetVaccination", b =>
@@ -254,6 +550,38 @@ namespace Entities.Migrations
                     b.HasIndex("VaccineId");
 
                     b.ToTable("PetVaccination");
+
+                    b.HasData(
+                        new
+                        {
+                            PetId = 1,
+                            VaccineId = 1,
+                            VaccinationDate = new DateOnly(2023, 4, 1)
+                        },
+                        new
+                        {
+                            PetId = 1,
+                            VaccineId = 2,
+                            VaccinationDate = new DateOnly(2022, 8, 15)
+                        },
+                        new
+                        {
+                            PetId = 2,
+                            VaccineId = 3,
+                            VaccinationDate = new DateOnly(2023, 3, 1)
+                        },
+                        new
+                        {
+                            PetId = 1,
+                            VaccineId = 4,
+                            VaccinationDate = new DateOnly(2023, 1, 10)
+                        },
+                        new
+                        {
+                            PetId = 3,
+                            VaccineId = 5,
+                            VaccinationDate = new DateOnly(2023, 2, 20)
+                        });
                 });
 
             modelBuilder.Entity("Entities.Record", b =>
@@ -275,6 +603,38 @@ namespace Entities.Migrations
                     b.HasIndex("PetId");
 
                     b.ToTable("Record");
+
+                    b.HasData(
+                        new
+                        {
+                            RecordId = 1,
+                            NumberOfVisits = 1,
+                            PetId = 1
+                        },
+                        new
+                        {
+                            RecordId = 2,
+                            NumberOfVisits = 1,
+                            PetId = 2
+                        },
+                        new
+                        {
+                            RecordId = 3,
+                            NumberOfVisits = 1,
+                            PetId = 3
+                        },
+                        new
+                        {
+                            RecordId = 4,
+                            NumberOfVisits = 1,
+                            PetId = 4
+                        },
+                        new
+                        {
+                            RecordId = 5,
+                            NumberOfVisits = 1,
+                            PetId = 5
+                        });
                 });
 
             modelBuilder.Entity("Entities.Service", b =>
@@ -297,6 +657,36 @@ namespace Entities.Migrations
                     b.HasKey("ServiceId");
 
                     b.ToTable("Service");
+
+                    b.HasData(
+                        new
+                        {
+                            ServiceId = 1,
+                            Cost = 50.0,
+                            Description = "Comprehensive health check-up for your pet.",
+                            Name = "Annual Check-Up"
+                        },
+                        new
+                        {
+                            ServiceId = 2,
+                            Cost = 30.0,
+                            Description = "Essential vaccines to keep your pet healthy.",
+                            Name = "Vaccination"
+                        },
+                        new
+                        {
+                            ServiceId = 3,
+                            Cost = 40.0,
+                            Description = "Addressing behavioral issues with your pet.",
+                            Name = "Behavioral Consultation"
+                        },
+                        new
+                        {
+                            ServiceId = 4,
+                            Cost = 75.0,
+                            Description = "Advanced surgical procedures for complex conditions.",
+                            Name = "Specialized Surgery"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Slot", b =>
@@ -316,6 +706,50 @@ namespace Entities.Migrations
                     b.HasKey("SlotId");
 
                     b.ToTable("Slot");
+
+                    b.HasData(
+                        new
+                        {
+                            SlotId = 1,
+                            EndTime = new TimeOnly(10, 0, 0),
+                            StartTime = new TimeOnly(9, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 2,
+                            EndTime = new TimeOnly(11, 0, 0),
+                            StartTime = new TimeOnly(10, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 3,
+                            EndTime = new TimeOnly(12, 0, 0),
+                            StartTime = new TimeOnly(11, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 4,
+                            EndTime = new TimeOnly(13, 0, 0),
+                            StartTime = new TimeOnly(12, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 5,
+                            EndTime = new TimeOnly(14, 0, 0),
+                            StartTime = new TimeOnly(13, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 6,
+                            EndTime = new TimeOnly(15, 0, 0),
+                            StartTime = new TimeOnly(14, 0, 0)
+                        },
+                        new
+                        {
+                            SlotId = 7,
+                            EndTime = new TimeOnly(16, 0, 0),
+                            StartTime = new TimeOnly(15, 0, 0)
+                        });
                 });
 
             modelBuilder.Entity("Entities.User", b =>
@@ -404,6 +838,31 @@ namespace Entities.Migrations
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.UseTptMappingStrategy();
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "25e15040-df59-497a-8f8f-026f1dc4fab4",
+                            AccessFailedCount = 0,
+                            Address = "789 Elm St, Anytown USA",
+                            ConcurrencyStamp = "82878f4d-de40-4299-a13b-31ef4b055113",
+                            Country = "United States",
+                            Email = "admin@example.com",
+                            EmailConfirmed = false,
+                            FirstName = "Bob",
+                            Gender = true,
+                            ImageURL = "https://example.com/user_images/bjohnson.jpg",
+                            IsActive = true,
+                            LastName = "Johnson",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "BJOHNSON",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "6CMO6VX3FO3WWXMC77BFPOFRWCMNYZB7",
+                            TwoFactorEnabled = false,
+                            UserName = "bjohnson"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Vaccine", b =>
@@ -426,6 +885,38 @@ namespace Entities.Migrations
                     b.HasKey("VaccineId");
 
                     b.ToTable("Vaccine");
+
+                    b.HasData(
+                        new
+                        {
+                            VaccineId = 1,
+                            Description = "Prevents rabies infection.",
+                            Name = "Rabies Vaccine"
+                        },
+                        new
+                        {
+                            VaccineId = 2,
+                            Description = "Prevents canine distemper.",
+                            Name = "Distemper Vaccine"
+                        },
+                        new
+                        {
+                            VaccineId = 3,
+                            Description = "Prevents feline leukemia.",
+                            Name = "Feline Leukemia Vaccine"
+                        },
+                        new
+                        {
+                            VaccineId = 4,
+                            Description = "Prevents canine parvovirus.",
+                            Name = "Parvovirus Vaccine"
+                        },
+                        new
+                        {
+                            VaccineId = 5,
+                            Description = "Prevents avian influenza.",
+                            Name = "Avian Influenza Vaccine"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -592,6 +1083,54 @@ namespace Entities.Migrations
                     b.HasBaseType("Entities.User");
 
                     b.ToTable("Customer", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "283e003d-77ce-4e8a-876f-db63127169dc",
+                            AccessFailedCount = 0,
+                            Address = "123 Main St, Anytown USA",
+                            ConcurrencyStamp = "80e8da68-df49-4369-9582-72e9aa38ed30",
+                            Country = "United States",
+                            Email = "customer1@example.com",
+                            EmailConfirmed = false,
+                            FirstName = "John",
+                            Gender = true,
+                            ImageURL = "https://example.com/user_images/jdoe.jpg",
+                            IsActive = true,
+                            LastName = "Doe",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CUSTOMER1@EXAMPLE.COM",
+                            NormalizedUserName = "JDOE",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBa075/ZkJdl7Ut+by7+jhqVt3TGqvEmhNNplk3mJ7rN0baZuhEjWlRdDhwUMFvj8A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "JSVRFDP6WGGEWI5JH42L2ZHKAYOH426U",
+                            TwoFactorEnabled = false,
+                            UserName = "jdoe"
+                        },
+                        new
+                        {
+                            Id = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
+                            AccessFailedCount = 0,
+                            Address = "456 Oak Rd, Anytown USA",
+                            ConcurrencyStamp = "0a504d88-ab5b-47dd-8575-69d47d267b4f",
+                            Country = "United States",
+                            Email = "customer2@example.com",
+                            EmailConfirmed = false,
+                            FirstName = "Jane",
+                            Gender = false,
+                            ImageURL = "https://example.com/user_images/jsmith.jpg",
+                            IsActive = true,
+                            LastName = "Smith",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CUSTOMER2@EXAMPLE.COM",
+                            NormalizedUserName = "JSMITH",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMBeygPd7Wknza3pycDGO/6y1APxstU8TjpDHt6eu5Zem1X2Y95uGTBjZ5cJux8zsA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "43S2GHAER56TVFDSZOZAYI2Z7E75KTKI",
+                            TwoFactorEnabled = false,
+                            UserName = "jsmith"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Vet", b =>
@@ -605,6 +1144,58 @@ namespace Entities.Migrations
                         .HasColumnType("int");
 
                     b.ToTable("Vet", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a",
+                            AccessFailedCount = 0,
+                            Address = "456 Pine Ave, Anytown USA",
+                            ConcurrencyStamp = "572bfe5b-9699-4cd2-9b06-e967437496a9",
+                            Country = "United States",
+                            Email = "vet1@example.com",
+                            EmailConfirmed = false,
+                            FirstName = "Emily",
+                            Gender = false,
+                            ImageURL = "https://example.com/user_images/ewilson.jpg",
+                            IsActive = true,
+                            LastName = "Wilson",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "VET1@EXAMPLE.COM",
+                            NormalizedUserName = "EWILSON",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4FXXXACBIUMVV3CQNXAFEGWGAYVAK77O",
+                            TwoFactorEnabled = false,
+                            UserName = "ewilson",
+                            Rating = 4,
+                            YearsOfExperience = 10
+                        },
+                        new
+                        {
+                            Id = "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d",
+                            AccessFailedCount = 0,
+                            Address = "789 Maple Ln, Anytown USA",
+                            ConcurrencyStamp = "f550fda2-27ce-4fe5-a611-9d211f2dbf2c",
+                            Country = "United States",
+                            Email = "vet2@example.com",
+                            EmailConfirmed = false,
+                            FirstName = "Michael",
+                            Gender = true,
+                            ImageURL = "https://example.com/user_images/mbrown.jpg",
+                            IsActive = true,
+                            LastName = "Brown",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "VET2@EXAMPLE.COM",
+                            NormalizedUserName = "MBROWN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "XUEHTI5VWZNP55F5J57ZWHDNFY4HJ2HF",
+                            TwoFactorEnabled = false,
+                            UserName = "mbrown",
+                            Rating = 5,
+                            YearsOfExperience = 7
+                        });
                 });
 
             modelBuilder.Entity("Entities.Appointment", b =>

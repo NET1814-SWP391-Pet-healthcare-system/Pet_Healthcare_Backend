@@ -11,11 +11,11 @@ namespace ServiceContracts
 {
     public interface IRecordService
     {
-        bool AddRecord(Record? request);
-        Record? GetRecordById(int id);
-        IEnumerable<AppointmentDetail> GetAppointmentDetails();
-        IEnumerable<Record> GetRecords();
-        bool UpdateRecord(int id,Record? request);
-        bool RemoveRecord(int id);
+        Task<Record?> AddRecordAsync(Record? request);
+        Task<Record?> GetRecordByIdAsync(int id);
+        Task<IEnumerable<AppointmentDetail>?> GetAppointmentDetailsAsync();
+        Task<IEnumerable<Record>?> GetRecordsAsync();
+        Task<Record?> UpdateRecordAsync(int id,Record? request);
+        Task<Record?> RemoveRecordAsync(int id);
     }
 }

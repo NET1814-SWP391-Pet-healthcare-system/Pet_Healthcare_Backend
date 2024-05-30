@@ -14,19 +14,17 @@ namespace Services
     public class PetService : IPetService
     {
         private readonly IPetRepository _petRepository;
-        private readonly IUserRepository _userRepository;
 
-        public PetService(IPetRepository petRepository, IUserRepository userRepository)
+        public PetService(IPetRepository petRepository)
         {
             _petRepository = petRepository;
-            _userRepository = userRepository;
         }
 
-        public Pet? AddPet(PetAddRequest petAddRequest)
+        public async Task<Pet?> AddPet(PetAddRequest petAddRequest)
         {
             var request = petAddRequest.ToPet();
-            var isAdded = _petRepository.AddPet(request);
-            if(isAdded)
+            var isAdded = await _petRepository.AddPet(request);
+            if (isAdded)
             {
                 return request;
             }
@@ -34,31 +32,31 @@ namespace Services
 
         }
 
-        public Pet? GetPetById(int id)
+        public async Task<Pet?> GetPetById(int id)
         {
-            return _petRepository.GetPetById(id);
+            return await _petRepository.GetPetById(id);
         }
 
-        public IEnumerable<Pet> GetAllPets()
+        public async Task<IEnumerable<Pet>> GetAllPets()
         {
-            return _petRepository.GetAllPet();
+            return await _petRepository.GetAllPet();
         }
 
-        public Pet? UpdatePet(int id, PetUpdateRequest petUpdateRequest)
+        public async Task<Pet?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
         {
-            var pet = _petRepository.GetPetById(id);
-            if(pet == null)
+            var pet = await _petRepository.GetPetById(id);
+            if (pet == null)
             {
-                return null; 
+                return null;
             }
             var request = petUpdateRequest.ToPet();
-            return _petRepository.UpdatePet(id, request);
+            return await _petRepository.UpdatePet(id, request);
         }
 
-        public bool RemovePetById(int id)
+        public async Task<bool> RemovePetById(int id)
         {
-            var pet = GetPetById(id);
-            return _petRepository.RemovePet(pet);
+            var pet = await GetPetById(id);
+            return await _petRepository.RemovePet(pet);
         }
 
     }

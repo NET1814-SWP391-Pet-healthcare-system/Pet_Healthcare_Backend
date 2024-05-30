@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using PetHealthCareSystem_BackEnd.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,7 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
+    option.OperationFilter<UnauthorizedResponseOperationFilter>();
 });
 
 // Add SQLServer connection
@@ -90,6 +93,13 @@ builder.Services.AddAuthentication(options => {
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         )
     };
+});
+
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
+    options.AddPolicy("VetPolicy", policy => policy.RequireRole("Vet"));
+    options.AddPolicy("EmployeePolicy", policy => policy.RequireRole("Employee"));
 });
 
 builder.Services.AddCors(options =>
@@ -130,7 +140,12 @@ if(app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    //.WithOrigins("https//localhost:44351))
+    .SetIsOriginAllowed(origin => true));
 
 app.UseAuthentication();
 app.UseAuthorization();

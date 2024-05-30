@@ -10,22 +10,13 @@ namespace ServiceContracts.DTO.ServiceDTO
 {
     public class ServiceUpdateRequest
     {
-        [Required]
-        public int ServiceId { get; set; }
+        [Required(ErrorMessage = "Must have service name")]
         public string? Name { get; set; }
+        [Required(ErrorMessage = "Must have Desc")]
         public string? Description { get; set; }
+        [Required(ErrorMessage = "Must have Cost")]
         public double? Cost { get; set; }
 
-        public Service ToService()
-        {
-            return new Service
-            {
-                ServiceId = ServiceId,
-                Name = Name,
-                Description = Description,
-                Cost = Cost
-            };
-        }
 
     }
 }

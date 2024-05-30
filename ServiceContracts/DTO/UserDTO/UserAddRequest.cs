@@ -11,12 +11,12 @@ namespace ServiceContracts.DTO.UserDTO
     public class UserAddRequest
     {
         [Required]
-        public int? RoleId { get; set; }
-        [Required]
         public string? FirstName { get; set; }
         [Required]
         public string? LastName { get; set; }
-        public bool? Gender { get; set; }
+        public bool? Gender { get; set; } = true;
+        [Required]
+        [EmailAddress]
         public string? Email { get; set; }
         [Required]
         public string? Username { get; set; }
@@ -26,25 +26,10 @@ namespace ServiceContracts.DTO.UserDTO
         public string? Country { get; set; }
         public string? ImageURL { get; set; }
         public bool? IsActice { get; set; } = true;
-
+        [Required]
+        public string? Role { get; set; }
+        // Vet specific properties
         public int? Rating { get; set; }
         public int? YearsOfExperience { get; set; }
-        public User ToUser()
-        {
-            return new User
-            {
-                //RoleId = RoleId,
-                //FirstName = FirstName,
-                //LastName = LastName,
-                //Gender = Gender,
-                //Email = Email,
-                //Username = Username,
-                //Password = Password,
-                //Address = Address,
-                //Country = Country,
-                //ImageURL = ImageURL,
-                //IsActive = IsActice
-            };
-        }
     }
 }

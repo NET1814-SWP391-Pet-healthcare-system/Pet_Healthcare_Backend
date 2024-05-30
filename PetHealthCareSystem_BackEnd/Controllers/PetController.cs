@@ -1,7 +1,9 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
@@ -14,49 +16,54 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class PetController : ControllerBase
     {
         private readonly IPetService _petService;
+        private readonly UserManager<User> _userManager;
 
-        public PetController(IPetService petService)
+        public PetController(IPetService petService, UserManager<User> userManager)
         {
             _petService = petService;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public ActionResult<BusinessResult> GetPets()
+        public async Task<ActionResult<BusinessResult>> GetPets()
         {
             BusinessResult businessResult = new BusinessResult();
             businessResult.Status = 200;
             businessResult.Message = "Get all pets succesfully";
-            businessResult.Data = _petService.GetAllPets();
+            businessResult.Data = await _petService.GetAllPets();
             return Ok(businessResult);
         }
 
+        [HttpGet("current-user")]
+        public async Task<ActionResult<User>> GetCurrentUser()
+        {
+            //var username = User.GetUsername();
+            //var currenUser = await _userManager.FindByNameAsync(username);
+            var userList = await _userManager.GetUsersInRoleAsync("Customer");
+            return Ok(userList);
+        }
+
         [HttpPost]
-        public ActionResult<BusinessResult> AddPet(PetAddRequest? petAddRequest, [FromServices] IUserService userService)
+        public async Task<ActionResult<BusinessResult>> AddPet(PetAddRequest? petAddRequest)
         {
             BusinessResult businessResult = new BusinessResult();
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 businessResult.Status = 400;
                 businessResult.Message = "Invalid request";
                 businessResult.Data = false;
                 return BadRequest(businessResult);
             }
-            var existingUser = userService.GetUserById(petAddRequest.CustomerId);
-            if(existingUser == null)
+            var existingUser = await _userManager.FindByIdAsync(petAddRequest.CustomerId);
+            if (existingUser == null)
             {
                 businessResult.Status = 400;
                 businessResult.Message = "No Customer found";
                 businessResult.Data = petAddRequest;
                 return BadRequest(businessResult);
             }
-            if(!(existingUser is Customer))
-            {
-                businessResult.Status = 400;
-                businessResult.Message = "User is not a customer";
-                businessResult.Data = petAddRequest;
-                return BadRequest(businessResult);
-            }
-            var data = _petService.AddPet(petAddRequest);
+
+            var data = await _petService.AddPet(petAddRequest);
             businessResult.Status = 200;
             businessResult.Message = "Pet added";
             businessResult.Data = data;
@@ -64,11 +71,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<BusinessResult> GetPetById(int id)
+        public async Task<ActionResult<BusinessResult>> GetPetById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var pet = _petService.GetPetById(id);
-            if(pet == null)
+            var pet = await _petService.GetPetById(id);
+            if (pet == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
@@ -82,41 +89,34 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdatePet(int id, PetUpdateRequest? petUpdateRequest, [FromServices] IUserService userService)
+        public async Task<ActionResult<BusinessResult>> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
         {
             BusinessResult businessResult = new BusinessResult();
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 businessResult.Status = 400;
                 businessResult.Message = "Invalid request";
                 businessResult.Data = false;
                 return BadRequest(businessResult);
             }
-            if(id != petUpdateRequest.PetId)
+            if (id != petUpdateRequest.PetId)
             {
                 businessResult.Status = 400;
                 businessResult.Message = "Mismatched id";
                 businessResult.Data = false;
                 return BadRequest(businessResult);
             }
-            var existingUser = userService.GetUserById(petUpdateRequest.CustomerId);
-            if(existingUser == null)
+            var existingUser = await _userManager.FindByIdAsync(petUpdateRequest.CustomerId);
+            if (existingUser == null)
             {
                 businessResult.Status = 400;
                 businessResult.Message = "No Customer found";
                 businessResult.Data = petUpdateRequest;
                 return BadRequest(businessResult);
             }
-            if(!(existingUser is Customer))
-            {
-                businessResult.Status = 400;
-                businessResult.Message = "User is not a customer";
-                businessResult.Data = petUpdateRequest;
-                return BadRequest(businessResult);
-            }
 
-            var result = _petService.UpdatePet(id, petUpdateRequest);
-            if(result == null)
+            var result = await _petService.UpdatePet(id, petUpdateRequest);
+            if (result == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = false;
@@ -130,19 +130,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<BusinessResult> DeletePetById(int id)
+        public async Task<ActionResult<BusinessResult>> DeletePetById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var petData = _petService.GetPetById(id);
-            if(petData == null)
+            var petData = await _petService.GetPetById(id);
+            if (petData == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = false;
                 businessResult.Message = "Pet not found";
                 return NotFound(businessResult);
             }
-            var isDeleted = _petService.RemovePetById(id);
-            if(!isDeleted)
+            var isDeleted = await _petService.RemovePetById(id);
+            if (!isDeleted)
             {
                 businessResult.Status = 400;
                 businessResult.Data = petData;

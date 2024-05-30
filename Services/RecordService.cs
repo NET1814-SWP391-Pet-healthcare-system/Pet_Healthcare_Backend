@@ -20,37 +20,50 @@ namespace Services
             _recordRepository = recordRepository;
         }
 
-        public bool AddRecord(Record? request)
+        public async Task<Record?> AddRecordAsync(Record? request)
         {
-            return _recordRepository.Add(request);
+
+            return await _recordRepository.AddAsync(request);
         }
 
-        public IEnumerable<AppointmentDetail> GetAppointmentDetails()
+        public async Task<IEnumerable<AppointmentDetail>?> GetAppointmentDetailsAsync()
         {
-            return _recordRepository.GetAllAppointmentDetail();
+            return await _recordRepository.GetAllAppointmentDetailAsync();
         }
 
-        public Record? GetRecordById(int id)
+        public async Task<Record?> GetRecordByIdAsync(int id)
         {
-            return _recordRepository.GetById(id);
+            return await _recordRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Record> GetRecords()
+        public async Task<IEnumerable<Record>?> GetRecordsAsync()
         {
-            return _recordRepository.GetAll();
+            return await _recordRepository.GetAllAsync();
         }
 
-        public bool RemoveRecord(int id)
+        public async Task<Record> RemoveRecordAsync(int id)
         {
-            return _recordRepository.Remove(id);
+            return await  _recordRepository.RemoveAsync(id);
         }
 
-        public bool UpdateRecord(int id ,Record? request)
+        public async Task<Record?> UpdateRecordAsync(int id ,Record? request)
         {
-            var existingRecord = _recordRepository.GetById(id);
-            if (existingRecord == null) { return false; }
-            if (request == null) { return false; }
-            return _recordRepository.Update(existingRecord);
+            if(request == null)
+            {
+                return null;
+            }
+            var existingRecord = _recordRepository.GetByIdAsync(id).Result;
+            if(existingRecord == null)
+            {
+                return null;
+            }
+
+            existingRecord.RecordId = request.RecordId;
+            existingRecord.PetId = request.PetId;
+            existingRecord.NumberOfVisits = request.NumberOfVisits;
+            existingRecord.AppointmentDetails = request.AppointmentDetails;
+            existingRecord.Pet = request.Pet;
+            return await _recordRepository.UpdateAsync(existingRecord);
         }
     }
 }

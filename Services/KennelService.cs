@@ -17,38 +17,38 @@ namespace Services
         {
             _kennelRepository = kennelRepository;
         }
-        public bool AddKennel(KennelAddRequest? request)
+
+        public async Task<Kennel> AddKennelAsync(Kennel kennelModel)
         {
-            if (request == null) return false;
-            var kennel = request.ToKennel();
-            return _kennelRepository.Add(kennel);
+            return await _kennelRepository.AddAsync(kennelModel);
         }
 
-        public Kennel? GetKennelById(int id)
+        public async Task<Kennel?> GetKennelByIdAsync(int id)
         {
-            return _kennelRepository.GetById(id);
+            return await _kennelRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Kennel> GetKennels()
+        public async Task<IEnumerable<Kennel>> GetKennelsAsync()
         {
-            return _kennelRepository.GetAll();
+            return await _kennelRepository.GetAllAsync();
         }
 
-        public bool RemoveKennel(int id)
+        public async Task<Kennel?> RemoveKennelAsync(int id)
         {
-            return _kennelRepository.Remove(id);
+            return await _kennelRepository.RemoveAsync(id);
         }
 
-        public bool UpdateKennel(int id, KennelUpdateRequest? request)
+        public async Task<Kennel?> UpdateKennelAsync(int id, Kennel kennelModel)
         {
-            var existingKennel = _kennelRepository.GetById(id);
-            if (existingKennel == null) return false;
-            if (request == null) return false;
-            var kennelModel = request.ToKennel();
-            existingKennel.Capacity = kennelModel.Capacity;
+            var existingKennel = await _kennelRepository.GetByIdAsync(id);
+            if (existingKennel == null)
+            {
+                return null;
+            }
             existingKennel.Description = kennelModel.Description;
+            existingKennel.Capacity = kennelModel.Capacity;
             existingKennel.DailyCost = kennelModel.DailyCost;
-            return _kennelRepository.Update(existingKennel);
+            return await _kennelRepository.UpdateAsync(existingKennel);
         }
     }
 }

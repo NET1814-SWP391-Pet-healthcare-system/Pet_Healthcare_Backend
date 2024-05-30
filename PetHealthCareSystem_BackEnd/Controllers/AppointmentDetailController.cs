@@ -18,10 +18,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public ActionResult<BusinessResult> AddAppointmentDetail(AppointmentDetailAddRequest? appointmentDetailAddRequest)
+        public async Task<IActionResult> AddAppointmentDetail(AppointmentDetail? appointmentDetail)
         {
             BusinessResult businessResult = new BusinessResult();
-            if (appointmentDetailAddRequest == null)
+            if (appointmentDetail == null)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
@@ -29,7 +29,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            _appointmentDetailService.AddAppointmentDetail(appointmentDetailAddRequest);
+            _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetail);
             businessResult.Status = 404;
             businessResult.Data = null;
             businessResult.Message = "No AppointmentDetail found";
@@ -38,25 +38,25 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Read
         [HttpGet]
-        public ActionResult<BusinessResult> GetAppointmentDetails()
+        public async Task<IActionResult> GetAppointmentDetails()
         {
             BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _appointmentDetailService.GetAppointmentDetails();
+            businessResult.Data = _appointmentDetailService.GetAppointmentDetailsAsync();
             businessResult.Message = "Successful";
             businessResult.Status = 200;
             return Ok(businessResult);
         }
 
         [HttpGet("id/{id}")]
-        public ActionResult<BusinessResult> GetAppointmentDetailById(int id)
+        public async Task<IActionResult> GetAppointmentDetailById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var user = _appointmentDetailService.GetAppointmentDetailById(id);
+            var user = _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
             if (user == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
-                businessResult.Message = "No User found";
+                businessResult.Message = "No AppointmentDetail found";
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
@@ -68,17 +68,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdateAppointmentDetail(AppointmentDetailUpdateRequest? appointmentDetailUpdateRequest)
+        public async Task<IActionResult> UpdateDiagnosis([FromBody] AppointmentDetailUpdateDiagnosis appointmentDetailUpdateDiagnosis)
         {
             BusinessResult businessResult = new BusinessResult();
-            if (appointmentDetailUpdateRequest == null)
+            if (!ModelState.IsValid)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            var isUpdated = appointmentDetailUpdateRequest.UpdateAppointmentDetail();
+            var isUpdated = appointmentDetailUpdateDiagnosis;
             if (isUpdated == null)
             {
                 businessResult.Status = 404;
@@ -87,29 +87,28 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = appointmentDetailUpdateRequest.UpdateAppointmentDetail();
+            businessResult.Data = appointmentDetailUpdateDiagnosis;
             businessResult.Message = "User updated";
             return Ok(businessResult);
         }
 
         //Delete
-        [HttpDelete("{username}")]
-        public ActionResult<BusinessResult> DeleteUserByUsername(int id)
+        [HttpDelete("{appointmentDetail}")]
+        public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var userData = _appointmentDetailService.GetAppointmentDetailById(id);
-            var isDeleted = _appointmentDetailService.RemoveAppointmentDetail(id);
-            if (!isDeleted)
+            var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(id);
+            if (isDeleted == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "AppointmentDetail not found";
-                return NotFound(businessResult);
+                businessResult.Status = 200;
+                businessResult.Data = isDeleted;
+                businessResult.Message = "AppointmentDetail deleted";
+                return Ok(businessResult);
             }
-            businessResult.Status = 200;
-            businessResult.Data = userData;
-            businessResult.Message = "AppointmentDetail deleted";
-            return Ok(businessResult);
+            businessResult.Status = 404;
+            businessResult.Data = null;
+            businessResult.Message = "AppointmentDetail not found";
+            return NotFound(businessResult);
         }
     }
 }

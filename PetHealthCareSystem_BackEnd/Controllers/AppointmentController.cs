@@ -8,23 +8,26 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Entities;
 using PetHealthCareSystem_BackEnd.Extensions;
+using RepositoryContracts;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize(Policy = "CustomerPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _appointmentService;
+        private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
-        public AppointmentController(IAppointmentService appointmentService, UserManager<User> userManager)
+        public AppointmentController(IAppointmentService appointmentService, IUserService userService, UserManager<User> userManager)
         {
             _appointmentService = appointmentService;
+            _userService = userService;
             _userManager = userManager;
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAppointments()
         {
             if (!ModelState.IsValid)
@@ -60,9 +63,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var customerUsername = User.GetUsername();
             var customer = await _userManager.FindByNameAsync(customerUsername) as Customer;
+            var customerPetList = await _userService.GetCustomerWithPets(customer.Id);
+            var petList = customerPetList.Pets.ToList();
 
             var vetUsername = appointmentAddRequest.VetUserName;
             var vet = await _userManager.FindByNameAsync(vetUsername) as Vet;
+            if (vet == null) 
+            {
+                return BadRequest("Cannot find vet");
+            }
 
             var appointmentModel = appointmentAddRequest.ToAppointmentFromAdd(vet);
             appointmentModel.CustomerId = customer.Id;
@@ -74,17 +83,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("This slot has already been booked");
             }
-            if (!AppointmentValidation.IsUserPet(customer, (int)appointmentModel.PetId))
+            if (!AppointmentValidation.IsUserPet(petList, (int)appointmentModel.PetId))
             {
                 return BadRequest("This is not this user's pet");
             }
             
             await _appointmentService.AddAppointmentAsync(appointmentModel);
-            return CreatedAtAction(nameof(GetAppointmentById), new { id = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
+            return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
         }
 
-        [HttpPut]
-        [Route("rate/{appointmentId}")]
+        [HttpPut("rate/{appointmentId}")]
         public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
             if (!ModelState.IsValid) 
@@ -99,8 +107,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointmentModel.ToAppointmentDto());
         }
 
-        [HttpDelete]
-        [Route("{appointmentId}")]
+        [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> DeleteAppointment([FromRoute] int appointmentId)
         {
             if (_appointmentService.GetAppointmentByIdAsync(appointmentId) == null) 

@@ -9,11 +9,10 @@ namespace RepositoryContracts
 {
     public interface ISlotRepository
     {
-        IEnumerable<Slot> GetAll();
-        Slot? GetById(int id);
-        bool Add(Slot? slot);
-        bool Update(Slot? slot);
-        bool Remove(int id);
-        bool SaveChanges();
+        Task<IEnumerable<Slot>> GetAllAsync();
+        Task<Slot?> GetByIdAsync(int id);
+        Task<Slot> AddAsync(Slot slotModel);
+        Task<Slot?> UpdateAsync(Slot slotModel);
+        Task<Slot?> RemoveAsync(int id);
     }
 }

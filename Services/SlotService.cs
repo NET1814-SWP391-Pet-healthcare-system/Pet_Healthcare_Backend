@@ -17,37 +17,37 @@ namespace Services
         {
             _slotRepository = slotRepository;
         }
-        public bool AddSlot(SlotAddRequest? request)
+
+        public async Task<Slot> AddSlotAsync(Slot slotModel)
         {
-            if (request == null) return false;
-            var slot = request.ToSlot();
-            return _slotRepository.Add(slot);
+            return await _slotRepository.AddAsync(slotModel);
         }
 
-        public Slot? GetSlotById(int id)
+        public async Task<Slot?> GetSlotByIdAsync(int id)
         {
-            return _slotRepository.GetById(id);
+            return await _slotRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Slot> GetSlots()
+        public async Task<IEnumerable<Slot>> GetSlotsAsync()
         {
-            return _slotRepository.GetAll();
+            return await _slotRepository.GetAllAsync();
         }
 
-        public bool RemoveSlot(int id)
+        public async Task<Slot?> RemoveSlotAsync(int id)
         {
-            return _slotRepository.Remove(id);
+            return await _slotRepository.RemoveAsync(id);
         }
 
-        public bool UpdateSlot(int id, SlotUpdateRequest? request)
+        public async Task<Slot?> UpdateSlotAsync(int id, Slot slotModel)
         {
-            var exisingSlot = _slotRepository.GetById(id);
-            if (exisingSlot == null) return false;
-            if (request == null) return false;
-            var slotModel = request.ToSlot();
-            exisingSlot.StartTime = slotModel.StartTime;
-            exisingSlot.EndTime = slotModel.EndTime;
-            return _slotRepository.Update(exisingSlot);
+            var existingSlot = await _slotRepository.GetByIdAsync(id);
+            if (existingSlot == null)
+            {
+                return null;
+            }
+            existingSlot.StartTime = slotModel.StartTime;
+            existingSlot.EndTime = slotModel.EndTime;   
+            return await _slotRepository.UpdateAsync(existingSlot);
         }
     }
 }
