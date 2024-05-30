@@ -1,5 +1,6 @@
 ﻿using RepositoryContracts;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
@@ -10,45 +11,40 @@ namespace Repositories
         {
             _context = context;
         }
-        public bool Add(Kennel? kennel)
+
+        public async Task<Kennel> AddAsync(Kennel kennelModel)
         {
-            if (kennel == null)
+            await _context.Kennels.AddAsync(kennelModel);
+            await _context.SaveChangesAsync();
+            return kennelModel;
+        }
+
+        public async Task<IEnumerable<Kennel>> GetAllAsync()
+        {
+            return await _context.Kennels.ToListAsync();
+        }
+
+        public async Task<Kennel?> GetByIdAsync(int id)
+        {
+            return await _context.Kennels.FindAsync(id);
+        }
+
+        public async Task<Kennel?> RemoveAsync(int id)
+        {
+            var kennelModel = await _context.Kennels.FindAsync(id);
+            if (kennelModel == null)
             {
-                return false;
+                return null;
             }
-            _context.Kennels.Add(kennel);
-            return SaveChanges();
+            _context.Kennels.Remove(kennelModel);
+            await _context.SaveChangesAsync();
+            return kennelModel;
         }
 
-        public IEnumerable<Kennel> GetAll()
+        public async Task<Kennel?> UpdateAsync(Kennel kennelModel)
         {
-            return _context.Kennels.ToList();
-        }
-
-        public Kennel? GetById(int id)
-        {
-            return _context.Kennels.Find(id);
-        }
-
-        public bool Remove(int id)
-        {
-            var kennel = _context.Kennels.Find(id);
-            if (kennel == null) return false;
-            _context.Kennels.Remove(kennel);
-            return SaveChanges();
-        }
-
-        public bool SaveChanges()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool Update(Kennel? kennel)
-        {
-            if (kennel == null) return false;
-            _context.Kennels.Update(kennel);
-            return SaveChanges();
+            await _context.SaveChangesAsync();
+            return kennelModel;
         }
     }
 }

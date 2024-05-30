@@ -22,7 +22,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _tokenService = tokenService;
         }
 
-        [HttpGet("users")]
+        [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
             if (!ModelState.IsValid)
@@ -37,7 +37,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(users);
         }
 
-        [HttpGet("users/{username}")]
+        [HttpGet("{username}")]
         public async Task<IActionResult> GetUsersByUsername([FromRoute] string username)
         {
             var users = await _userManager.Users.ToListAsync();
@@ -56,7 +56,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(usersContainsUsername);
         }
 
-        [HttpPost("register-user")]
+        [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] UserAddRequest userAddDto)
         {
             try
@@ -196,7 +196,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
         }
 
-        [HttpPut("update-user/{username}")]
+        [HttpPut("{username}")]
         public async Task<IActionResult> UpdateUser([FromRoute] string username ,[FromBody] UserUpdateRequest userUpdateDto)
         {
             try
@@ -247,7 +247,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
         }
 
-        [HttpDelete("delete-user/{username}")]
+        [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string username)
         {
             if (!ModelState.IsValid)

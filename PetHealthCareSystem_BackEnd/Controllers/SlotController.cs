@@ -2,6 +2,7 @@
 using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.SlotDTO;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -16,63 +17,84 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSlots() 
-        { 
-            var slots = _slotService.GetSlots();
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest(ModelState);
-            }
-            return Ok(slots);
-        }
-
-        [HttpGet("{slotId}")]
-        public IActionResult GetSlotById(int slotId) 
-        { 
-            var slot = _slotService.GetSlotById(slotId);
+        public async Task<IActionResult> GetSlots() 
+        {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(slot);
+            var slots = await _slotService.GetSlotsAsync();
+            var slotDtos = slots.Select(s => s.ToSlotDto()).ToList();
+            return Ok(slotDtos);
+        }
+
+        [HttpGet("{slotId:int}")]
+        public async Task<IActionResult> GetSlotById([FromRoute] int slotId) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var slot = await _slotService.GetSlotByIdAsync(slotId);
+            if (slot == null)
+            {
+                return NotFound("Slot does not exist");
+            }
+            var slotDto = slot.ToSlotDto();
+            return Ok(slotDto);
         }
 
         [HttpPost]
-        public IActionResult AddSlot([FromBody] SlotAddRequest slotAddRequest)
-        { 
-            if (slotAddRequest == null) { return BadRequest(ModelState); }
-            if (SlotValidation.IsOverlapping(slotAddRequest.ToSlot(), _slotService.GetSlots()))
-            { return BadRequest("Slot time cannot overlap with other slots"); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            _slotService.AddSlot(slotAddRequest);
-            return Ok("successfully created");
-        }
-
-        [HttpPut("{slotId}")]
-        public IActionResult UpdateSlot(int slotId, [FromBody] SlotUpdateRequest slotUpdateRequest)
-        { 
-            if (slotUpdateRequest == null) { return BadRequest(ModelState); }
-            if (SlotValidation.IsOverlapping(slotUpdateRequest.ToSlot(), _slotService.GetSlots()))
-            { return BadRequest("Slot time cannot overlap with other slots"); }
-            if (_slotService.GetSlotById(slotId) == null) { return NotFound(); }
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
-            if (!_slotService.UpdateSlot(slotId, slotUpdateRequest))
-            {
-                ModelState.AddModelError("", "Something went wrong updating slot");
-                return StatusCode(500, ModelState);
-            }
-            return Ok("successfully updated");
-        }
-
-        [HttpDelete("{slotId}")]
-        public IActionResult DeleteSlot(int slotId) 
+        public async Task<IActionResult> AddSlot([FromBody] SlotAddRequest slotAddRequest)
         {
-            if (_slotService.GetSlotById(slotId) == null) { return NotFound(); }
-            if (!_slotService.RemoveSlot(slotId))
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Something went wrong deleting slot");
+                return BadRequest(ModelState);
             }
-            return Ok("successfully deleted");
+            var slots = await _slotService.GetSlotsAsync();
+            var slotModel = slotAddRequest.ToSlotFromAdd();
+            if (SlotValidation.IsOverlapping(slotModel, slots))
+            { 
+                return BadRequest("Slot time cannot overlap with other slots"); 
+            }
+            await _slotService.AddSlotAsync(slotModel);
+            return CreatedAtAction(nameof(GetSlotById), new { slotId = slotModel.SlotId }, slotModel.ToSlotDto());
+        }
+
+        [HttpPut("{slotId:int}")]
+        public async Task<IActionResult> UpdateSlot([FromRoute] int slotId, [FromBody] SlotUpdateRequest slotUpdateRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var slots = await _slotService.GetSlotsAsync();
+            if (SlotValidation.IsOverlapping(slotUpdateRequest.ToSlotFromUpdate(), slots))
+            {
+                return BadRequest("Slot time cannot overlap with other slots");
+            }
+            var slotModel = await _slotService.UpdateSlotAsync(slotId, slotUpdateRequest.ToSlotFromUpdate());
+            if (slotModel == null)
+            {
+                return NotFound("Slot does not exist");
+            }
+            var slotDto = slotModel.ToSlotDto();
+            return Ok(slotDto);
+        }
+
+        [HttpDelete("{slotId:int}")]
+        public async Task<IActionResult> DeleteSlot(int slotId) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var slotModel = await _slotService.RemoveSlotAsync(slotId);
+            if (slotModel == null)
+            {
+                return NotFound("Slot does not exist");
+            }
+            return Ok(slotModel);
         }
     }
 }

@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface ISlotService
     {
-        bool AddSlot(SlotAddRequest? request);
-        Slot? GetSlotById(int id);
-        IEnumerable<Slot> GetSlots();
-        bool UpdateSlot(int id, SlotUpdateRequest? request);
-        bool RemoveSlot(int id);
+        Task<Slot> AddSlotAsync(Slot slotModel);
+        Task<Slot?> GetSlotByIdAsync(int id);
+        Task<IEnumerable<Slot>> GetSlotsAsync();
+        Task<Slot?> UpdateSlotAsync(int id, Slot slotModel);
+        Task<Slot?> RemoveSlotAsync(int id);
     }
 }

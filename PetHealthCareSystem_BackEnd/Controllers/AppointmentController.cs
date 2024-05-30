@@ -89,8 +89,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             
             await _appointmentService.AddAppointmentAsync(appointmentModel);
-            return Ok(appointmentModel.ToAppointmentDto());
-            //return CreatedAtAction(nameof(GetAppointmentById), new { id = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
+            return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
         }
 
         [HttpPut("rate/{appointmentId}")]
