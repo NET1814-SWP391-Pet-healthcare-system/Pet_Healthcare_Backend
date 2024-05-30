@@ -52,18 +52,9 @@ namespace Repositories
 
         public async Task<AppointmentDetail> UpdateAsync(AppointmentDetail appointmentDetail)
         {
-            if(appointmentDetail == null)
-            {
-                return null;
-            }
-            var existingAppointmentDetail = await GetByIdAsync(appointmentDetail.AppointmentDetailId);
-            if (existingAppointmentDetail == null)
-            {
-                return null;
-            }
-            _context.Update(appointmentDetail); 
+            
             await _context.SaveChangesAsync();
-            return existingAppointmentDetail;
+            return appointmentDetail;
         }
     }
 }

@@ -16,29 +16,29 @@ namespace Services
             _appointmentDetailRepository = appointmentDetailRepository;
         }
 
-        public async Task<AppointmentDetail> AddAppointmentDetail(AppointmentDetail? request)
+        public async Task<AppointmentDetail> AddAppointmentDetailAsync(AppointmentDetail? request)
         {
             return await _appointmentDetailRepository.AddAsync(request);
         }
 
  
 
-        public async Task<AppointmentDetail?>  GetAppointmentDetailById(int id)
+        public async Task<AppointmentDetail?> GetAppointmentDetailByIdAsync(int id)
         {
             return await _appointmentDetailRepository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<AppointmentDetail>> GetAppointmentDetails()
+        public async Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync()
         {
             return await _appointmentDetailRepository.GetAllAsync();
         }
 
-        public async Task<AppointmentDetail> RemoveAppointmentDetail(int id)
+        public async Task<AppointmentDetail> RemoveAppointmentDetailAsync(int id)
         {
              return await _appointmentDetailRepository.RemoveAsync(id);
         }
 
-        public async Task<AppointmentDetail> UpdateAppointmentDetail(int i ,AppointmentDetail request)
+        public async Task<AppointmentDetail> UpdateAppointmentDetailAsync(int i ,AppointmentDetail request)
         {
             var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(i);
             if(request == null || request == null || ExistingAppointmentDetail==null)

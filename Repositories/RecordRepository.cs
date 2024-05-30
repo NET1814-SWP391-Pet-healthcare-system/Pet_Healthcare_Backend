@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -17,49 +18,50 @@ namespace Repositories
             _context = context;
         }
 
-        public bool Add(Record record)
+        public async Task<Record> AddAsync(Record record)
         {
-            if(record == null) return false;
-
-            _context.Records.Add(record);
-            return true;
+            await _context.Records.AddAsync(record);
+            await _context.SaveChangesAsync();
+            return record;
         }
 
-        public IEnumerable<Record> GetAll()
+        public async Task<IEnumerable<Record>> GetAllAsync()
         {
-            return _context.Records.ToList();
+            return await _context.Records.ToListAsync();
         }
 
-        public IEnumerable<AppointmentDetail> GetAllAppointmentDetail()
+        public async Task<IEnumerable<AppointmentDetail>?> GetAllAppointmentDetailAsync()
         {
-            return _context.AppointmentDetails.ToList();
+            return await _context.AppointmentDetails.ToListAsync();
         }
 
-        public Record? GetById(int id)
+        public async Task<Record?> GetByIdAsync(int id)
         {
             
-            return _context.Records.FirstOrDefault(x => x.RecordId == id);
+            var record = await _context.Records.FirstOrDefaultAsync(x => x.RecordId == id);
+            await _context.SaveChangesAsync();
+            return record;
         }
 
-        public bool Remove(int id)
+        public async Task<Record?> RemoveAsync(int id)
         {
-            if(GetById(id) == null) return false;
+            var record = await GetByIdAsync(id);
+            if(record ==null)
+            {
+                return null;
+            }
 
-            _context.Records.Remove(GetById(id));
-            return true;
+             _context.Records.Remove(record);
+            await _context.SaveChangesAsync();
+            return record;
         }
 
-        public bool SaveChanges()
-        {
-            if(_context.SaveChanges() > 0) return true;
-            return false;
-        }
+     
 
-        public bool Update(Record record)
+        public async Task<Record?> UpdateAsync(Record record)
         {
-            if(record == null) return false;
-            _context.Update(record);
-            return true;
+            await _context.SaveChangesAsync();
+            return record;
         }
     }
 }
