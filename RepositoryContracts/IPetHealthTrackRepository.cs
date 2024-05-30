@@ -9,11 +9,10 @@ namespace RepositoryContracts
 {
     public interface IPetHealthTrackRepository
     {
-        IEnumerable<PetHealthTrack> GetAll();
-        PetHealthTrack? GetById(int id);
-        bool Add(PetHealthTrack? petHealthTrack);
-        bool Update(PetHealthTrack? petHealthTrack);
-        bool Remove(int id);
-        bool SaveChanges();
+        Task<IEnumerable<PetHealthTrack>> GetAllAsync();
+        Task<PetHealthTrack>? GetByIdAsync(int id);
+        Task<PetHealthTrack>? AddAsync(PetHealthTrack? petHealthTrack);
+        Task<PetHealthTrack>? UpdateAsync(PetHealthTrack? petHealthTrack);
+        Task<PetHealthTrack>? RemoveAsync(int id);
     }
 }
