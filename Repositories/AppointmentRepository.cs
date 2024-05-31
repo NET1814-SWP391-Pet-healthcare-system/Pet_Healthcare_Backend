@@ -35,10 +35,10 @@ namespace Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Appointment>> GetByDateAsync(DateOnly date)
+        public async Task<IEnumerable<Appointment>> GetByDateAndSlotAsync(DateOnly date, int slotId)
         {
             return await _context.Appointments
-                .Where(a => a.Date == date)
+                .Where(a => a.Date == date && a.SlotId == slotId)
                 .ToListAsync();
         }
 

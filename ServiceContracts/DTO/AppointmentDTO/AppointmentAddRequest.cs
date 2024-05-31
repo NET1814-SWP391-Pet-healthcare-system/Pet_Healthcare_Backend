@@ -13,6 +13,8 @@ namespace ServiceContracts.DTO.AppointmentDTO
     // Add request as a customer
     public class AppointmentAddRequest
     {
+        public string? CustomerUserName { get; set; }
+
         [Required(ErrorMessage = "Pet ID is required.")]
         public int PetId { get; set; }
 

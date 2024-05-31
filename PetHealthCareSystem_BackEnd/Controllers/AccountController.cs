@@ -167,7 +167,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
-            if (user == null) { return Unauthorized("Invalid username!"); }
+            if (user == null) { return Unauthorized("Username not found or password incorrect"); }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 

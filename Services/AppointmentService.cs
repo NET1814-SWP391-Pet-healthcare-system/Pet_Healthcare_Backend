@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using Entities;
+using Entities.Enum;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.AppointmentDTO;
@@ -42,7 +43,7 @@ namespace Services
         public async Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if (existingAppointment == null) 
+            if (existingAppointment == null || existingAppointment.Status != AppointmentStatus.Processing) 
             {
                 return null;
             }
@@ -52,9 +53,9 @@ namespace Services
             return await _appointmentRepository.UpdateAsync(existingAppointment);
         }
 
-        public async Task<IEnumerable<Appointment>> GetAppointmentsInDateAsync(DateOnly date)
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByDateAndSlotAsync(DateOnly date, int slotId)
         {
-            return await _appointmentRepository.GetByDateAsync(date);
+            return await _appointmentRepository.GetByDateAndSlotAsync(date, slotId);
         }
     }
 }

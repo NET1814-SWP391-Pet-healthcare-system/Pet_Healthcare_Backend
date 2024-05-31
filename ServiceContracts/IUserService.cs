@@ -9,6 +9,7 @@ namespace ServiceContracts
 {
     public interface IUserService
     {
-        Task<Customer> GetCustomerWithPets(string customerId);
+        Task<Customer?> GetCustomerWithPets(string customerId);
+        Task<Vet?> GetAvailableVetAsync(DateOnly date, int slotId);
     }
 }

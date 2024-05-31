@@ -10,7 +10,7 @@ namespace RepositoryContracts
     public interface IAppointmentRepository
     {
         Task<IEnumerable<Appointment>> GetAllAsync();
-        Task<IEnumerable<Appointment>> GetByDateAsync(DateOnly date);
+        Task<IEnumerable<Appointment>> GetByDateAndSlotAsync(DateOnly date, int slotId);
         Task<Appointment?> GetByIdAsync(int id);
         Task<Appointment> AddAsync(Appointment appointmentModel);
         Task<Appointment?> UpdateAsync(Appointment appointmentModel);
