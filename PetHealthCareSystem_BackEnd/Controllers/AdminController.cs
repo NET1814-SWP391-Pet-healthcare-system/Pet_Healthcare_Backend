@@ -210,14 +210,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return NotFound();
                 }
-                user.UserName = (userUpdateDto.Username != null) ? userUpdateDto.Username : user.UserName;
-                user.Email = (userUpdateDto.Email != null) ? userUpdateDto.Email : user.Email;
-                user.FirstName = (userUpdateDto.FirstName != null) ? userUpdateDto.FirstName : user.FirstName;
-                user.LastName = (userUpdateDto.LastName != null) ? userUpdateDto.LastName : user.LastName;
+                user.UserName = (userUpdateDto.Username != "") ? userUpdateDto.Username : user.UserName;
+                user.Email = (userUpdateDto.Email != "") ? userUpdateDto.Email : user.Email;
+                user.FirstName = (userUpdateDto.FirstName != "") ? userUpdateDto.FirstName : user.FirstName;
+                user.LastName = (userUpdateDto.LastName != "") ? userUpdateDto.LastName : user.LastName;
                 user.Gender = (userUpdateDto.Gender != null) ? userUpdateDto.Gender : user.Gender;
-                user.Address = (userUpdateDto.Address != null) ? userUpdateDto.Address : user.Address;
-                user.Country = (userUpdateDto.Country != null) ? userUpdateDto.Country : user.Country;
-                user.ImageURL = (userUpdateDto.ImageURL != null) ? userUpdateDto.ImageURL : user.ImageURL;
+                user.Address = (userUpdateDto.Address != "") ? userUpdateDto.Address : user.Address;
+                user.Country = (userUpdateDto.Country != "") ? userUpdateDto.Country : user.Country;
+                user.ImageURL = (userUpdateDto.ImageURL != "") ? userUpdateDto.ImageURL : user.ImageURL;
                 user.IsActive = (userUpdateDto.IsActive != null) ? userUpdateDto.IsActive : user.IsActive;
                 if (user is Vet)
                 {

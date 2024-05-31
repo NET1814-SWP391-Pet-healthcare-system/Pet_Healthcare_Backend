@@ -16,9 +16,13 @@ namespace Services
         {
             _userRepository = userRepository;
         }
-        public async Task<Customer> GetCustomerWithPets(string customerId)
+        public async Task<Customer?> GetCustomerWithPets(string customerId)
         {
             return await _userRepository.GetCustomerWithPetsAsync(customerId);
+        }
+        public async Task<Vet?> GetAvailableVetAsync(DateOnly date, int slotId)
+        {
+            return await _userRepository.GetAvailableVetAsync(date, slotId);
         }
     }
 }

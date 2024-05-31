@@ -12,9 +12,9 @@ namespace ServiceContracts.DTO.AppointmentDTO
 {
     public class AppointmentRatingRequest
     {
-        [Required(ErrorMessage = "must rate the appointment")]
+        [Required]
         [Range(1,5)]
         public int Rating { get; set; }
-        public string? Comments { get; set; }
+        public string Comments { get; set; } = string.Empty;
     }
 }

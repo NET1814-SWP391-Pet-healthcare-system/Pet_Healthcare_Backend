@@ -10,7 +10,7 @@ namespace ServiceContracts.DTO.KennelDTO
 {
     public class KennelAddRequest
     {
-        public string? Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         [Required]
         [Range(1, 4)]
         public int Capacity { get; set; }
