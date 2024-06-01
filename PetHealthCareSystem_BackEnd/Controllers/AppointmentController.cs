@@ -61,8 +61,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointment.ToAppointmentDto());
         }
 
-        [Authorize(Policy = "CustomerPolicy")]
-        [Authorize(Policy = "EmployeePolicy")]
+        [Authorize(Policy = "CustomerOrEmployeePolicy")]
         [HttpPost("book")]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
         {
@@ -98,9 +97,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             // Get Slot
             var slot = await _slotService.GetSlotByIdAsync(appointmentAddRequest.SlotId);
+            if (slot == null)
+            {
+                return BadRequest("Slot does not exist");
+            }
 
             // Get Service
             var service = await _serviceService.GetServiceById(appointmentAddRequest.ServiceId);
+            if (service == null)
+            {
+                return BadRequest("Service does not exist");
+            }
 
             // Get Date and Slot
             var appointmentDate = DateOnly.FromDateTime(appointmentAddRequest.Date);
@@ -144,6 +151,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.CustomerId = userModel.Id;
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
+                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost;
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
@@ -166,6 +174,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointmentModel.ToAppointmentDto());
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> DeleteAppointment([FromRoute] int appointmentId)
         {

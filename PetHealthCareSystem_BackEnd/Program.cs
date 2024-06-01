@@ -100,6 +100,9 @@ builder.Services.AddAuthorization(options => {
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
     options.AddPolicy("VetPolicy", policy => policy.RequireRole("Vet"));
     options.AddPolicy("EmployeePolicy", policy => policy.RequireRole("Employee"));
+    options.AddPolicy("CustomerOrEmployeePolicy", policy =>
+            policy.RequireAssertion(context =>
+                context.User.IsInRole("Customer") || context.User.IsInRole("Employee")));
 });
 
 builder.Services.AddCors(options =>
