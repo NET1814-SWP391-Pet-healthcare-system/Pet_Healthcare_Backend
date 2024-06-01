@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,13 +20,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailService _emailService;
 
         public AccountController(UserManager<User> userManager,
-            ITokenService tokenService, SignInManager<User> signInManager)
+            ITokenService tokenService, SignInManager<User> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         ////Create
@@ -253,9 +256,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            //var resetLink = Url.ActionLink("ResetPassword", "Account", new { token, email = user.Email }, Request.Scheme);
+            var resetLink = Url.ActionLink("ResetPassword", "Authentication", new { token, email = user.Email }, Request.Scheme);
 
-            return Ok(token);
+            return Ok(resetLink);
         }
 
         [HttpPost("reset-password")]
@@ -266,6 +269,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
             return Ok();
+        }
+
+        [HttpGet("test-email")]
+        public async Task<IActionResult> TestEmail()
+        {
+            var message = new Message(new string[] { "theideasolution@gmail.com" }, "Test", "<h1>Subscribe to my channel</h1>");
+            
+            _emailService.SendEmail(message);
+            return Ok("Email Sent Successfully");
         }
 
         [HttpGet("run-seed-data-only-run-once")]
