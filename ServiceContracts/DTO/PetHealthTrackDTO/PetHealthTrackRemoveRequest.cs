@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ServiceContracts.Mappers;
 
 namespace ServiceContracts.DTO.PetHealthTrackDTO
 {
@@ -13,14 +14,11 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
     {
         [Required(ErrorMessage = "Must enter a valid ID")]
         public int PetHealthTrackId { get; set; }
-        
 
-        public PetHealthTrack toPetHealthTrack()
+
+        public PetHealthTrack ToPetHealthTrack()
         {
-            return new PetHealthTrack
-            {
-                PetHealthTrackId = PetHealthTrackId
-            };
+            return PetHealthTrackMapper.ToPetHealthTrackFromRemove(this);
         }
     }
 }
