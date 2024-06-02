@@ -21,7 +21,7 @@ namespace ServiceContracts.Mappers
                 Medication = request.Medication
             };
         }
-        public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetail request)
+        public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetailAddRequest request)
         {
             return new AppointmentDetail
             {
