@@ -12,7 +12,7 @@ namespace Repositories
             _context = context;
         }
 
-        public async Task<PetHealthTrack>? AddAsync(PetHealthTrack? petHealthTrack)
+        public async Task<PetHealthTrack> AddAsync(PetHealthTrack? petHealthTrack)
         {
             await _context.PetHealthTracks.AddAsync(petHealthTrack);
             await _context.SaveChangesAsync();
@@ -41,7 +41,7 @@ namespace Repositories
             return pht;
         }
 
-        public async Task<PetHealthTrack>? UpdateAsync(PetHealthTrack? petHealthTrack)
+        public async Task<PetHealthTrack> UpdateAsync(PetHealthTrack? petHealthTrack)
         {
             if (petHealthTrack == null)
             {

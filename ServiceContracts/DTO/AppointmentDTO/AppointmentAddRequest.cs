@@ -26,8 +26,8 @@ namespace ServiceContracts.DTO.AppointmentDTO
         [Required(ErrorMessage = "Service ID is required.")]
         public int ServiceId { get; set; }
 
-        [Required(ErrorMessage = "Date is required.")]
-        [DataType(DataType.Date, ErrorMessage ="Invalid Date Formate (yyyy-MM-dd)")]
+        [Required(ErrorMessage = "DateOnly is required.")]
+        [DataType(DataType.Date, ErrorMessage ="Invalid DateOnly Formate (yyyy-MM-dd)")]
         public DateTime Date { get; set; }
     }
 }
