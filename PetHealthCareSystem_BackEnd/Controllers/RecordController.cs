@@ -1,8 +1,10 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ServiceContracts;
 using ServiceContracts.DTO.RecordDTO;
 using ServiceContracts.DTO.Result;
+using ServiceContracts.Mappers;
 using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -12,9 +14,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class RecordController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly RecordService _recordService;
+        private readonly IRecordService _recordService;
 
-        public RecordController(ApplicationDbContext context, RecordService recordService)
+        public RecordController(ApplicationDbContext context, IRecordService recordService)
         {
             _context = context;
             _recordService = recordService;
@@ -22,10 +24,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Create
         [HttpPost]
-        public ActionResult<BusinessResult> AddRecord(Record? record)
+        public async Task<ActionResult<BusinessResult>> AddRecordAsync(RecordAddRequest? record)
         {
             BusinessResult businessResult = new BusinessResult();
-            if (record == null)
+            if(ModelState.IsValid == false)
+            {
+                return BadRequest(ModelState);
+            }
+            var recordModel = record.ToRecordFromAdd();
+
+            if (recordModel == null)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
@@ -33,8 +41,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            _recordService.AddRecordAsync(record);
-            businessResult.Data = record;
+            var data = await _recordService.AddRecordAsync(recordModel);
+            if(data == null)
+            {
+                businessResult.Status = 500;
+                businessResult.Data = null;
+                businessResult.Message = "Failed to retrived data";
+                return StatusCode(StatusCodes.Status500InternalServerError, businessResult);
+            }
+            businessResult.Data = data;
             businessResult.Message = "Successful";
             businessResult.Status = 200;
             return Ok(businessResult);
@@ -42,20 +57,28 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Read
         [HttpGet("records")]
-        public ActionResult<BusinessResult> GetRecords()
+        public async Task<ActionResult<BusinessResult>> GetRecords()
         {
+            var list = await _recordService.GetRecordsAsync();
             BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _recordService.GetRecordsAsync();
+            if(list == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "No Record found";
+                return NotFound(businessResult);
+            }
+            businessResult.Data = list;
             businessResult.Message = "Successful";
             businessResult.Status = 200;
-            return Ok(businessResult);
+            return  Ok(businessResult);
         }
 
         [HttpGet("id/{id}")]
-        public ActionResult<BusinessResult> GetRecordById(int id)
+        public async Task<ActionResult<BusinessResult>> GetRecordById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var user = _recordService.GetRecordByIdAsync(id);
+            var user = await _recordService.GetRecordByIdAsync(id);
             if (user == null)
             {
                 businessResult.Status = 404;
@@ -70,10 +93,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<BusinessResult> RemoveRecord(int id)
+        public async Task<ActionResult<BusinessResult>> RemoveRecord(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var record = _recordService.RemoveRecordAsync(id);
+            var record = await _recordService.RemoveRecordAsync(id);
             if (record!=null)
             {
                 businessResult.Status = 200;
@@ -89,9 +112,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("{id}")]
-        public ActionResult<BusinessResult> UpdateRecord(int id, Record? record)
+        public async Task<ActionResult<BusinessResult>> UpdateRecord(int id, RecordUpdateRequest? record)
         {
             BusinessResult businessResult = new BusinessResult();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (record == null)
             {
                 businessResult.Status = 400;
@@ -99,7 +128,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            var recordUpdated = _recordService.UpdateRecordAsync(id, record);
+
+            var recordModel = record.ToRecordFromUpdate();
+
+            var recordUpdated = await _recordService.UpdateRecordAsync(id, recordModel);
 
             if (recordUpdated !=null)
             {

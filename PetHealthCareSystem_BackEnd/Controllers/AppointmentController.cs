@@ -109,7 +109,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest("Service does not exist");
             }
 
-            // Get Date and Slot
+            // Get DateOnly and Slot
             var appointmentDate = DateOnly.FromDateTime(appointmentAddRequest.Date);
             var appointmentSlot = appointmentAddRequest.SlotId;
 
