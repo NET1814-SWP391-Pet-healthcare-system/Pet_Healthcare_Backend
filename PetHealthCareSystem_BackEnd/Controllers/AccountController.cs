@@ -31,6 +31,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _emailService = emailService;
         }
 
+        #region
         ////Create
         //[HttpPost]
         //public ActionResult<BusinessResult> AddUser(UserAddRequest? userAddRequest)
@@ -159,6 +160,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         //    businessResult.Message = "User deleted";
         //    return Ok(businessResult);
         //}
+        #endregion
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -209,18 +211,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     IsActive = true
                 };
 
-                var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password);
+                var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password!);
 
                 if (createCustomer.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
                     if (roleResult.Succeeded)
                     {
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
+                        var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
+                        var message = new Message(new string[] { customer.Email! }, "Confirmation email link", confirmationLink!);
+
+                        _emailService.SendEmail(message);
+
                         return Ok(
                             new NewUserDto
                             {
-                                UserName = customer.UserName,
-                                Email = customer.Email,
+                                UserName = customer.UserName!,
+                                Email = customer.Email!,
                                 Token = _tokenService.CreateToken(customer, "Customer")
                             }
                         );
@@ -278,6 +286,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             
             _emailService.SendEmail(message);
             return Ok("Email Sent Successfully");
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    return Ok("Email verified successfully");
+                }
+            }
+            return StatusCode(500, "This user does not exist");
         }
 
         [HttpGet("run-seed-data-only-run-once")]
