@@ -10,6 +10,7 @@ using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
+using System.Reflection.Metadata;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -257,16 +258,25 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email);
-            if (user == null)
+            var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email!);
+            if (user != null)
             {
-                return Ok();
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+                var message = new Message(new string[] { user.Email! }, "Forgot Passord link", forgotPasswordLink!);
+                _emailService.SendEmail(message);
+
+                return Ok(message);
             }
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.ActionLink("ResetPassword", "Authentication", new { token, email = user.Email }, Request.Scheme);
+            return BadRequest("Couldn't send link pls try again");
+        }
 
-            return Ok(resetLink);
+        [HttpGet("reset-password")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        { 
+            var resetPasswordModel = new ResetPasswordRequest { Token = token, Email = email };
+            return Ok(resetPasswordModel);
         }
 
         [HttpPost("reset-password")]
@@ -276,7 +286,23 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            return Ok();
+
+            var user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email!);
+            if (user != null) 
+            {
+                var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordRequest.Token!, resetPasswordRequest.Password!);
+                if (!resetPasswordResult.Succeeded)
+                {
+                    foreach (var error in resetPasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);    
+                    }
+                    return Ok(ModelState);
+                }
+                return Ok("Password has been changed");
+            }
+
+            return BadRequest("Something went wrong");
         }
 
         [HttpGet("test-email")]
@@ -286,7 +312,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             
             _emailService.SendEmail(message);
             return Ok("Email Sent Successfully");
-        }
+        }   
 
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
