@@ -102,7 +102,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             // Get Service
             var service = await _serviceService.GetServiceById(appointmentAddRequest.ServiceId);
 
-            // Get DateOnly and Slot
+            // Get Date and Slot
             var appointmentDate = DateOnly.FromDateTime(appointmentAddRequest.Date);
             var appointmentSlot = appointmentAddRequest.SlotId;
 
