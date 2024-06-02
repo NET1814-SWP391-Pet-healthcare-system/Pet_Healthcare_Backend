@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts.DTO.PetHealthTrackDTO;
 using ServiceContracts;
-using ServiceContracts.DTO.Result;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -20,23 +19,22 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPetHealthTrack(PetHealthTrack? petHealthTrack)
+        public IActionResult AddPetHealthTrack(PetHealthTrackAddRequest? petHealthTrackAddRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
-            if (petHealthTrack == null)
+            if (petHealthTrackAddRequest == null)
             {
                 return BadRequest("petHealthTrackRequest is null");
             }
 
-            _petHealthTrackService.AddPetHealthTrackAsync(petHealthTrack);
+            _petHealthTrackService.AddPetHealthTrack(petHealthTrackAddRequest);
 
             return Ok("Created successfully");
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PetHealthTrack>> GetPetHealthTrackById(int id)
+        public ActionResult<PetHealthTrack> GetPetHealthTrackById(int id)
         {
-            var petHealthTrack = _petHealthTrackService.GetPetHealthTrackByIdAsync(id);
+            var petHealthTrack = _petHealthTrackService.GetPetHealthTrackById(id);
             if (petHealthTrack == null)
             {
                 return BadRequest("PetHealthTrack not found");
