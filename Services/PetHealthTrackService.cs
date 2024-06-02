@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.PetHealthTrackDTO;
@@ -18,50 +19,43 @@ namespace Services
     ////        _petHealthTrackRepository = petHealthTrackRepository;
     ////    }
 
-    ////    public bool AddPetHealthTrack(PetHealthTrackAddRequest request)
-    ////    {
-    ////        if(request == null)
-    ////        {
-    ////            return false;
-    ////        }
-    ////        var pht = request.toPetHealthTrack();
-            
-    ////        return _petHealthTrackRepository.Add(pht);
-    ////    }
 
-    ////    public PetHealthTrack? GetPetHealthTrackById(int id)
-    ////    {
-    ////        return _petHealthTrackRepository.GetById(id);
-    ////    }
+        public async Task<PetHealthTrack>? AddPetHealthTrackAsync(PetHealthTrack request)
+        {
+           
+            return await _petHealthTrackRepository.AddAsync(request);
+        }
 
-    ////    public IEnumerable<PetHealthTrack> GetPetHealthTracks()
-    ////    {
-    ////        return _petHealthTrackRepository.GetAll();
-    ////    }
 
-    ////    public bool RemovePetHealthTrack(int id)
-    ////    {
-    ////        var pht = _petHealthTrackRepository.GetById(id);
-    ////        if(pht == null)
-    ////        {
-    ////            return false;
-    ////        }
+        public async Task<PetHealthTrack?> GetPetHealthTrackByIdAsync(int id)
+        {
+            return await _petHealthTrackRepository.GetByIdAsync(id);
+        }
 
-    ////        return _petHealthTrackRepository.Remove(id);
-    ////    }
 
-    ////    public bool UpdatePetHealthTrack(PetHealthTrackUpdateRequest request)
-    ////    {
-    ////        var existingPHT = _petHealthTrackRepository.GetById(request.PetHealthTrackId);
-    ////        if(existingPHT == null) return false;
-    ////        if (request == null) return false;
-    ////        var phtModel = request.toPetHealthTrack();
-    ////        existingPHT.HospitalizationId = phtModel.HospitalizationId;
-    ////        existingPHT.Hospitalization = phtModel.Hospitalization;
-    ////        existingPHT.Date = phtModel.Date;
-    ////        existingPHT.Description = phtModel.Description;
-    ////        existingPHT.Status = phtModel.Status;
-    ////        return _petHealthTrackRepository.Update(existingPHT);
-    ////    }
-    //}
-}
+        public async Task<IEnumerable<PetHealthTrack>> GetPetHealthTracksAsync()
+        {
+            return await _petHealthTrackRepository.GetAllAsync();
+        }
+
+        public async Task<PetHealthTrack>? RemovePetHealthTrackAsync(int id)
+        {
+            return await _petHealthTrackRepository.RemoveAsync(id);
+        }
+
+
+        public async Task<PetHealthTrack>? UpdatePetHealthTrackAsync(PetHealthTrack request)
+        {
+            var existingPHT = await _petHealthTrackRepository.GetByIdAsync(request.PetHealthTrackId);
+            if (existingPHT == null) return null;
+            if (request == null) return null;
+            var phtModel = request;
+            existingPHT.HospitalizationId = phtModel.HospitalizationId;
+            existingPHT.Hospitalization = phtModel.Hospitalization;
+            existingPHT.Date = phtModel.Date;
+            existingPHT.Description = phtModel.Description;
+            existingPHT.Status = phtModel.Status;
+            _petHealthTrackRepository.UpdateAsync(existingPHT);
+            return existingPHT;
+        }
+    }
