@@ -6,15 +6,10 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
 {
     public class PetHealthTrackUpdateRequest
     {
-        [Required(ErrorMessage = "Must enter a valid ID")]
+        [Required(ErrorMessage = "Must acquire a valid ID")]
         public int PetHealthTrackId { get; set; }
-
         [Required]
-        public int? HospitalizationId { get; set; }
-
-        [Required]
-        public Hospitalization? Hospitalization { get; set; }
-
+        public int? HospitalizationId { get; set; } 
         public string? Description { get; set; }
 
         [Required]
@@ -27,9 +22,8 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
         {
             return new PetHealthTrack
             {
-                PetHealthTrackId = PetHealthTrackId,
+               PetHealthTrackId = PetHealthTrackId,
                 HospitalizationId = HospitalizationId,
-                Hospitalization = Hospitalization,
                 Description = Description,
                 Date = DateOnly,
                 Status = Status

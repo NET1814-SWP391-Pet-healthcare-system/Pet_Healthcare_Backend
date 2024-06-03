@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServiceContracts.DTO.PetHealthTrackDTO;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -20,10 +21,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPetHealthTrack(PetHealthTrack? petHealthTrack)
+        public async Task<IActionResult> AddPetHealthTrack(PetHealthTrackAddRequest? petHealthTrack)
         {
+
             BusinessResult businessResult = new BusinessResult();
-            if (petHealthTrack == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("petHealthTrackRequest is null");
             }

@@ -18,7 +18,10 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
 
         public PetHealthTrack ToPetHealthTrack()
         {
-            return PetHealthTrackMapper.ToPetHealthTrackFromRemove(this);
+            return new PetHealthTrack
+            {
+                PetHealthTrackId = PetHealthTrackId
+            };
         }
     }
 }
