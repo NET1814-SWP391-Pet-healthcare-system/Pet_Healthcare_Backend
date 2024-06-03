@@ -17,35 +17,41 @@ namespace ServiceContracts.Mappers
             };
         }
 
+        public static PetHealthTrackDTO ToPetHealthTrackFromAddDTO(this PetHealthTrackAddRequest request)
+        {
+            return new PetHealthTrackDTO
+            {
+                DateOnly = request.DateOnly,
+                Description = request.Description,
+                Status = request.Status,
+                HospitalizationId = request.HospitalizationId,
+                
+            };
+        }
         public static PetHealthTrack ToPetHealthTrackFromAdd(this PetHealthTrackAddRequest request)
         {
             return new PetHealthTrack
             {
-                PetHealthTrackId = request.PetHealthTrackId,
                 Date = request.DateOnly,
                 Description = request.Description,
                 Status = request.Status,
-                HospitalizationId = request.HospitalizationId,
-                Hospitalization = request.Hospitalization
+                HospitalizationId = request.HospitalizationId
             };
         }
-
-        public static PetHealthTrack ToPetHealthTrackFromUpdate(this PetHealthTrackUpdateRequest request)
+        public static PetHealthTrackDTO ToPetHealthTrackFromUpdate(this PetHealthTrackUpdateRequest request)
         {
-            return new PetHealthTrack
+            return new PetHealthTrackDTO
             {
-                PetHealthTrackId = request.PetHealthTrackId,
-                Date = request.DateOnly,
+                DateOnly = request.DateOnly,
                 Description = request.Description,
                 Status = request.Status,
                 HospitalizationId = request.HospitalizationId,
-                Hospitalization = request.Hospitalization
             };
         }
 
-        public static PetHealthTrack ToPetHealthTrackFromRemove(this PetHealthTrackRemoveRequest request)
+        public static PetHealthTrackDTO ToPetHealthTrackFromRemove(this PetHealthTrackRemoveRequest request)
         {
-            return new PetHealthTrack
+            return new PetHealthTrackDTO
             {
                 PetHealthTrackId = request.PetHealthTrackId
             };
