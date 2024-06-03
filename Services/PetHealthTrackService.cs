@@ -22,7 +22,7 @@ namespace Services
 
         public async Task<PetHealthTrack>? AddPetHealthTrackAsync(PetHealthTrack request)
         {
-           
+
             return await _petHealthTrackRepository.AddAsync(request);
         }
 
@@ -59,3 +59,4 @@ namespace Services
             return existingPHT;
         }
     }
+}
