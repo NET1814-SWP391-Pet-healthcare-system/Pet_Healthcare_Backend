@@ -13,12 +13,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class RecordController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IRecordService _recordService;
 
         public RecordController(ApplicationDbContext context, IRecordService recordService)
         {
-            _context = context;
             _recordService = recordService;
         }
 
@@ -74,7 +72,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return  Ok(businessResult);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<BusinessResult>> GetRecordById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
@@ -119,14 +117,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (record == null)
-            {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Request is null";
-                return BadRequest(businessResult);
             }
 
             var recordModel = record.ToRecordFromUpdate();
