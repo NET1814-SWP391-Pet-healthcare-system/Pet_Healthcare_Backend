@@ -223,7 +223,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
                         var message = new Message(new string[] { customer.Email! }, "Confirmation email link", confirmationLink!);
 
-                        _emailService.SendEmail(message);
+                        await _emailService.SendEmailAsync(message);
 
                         return Ok(
                             new NewUserDto
@@ -264,7 +264,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
                 var message = new Message(new string[] { user.Email! }, "Forgot Passord link", forgotPasswordLink!);
-                _emailService.SendEmail(message);
+                await _emailService.SendEmailAsync(message);
 
                 return Ok(message);
             }
@@ -311,7 +311,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var resetLink = "http://localhost:5173/";
             var message = new Message(new string[] { "soybean26102004@gmail.com" }, "Test", $"Reset your password using this link: <a href='{resetLink}'>link</a>");
             
-            _emailService.SendEmail(message);
+            await _emailService.SendEmailAsync(message);
             return Ok("Email Sent Successfully");
         }   
 
