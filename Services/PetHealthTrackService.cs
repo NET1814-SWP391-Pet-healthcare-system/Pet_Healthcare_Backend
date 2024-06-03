@@ -11,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    //public class PetHealthTrackService : IPetHealthTrackService
-    //{
-    ////    private readonly IPetHealthTrackRepository _petHealthTrackRepository;
-    ////    public PetHealthTrackService(IPetHealthTrackRepository petHealthTrackRepository)
-    ////    {
-    ////        _petHealthTrackRepository = petHealthTrackRepository;
-    ////    }
+    public class PetHealthTrackService : IPetHealthTrackService
+    {
+        private readonly IPetHealthTrackRepository _petHealthTrackRepository;
+        public PetHealthTrackService(IPetHealthTrackRepository petHealthTrackRepository)
+        {
+            _petHealthTrackRepository = petHealthTrackRepository;
+        }
 
 
         public async Task<PetHealthTrack>? AddPetHealthTrackAsync(PetHealthTrack request)
         {
-           
+
             return await _petHealthTrackRepository.AddAsync(request);
         }
 
@@ -59,3 +59,4 @@ namespace Services
             return existingPHT;
         }
     }
+}

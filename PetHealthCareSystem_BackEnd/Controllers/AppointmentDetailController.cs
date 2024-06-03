@@ -1,6 +1,7 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.AppointmentDetailDTO;
 using ServiceContracts.DTO.Result;
@@ -32,15 +33,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             BusinessResult businessResult = new BusinessResult();
             var appointmentDetailModel = appointmentDetail.ToAppointmentDetailFromAdd();
-
             if (appointmentDetailModel == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "AppointmentDetail request is null";
+                return NotFound(businessResult);
+            }
+            if (AppointmentDetailValidation.IsAppointmentDetailValid(appointmentDetailModel) == false)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
-                businessResult.Message = "AppointmentDetail request is null";
+                businessResult.Message = "AppointmentId or RecordId request is not exist";
                 return BadRequest(businessResult);
             }
-
+        
             var data = await _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetailModel);
 
             if(data != null)
@@ -53,7 +60,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             
             businessResult.Status = 500;
             businessResult.Data = null;
-            businessResult.Message = "Failed to retrive data";
+            businessResult.Message = "Failed to retrieve data";
             return StatusCode(StatusCodes.Status500InternalServerError, businessResult);
         }
 
@@ -125,7 +132,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Delete
         [HttpDelete("{appointmentDetail}")]
-        public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
+        public async Task<IActionResult>DeleteAppointmentDetailById([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(id);
