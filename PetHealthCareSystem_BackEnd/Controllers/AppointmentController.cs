@@ -159,6 +159,22 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
         }
 
+        [Authorize(Policy = "EmployeePolicy")]
+        [HttpPut("check-in/{appointmentId}")]
+        public async Task<IActionResult> CheckIn([FromRoute] int appointmentId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var appointmentModel = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
+            if (appointmentModel == null)
+            {
+                return BadRequest("Appointment is not eligable for check-in (needs to be booked state)");
+            }
+            return Ok(appointmentModel.ToAppointmentDto());
+        }
+
         [Authorize(Policy = "CustomerPolicy")]
         [HttpPut("rate/{appointmentId}")]
         public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
@@ -170,7 +186,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var appointmentModel = await _appointmentService.RateAppointmentAsync(appointmentId, AppointmentRatingRequest.ToAppointmentFromRating());
             if (appointmentModel == null)
             {
-                return NotFound("Appointment is not eligable for rating (needs to be processing state)");
+                return BadRequest("Appointment is not eligable for rating (needs to be processing state)");
             }
             return Ok(appointmentModel.ToAppointmentDto());
         }

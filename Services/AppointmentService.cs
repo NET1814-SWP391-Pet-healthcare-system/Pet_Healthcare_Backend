@@ -57,5 +57,16 @@ namespace Services
         {
             return await _appointmentRepository.GetByDateAndSlotAsync(date, slotId);
         }
+
+        public async Task<Appointment?> CheckInAppointmentAsync(int id)
+        {
+            var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
+            if (existingAppointment == null || existingAppointment.Status != AppointmentStatus.Boooked)
+            {
+                return null;
+            }
+            existingAppointment.Status = AppointmentStatus.Processing;
+            return await _appointmentRepository.UpdateAsync(existingAppointment);
+        }
     }
 }

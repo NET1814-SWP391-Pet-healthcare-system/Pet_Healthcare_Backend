@@ -308,7 +308,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet("test-email")]
         public async Task<IActionResult> TestEmail()
         {
-            var message = new Message(new string[] { "theideasolution@gmail.com" }, "Test", "<h1>Subscribe to my channel</h1>");
+            var resetLink = "http://localhost:5173/";
+            var message = new Message(new string[] { "soybean26102004@gmail.com" }, "Test", $"Reset your password using this link: <a href='{resetLink}'>link</a>");
             
             _emailService.SendEmail(message);
             return Ok("Email Sent Successfully");
