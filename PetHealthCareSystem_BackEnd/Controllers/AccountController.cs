@@ -221,7 +221,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     {
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
                         var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
-                        var message = new Message(new string[] { customer.Email! }, "Confirmation email link", confirmationLink!);
+                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
 
                         await _emailService.SendEmailAsync(message);
 
@@ -262,11 +262,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
-                var message = new Message(new string[] { user.Email! }, "Forgot Passord link", forgotPasswordLink!);
+
+                var reactUrl = "http://localhost:5173/reset-password";
+                //var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+                var queryString = $"?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email!)}";
+                var forgotPasswordLink = $"{ reactUrl }{ queryString }";
+                var message = new Message(new string[] { user.Email! }, "Forgot Password Link", forgotPasswordLink!);
                 await _emailService.SendEmailAsync(message);
 
-                return Ok(message);
+                return Ok($"Password change request is sent on Email {user.Email}. Please open your email & click the link");
             }
 
             return BadRequest("Couldn't send link pls try again");

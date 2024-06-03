@@ -143,6 +143,8 @@ builder.Services.AddScoped<IVaccineService, VaccineService>();
 builder.Services.AddScoped<IPetVaccinationRepository, PetVaccinationRepository>();
 builder.Services.AddScoped<IPetVaccinationService, PetVaccinationService>();
 
+builder.Services.AddScoped<IPetHealthTrackRepository, PetHealthTrackRepository>();
+builder.Services.AddScoped<IPetHealthTrackService, PetHealthTrackService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
@@ -160,7 +162,7 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials()
-    //.WithOrigins("https//localhost:44351))
+    .WithOrigins("https//localhost:5173")
     .SetIsOriginAllowed(origin => true));
 
 app.UseAuthentication();
