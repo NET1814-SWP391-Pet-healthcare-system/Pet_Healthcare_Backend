@@ -14,12 +14,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class AppointmentDetailController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IAppointmentDetailService _appointmentDetailService;
 
-        public AppointmentDetailController(ApplicationDbContext context, IAppointmentDetailService appointmentDetailService)
+        public AppointmentDetailController(IAppointmentDetailService appointmentDetailService)
         {
-            _context = context;
             _appointmentDetailService = appointmentDetailService;
         }
         //Create
