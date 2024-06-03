@@ -61,14 +61,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointment.ToAppointmentDto());
         }
 
-        [Authorize(Policy = "CustomerPolicy")]
-        [Authorize(Policy = "EmployeePolicy")]
+        [Authorize(Policy = "CustomerOrEmployeePolicy")]
         [HttpPost("book")]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
         {
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             // Get logged in customer
@@ -78,7 +77,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (User.IsInRole("Customer"))
             {
                 appointmentAddRequest.CustomerUserName = username;
-                userModel = await _userManager.FindByNameAsync(username) as Customer;  
+                userModel = await _userManager.FindByNameAsync(username) as Customer;
             }
             else if (User.IsInRole("Employee"))
             {
@@ -98,9 +97,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             // Get Slot
             var slot = await _slotService.GetSlotByIdAsync(appointmentAddRequest.SlotId);
+            if (slot == null)
+            {
+                return BadRequest("Slot does not exist");
+            }
 
             // Get Service
             var service = await _serviceService.GetServiceById(appointmentAddRequest.ServiceId);
+            if (service == null)
+            {
+                return BadRequest("Service does not exist");
+            }
 
             // Get DateOnly and Slot
             var appointmentDate = DateOnly.FromDateTime(appointmentAddRequest.Date);
@@ -127,11 +134,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.CustomerId = userModel.Id;
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
+                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost;
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
             }
-            else 
+            else
             {
                 var availableVet = await _userService.GetAvailableVetAsync(appointmentDate, appointmentSlot);
                 if (availableVet == null)
@@ -144,24 +152,41 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.CustomerId = userModel.Id;
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
+                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost;
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
             }
         }
 
+        [Authorize(Policy = "EmployeePolicy")]
+        [HttpPut("check-in/{appointmentId}")]
+        public async Task<IActionResult> CheckIn([FromRoute] int appointmentId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var appointmentModel = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
+            if (appointmentModel == null)
+            {
+                return BadRequest("Appointment is not eligable for check-in (needs to be booked state)");
+            }
+            return Ok(appointmentModel.ToAppointmentDto());
+        }
+
         [Authorize(Policy = "CustomerPolicy")]
         [HttpPut("rate/{appointmentId}")]
         public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
             var appointmentModel = await _appointmentService.RateAppointmentAsync(appointmentId, AppointmentRatingRequest.ToAppointmentFromRating());
             if (appointmentModel == null)
             {
-                return NotFound("Appointment is not eligable for rating (needs to be processing state)");
+                return BadRequest("Appointment is not eligable for rating (needs to be processing state)");
             }
             return Ok(appointmentModel.ToAppointmentDto());
         }
