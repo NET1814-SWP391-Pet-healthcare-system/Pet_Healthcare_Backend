@@ -10,18 +10,19 @@ namespace ServiceContracts.Mappers
 {
     public static class AppointmentDetailMapper
     {
-        public static AppointDetailDto ToAppointDetailDto(this AppointmentDetail request)
+        public static AppointDetail ToAppointDetailDto(this AppointmentDetail request)
         {
-            return new AppointDetailDto
+            return new AppointDetail
             {
                 AppointmentDetailId = request.AppointmentDetailId,
                 AppointmentId = request.AppointmentId,
+                RecordId = request.RecordId,
                 Diagnosis = request.Diagnosis,
                 Treatment = request.Treatment,
                 Medication = request.Medication
             };
         }
-        public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetail request)
+        public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetailAddRequest request)
         {
             return new AppointmentDetail
             {

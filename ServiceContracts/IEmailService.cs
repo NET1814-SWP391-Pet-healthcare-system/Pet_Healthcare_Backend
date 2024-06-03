@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts
 {
-    public interface IUserService
+    public interface IEmailService
     {
-        Task<Customer?> GetCustomerWithPets(string customerId);
-        Task<Vet?> GetAvailableVetAsync(DateOnly date, int slotId);
+        Task SendEmailAsync(Message message);
     }
 }

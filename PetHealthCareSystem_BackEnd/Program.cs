@@ -72,8 +72,10 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 3;
-}).AddEntityFrameworkStores<ApplicationDbContext>();
+})  .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
+// Add Authentication
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme =
     options.DefaultChallengeScheme =
@@ -95,25 +97,39 @@ builder.Services.AddAuthentication(options => {
     };
 });
 
+// Add Authorization 
 builder.Services.AddAuthorization(options => {
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
     options.AddPolicy("VetPolicy", policy => policy.RequireRole("Vet"));
     options.AddPolicy("EmployeePolicy", policy => policy.RequireRole("Employee"));
+    options.AddPolicy("CustomerOrEmployeePolicy", policy =>
+            policy.RequireAssertion(context =>
+                context.User.IsInRole("Customer") || context.User.IsInRole("Employee")));
 });
 
+// Add Email Configs
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
+// Add Cors
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod())
 );
 
 // Add Scoped for every repositories and services
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 builder.Services.AddScoped<ISlotService, SlotService>();
 builder.Services.AddScoped<IKennelRepository, KennelRepository>();
 builder.Services.AddScoped<IKennelService, KennelService>();
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+builder.Services.AddScoped<IRecordService, RecordService>();
+builder.Services.AddScoped<IAppointmentDetailRepository, AppointmentDetaiRepository>();
+builder.Services.AddScoped<IAppointmentDetailService, AppointmentDetailService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHospitalizationRepository, HospitalizationRepository>();

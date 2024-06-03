@@ -16,7 +16,7 @@ namespace ServiceContracts.Mappers
     {
         public static AppointmentDto ToAppointmentDto(this Appointment appointmentModel)
         {
-            return new AppointmentDto
+            return new AppointmentDto()
             {
                 AppointmentId = appointmentModel.AppointmentId,
                 Customer = appointmentModel.Customer?.UserName,
@@ -26,7 +26,7 @@ namespace ServiceContracts.Mappers
                 SlotEndTime = appointmentModel.Slot?.EndTime,
                 Service = appointmentModel.Service?.Name,
                 Date = appointmentModel.Date,
-                TotalCost = appointmentModel.TotalCost,
+                TotalCost = appointmentModel.Service?.Cost,
                 CancellationDate = appointmentModel.CancellationDate,
                 RefundAmount = appointmentModel.RefundAmount,
                 Rating = appointmentModel.Rating,
@@ -37,7 +37,7 @@ namespace ServiceContracts.Mappers
 
         public static Appointment ToAppointmentFromAdd(this AppointmentAddRequest appointmentAddRequest, Vet vet)
         {
-            return new Appointment
+            return new Appointment()
             {
                 PetId = appointmentAddRequest.PetId,
                 VetId = vet.Id,
@@ -50,7 +50,7 @@ namespace ServiceContracts.Mappers
 
         public static Appointment ToAppointmentFromRating(this AppointmentRatingRequest appointmentRatingRequest)
         {
-            return new Appointment
+            return new Appointment()
             {
                 Rating = appointmentRatingRequest.Rating,
                 Comments = appointmentRatingRequest.Comments,

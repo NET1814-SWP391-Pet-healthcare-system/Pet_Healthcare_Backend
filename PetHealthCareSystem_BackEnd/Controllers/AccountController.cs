@@ -1,15 +1,16 @@
 ﻿using Entities;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
+using System.Reflection.Metadata;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -20,15 +21,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailService _emailService;
 
         public AccountController(UserManager<User> userManager,
-            ITokenService tokenService, SignInManager<User> signInManager)
+            ITokenService tokenService, SignInManager<User> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
+        #region
         ////Create
         //[HttpPost]
         //public ActionResult<BusinessResult> AddUser(UserAddRequest? userAddRequest)
@@ -157,6 +161,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         //    businessResult.Message = "User deleted";
         //    return Ok(businessResult);
         //}
+        #endregion
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -167,7 +172,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
-            if (user == null) { return Unauthorized("Invalid username!"); }
+            if (user == null) { return Unauthorized("Username not found or password incorrect"); }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -207,18 +212,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     IsActive = true
                 };
 
-                var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password);
+                var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password!);
 
                 if (createCustomer.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
                     if (roleResult.Succeeded)
                     {
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
+                        var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
+                        var message = new Message(new string[] { customer.Email! }, "Confirmation email link", confirmationLink!);
+
+                        await _emailService.SendEmailAsync(message);
+
                         return Ok(
                             new NewUserDto
                             {
-                                UserName = customer.UserName,
-                                Email = customer.Email,
+                                UserName = customer.UserName!,
+                                Email = customer.Email!,
                                 Token = _tokenService.CreateToken(customer, "Customer")
                             }
                         );
@@ -237,6 +248,86 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return StatusCode(500, e);
             }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest forgotPasswordRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email!);
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+                var message = new Message(new string[] { user.Email! }, "Forgot Passord link", forgotPasswordLink!);
+                await _emailService.SendEmailAsync(message);
+
+                return Ok(message);
+            }
+
+            return BadRequest("Couldn't send link pls try again");
+        }
+
+        [HttpGet("reset-password")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        { 
+            var resetPasswordModel = new ResetPasswordRequest { Token = token, Email = email };
+            return Ok(resetPasswordModel);
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email!);
+            if (user != null) 
+            {
+                var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordRequest.Token!, resetPasswordRequest.Password!);
+                if (!resetPasswordResult.Succeeded)
+                {
+                    foreach (var error in resetPasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);    
+                    }
+                    return Ok(ModelState);
+                }
+                return Ok("Password has been changed");
+            }
+
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpGet("test-email")]
+        public async Task<IActionResult> TestEmail()
+        {
+            var resetLink = "http://localhost:5173/";
+            var message = new Message(new string[] { "soybean26102004@gmail.com" }, "Test", $"Reset your password using this link: <a href='{resetLink}'>link</a>");
+            
+            await _emailService.SendEmailAsync(message);
+            return Ok("Email Sent Successfully");
+        }   
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    return Ok("Email verified successfully");
+                }
+            }
+            return StatusCode(500, "This user does not exist");
         }
 
         [HttpGet("run-seed-data-only-run-once")]

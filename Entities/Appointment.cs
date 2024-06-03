@@ -28,8 +28,8 @@ namespace Entities
         public int? ServiceId { get; set; }
         [ForeignKey("ServiceId")]
         public Service? Service { get; set; }
-        public DateOnly? Date { get; set; }
-        public double? TotalCost { get; set; }
+        public DateOnly Date { get; set; }
+        public double TotalCost { get; set; }
         public DateOnly? CancellationDate { get; set; }
         public double? RefundAmount { get; set; }
         public int? Rating { get; set; }

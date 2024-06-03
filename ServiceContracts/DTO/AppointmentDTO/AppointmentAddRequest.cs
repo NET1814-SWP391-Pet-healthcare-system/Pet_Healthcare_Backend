@@ -13,6 +13,8 @@ namespace ServiceContracts.DTO.AppointmentDTO
     // Add request as a customer
     public class AppointmentAddRequest
     {
+        public string? CustomerUserName { get; set; }
+
         [Required(ErrorMessage = "Pet ID is required.")]
         public int PetId { get; set; }
 
@@ -24,8 +26,8 @@ namespace ServiceContracts.DTO.AppointmentDTO
         [Required(ErrorMessage = "Service ID is required.")]
         public int ServiceId { get; set; }
 
-        [Required(ErrorMessage = "Date is required.")]
-        [DataType(DataType.Date, ErrorMessage ="Invalid Date Formate (yyyy-MM-dd)")]
+        [Required(ErrorMessage = "DateOnly is required.")]
+        [DataType(DataType.Date, ErrorMessage ="Invalid DateOnly Formate (yyyy-MM-dd)")]
         public DateTime Date { get; set; }
     }
 }

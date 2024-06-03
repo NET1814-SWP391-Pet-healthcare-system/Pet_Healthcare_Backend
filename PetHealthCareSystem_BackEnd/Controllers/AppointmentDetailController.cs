@@ -1,10 +1,12 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.AppointmentDetailDTO;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
+using ServiceContracts.Mappers;
 using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -14,26 +16,52 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class AppointmentDetailController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly AppointmentDetailService _appointmentDetailService;
+        private readonly IAppointmentDetailService _appointmentDetailService;
 
+        public AppointmentDetailController(ApplicationDbContext context, IAppointmentDetailService appointmentDetailService)
+        {
+            _context = context;
+            _appointmentDetailService = appointmentDetailService;
+        }
         //Create
         [HttpPost]
-        public async Task<IActionResult> AddAppointmentDetail(AppointmentDetail? appointmentDetail)
+        public async Task<IActionResult> AddAppointmentDetail([FromBody] AppointmentDetailAddRequest? appointmentDetail)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             BusinessResult businessResult = new BusinessResult();
-            if (appointmentDetail == null)
+            var appointmentDetailModel = appointmentDetail.ToAppointmentDetailFromAdd();
+            if (appointmentDetailModel == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "AppointmentDetail request is null";
+                return NotFound(businessResult);
+            }
+            if (AppointmentDetailValidation.IsAppointmentDetailValid(appointmentDetailModel) == false)
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
-                businessResult.Message = "AppointmentDetail request is null";
+                businessResult.Message = "AppointmentId or RecordId request is not exist";
                 return BadRequest(businessResult);
             }
+        
+            var data = await _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetailModel);
 
-            _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetail);
-            businessResult.Status = 404;
+            if(data != null)
+            {
+                businessResult.Data = data;
+                businessResult.Message = "Successful";
+                businessResult.Status = 200;
+                return Ok(businessResult);
+            }
+            
+            businessResult.Status = 500;
             businessResult.Data = null;
-            businessResult.Message = "No AppointmentDetail found";
-            return Ok(businessResult);
+            businessResult.Message = "Failed to retrieve data";
+            return StatusCode(StatusCodes.Status500InternalServerError, businessResult);
         }
 
         //Read
@@ -41,18 +69,27 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetAppointmentDetails()
         {
             BusinessResult businessResult = new BusinessResult();
-            businessResult.Data = _appointmentDetailService.GetAppointmentDetailsAsync();
+            var list = await _appointmentDetailService.GetAppointmentDetailsAsync();
+            if (list == null)
+            {
+                businessResult.Status = 500;
+                businessResult.Data = null;
+                businessResult.Message = "Failed to retrive data";
+                return StatusCode(StatusCodes.Status500InternalServerError, businessResult);
+            }
+            businessResult.Data = list;
             businessResult.Message = "Successful";
             businessResult.Status = 200;
             return Ok(businessResult);
+
         }
 
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetAppointmentDetailById(int id)
         {
             BusinessResult businessResult = new BusinessResult();
-            var user = _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
-            if (user == null)
+            var appointmentDetail = await _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
+            if (appointmentDetail == null)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
@@ -60,7 +97,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = user;
+            businessResult.Data = appointmentDetail;
             businessResult.Message = "AppointmentDetail found";
             return Ok(businessResult);
         }
@@ -68,7 +105,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDiagnosis([FromBody] AppointmentDetailUpdateDiagnosis appointmentDetailUpdateDiagnosis)
+        public async Task<IActionResult> UpdateDiagnosis([FromBody]  AppointmentDetailUpdateDiagnosis appointmentDetail)
         {
             BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
@@ -78,7 +115,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            var isUpdated = appointmentDetailUpdateDiagnosis;
+            var appointmentDetailModel = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
+            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(appointmentDetail.AppointmentDetailId, appointmentDetailModel);
             if (isUpdated == null)
             {
                 businessResult.Status = 404;
@@ -87,14 +125,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = appointmentDetailUpdateDiagnosis;
+            businessResult.Data = isUpdated;
             businessResult.Message = "User updated";
             return Ok(businessResult);
         }
 
         //Delete
         [HttpDelete("{appointmentDetail}")]
-        public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
+        public async Task<IActionResult>DeleteAppointmentDetailById([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(id);

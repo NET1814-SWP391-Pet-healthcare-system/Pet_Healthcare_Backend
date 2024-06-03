@@ -13,7 +13,8 @@ namespace ServiceContracts
         Task<Appointment> AddAppointmentAsync(Appointment appointmentModel);
         Task<Appointment?> GetAppointmentByIdAsync(int id);
         Task<IEnumerable<Appointment>> GetAppointmentsAsync();
-        Task<IEnumerable<Appointment>> GetAppointmentsInDateAsync(DateOnly date);
+        Task<IEnumerable<Appointment>> GetAppointmentsByDateAndSlotAsync(DateOnly date, int slotId);
+        Task<Appointment?> CheckInAppointmentAsync(int id);
         Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel);
         Task<Appointment?> RemoveAppointmentAsync(int id);
     }

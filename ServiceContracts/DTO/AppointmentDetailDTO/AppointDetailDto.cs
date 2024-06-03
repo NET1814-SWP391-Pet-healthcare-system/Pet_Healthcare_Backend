@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.AppointmentDetailDTO
 {
-    public class AppointDetailDto
+    public class AppointDetail
     {
         public int AppointmentDetailId { get; set; }
         public int? AppointmentId { get; set; }
+        public int? RecordId { get; set; }
         public string? Diagnosis { get; set; }
         public string? Treatment { get; set; }
         public string? Medication { get; set; }
