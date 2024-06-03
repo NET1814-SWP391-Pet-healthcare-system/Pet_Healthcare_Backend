@@ -14,10 +14,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class AppointmentDetailController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
         private readonly IAppointmentDetailService _appointmentDetailService;
 
         public AppointmentDetailController(ApplicationDbContext context, IAppointmentDetailService appointmentDetailService)
         {
+            _context = context;
             _appointmentDetailService = appointmentDetailService;
         }
         //Create
@@ -122,8 +124,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Delete
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAppointmentDetailById([FromBody] int id)
+        [HttpDelete("{appointmentDetail}")]
+        public async Task<IActionResult> DeleteUserByUsername([FromRoute] int id)
         {
             BusinessResult businessResult = new BusinessResult();
             var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(id);
