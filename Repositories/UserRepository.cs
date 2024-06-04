@@ -22,7 +22,7 @@ namespace Repositories
             return await _context.Customers.Include(c => c.Pets).FirstOrDefaultAsync(c => c.Id == customerId);
         }
 
-        public async Task<Vet?> GetAvailableVetAsync(DateOnly date, int slotId)
+        public async Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId)
         {
             // Get all vets
             var vets = await _context.Vets.ToListAsync();
@@ -32,16 +32,24 @@ namespace Repositories
                 .Where(a => a.Date == date && a.SlotId == slotId)
                 .ToListAsync();
 
+            // Create a list of available vets
+            var availableVets = new List<Vet>();
+
             // Get first vet that is not in a appointment in the given slot
             foreach (var vet in vets)
             {
                 if (!appointments.Any(a => a.VetId == vet.Id))
                 {
-                    return vet;
+                    availableVets.Add(vet);
                 }
             }
 
-            return null;
+            if (availableVets.Count == 0)
+            {
+                return null;
+            }
+
+            return availableVets;
         }
     }
 }

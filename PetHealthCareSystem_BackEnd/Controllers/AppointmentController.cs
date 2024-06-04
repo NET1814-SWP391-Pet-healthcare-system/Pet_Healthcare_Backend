@@ -61,6 +61,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointment.ToAppointmentDto());
         }
 
+        [HttpGet("available-vets")]
+        public async Task<IActionResult> GetAvailableVetsBySlotAndDate([FromQuery] DateTime date, int slotId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var appointmentDate = DateOnly.FromDateTime(date);
+            var availableVets = await _userService.GetAvailableVetsAsync(appointmentDate, slotId);
+            return Ok(availableVets);
+        }
+
         [Authorize(Policy = "CustomerOrEmployeePolicy")]
         [HttpPost("book")]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
@@ -141,14 +153,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             else 
             {
-                var availableVet = await _userService.GetAvailableVetAsync(appointmentDate, appointmentSlot);
+                var availableVet = await _userService.GetAvailableVetsAsync(appointmentDate, appointmentSlot);
                 if (availableVet == null)
                 {
                     return BadRequest("No available vet for the chosen slot");
                 }
-                appointmentAddRequest.VetUserName = availableVet.UserName;
+                appointmentAddRequest.VetUserName = availableVet.ElementAt(0).UserName;
 
-                var appointmentModel = appointmentAddRequest.ToAppointmentFromAdd(availableVet);
+                var appointmentModel = appointmentAddRequest.ToAppointmentFromAdd(availableVet.ElementAt(0));
                 appointmentModel.CustomerId = userModel.Id;
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
