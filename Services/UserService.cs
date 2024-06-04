@@ -20,9 +20,9 @@ namespace Services
         {
             return await _userRepository.GetCustomerWithPetsAsync(customerId);
         }
-        public async Task<Vet?> GetAvailableVetAsync(DateOnly date, int slotId)
+        public async Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId)
         {
-            return await _userRepository.GetAvailableVetAsync(date, slotId);
+            return await _userRepository.GetAvailableVetsAsync(date, slotId);
         }
     }
 }
