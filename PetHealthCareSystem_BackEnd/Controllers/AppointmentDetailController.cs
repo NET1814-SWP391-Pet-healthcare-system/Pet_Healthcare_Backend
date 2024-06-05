@@ -33,6 +33,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             BusinessResult businessResult = new BusinessResult();
             var appointmentDetailModel = appointmentDetail.ToAppointmentDetailFromAdd();
+            
             if (appointmentDetailModel == null)
             {
                 businessResult.Status = 404;
@@ -105,7 +106,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("update-diagnose/{id}")]
-        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id [FromBody]  AppointmentDetailUpdateDiagnosis appointmentDetail)
+        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id ,[FromBody]  AppointmentDetailUpdateDiagnosis appointmentDetail)
         {
             BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
