@@ -104,8 +104,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
         //Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDiagnosis([FromBody]  AppointmentDetailUpdateDiagnosis appointmentDetail)
+        [HttpPut("update-diagnose/{id}")]
+        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id [FromBody]  AppointmentDetailUpdateDiagnosis appointmentDetail)
         {
             BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
@@ -116,7 +116,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
             var appointmentDetailModel = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
-            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(appointmentDetail.AppointmentDetailId, appointmentDetailModel);
+            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(id, appointmentDetailModel);
             if (isUpdated == null)
             {
                 businessResult.Status = 404;
@@ -131,11 +131,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Delete
-        [HttpDelete("{appointmentDetail}")]
-        public async Task<IActionResult>DeleteAppointmentDetailById([FromRoute] int id)
+        [HttpDelete("{appointmentDetailId}")]
+        public async Task<IActionResult>DeleteAppointmentDetailById([FromRoute] int appointmentDetailId)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             BusinessResult businessResult = new BusinessResult();
-            var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(id);
+            var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(appointmentDetailId);
             if (isDeleted == null)
             {
                 businessResult.Status = 200;
