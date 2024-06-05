@@ -36,7 +36,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
-                return BadRequest("Username not found");
+                return NotFound("Username not found");
             }
             var petList = await _petService.GetAllPets();
             var usersPet = petList.Where(p => p.CustomerId.Equals(user.Id));
@@ -48,30 +48,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BusinessResult>> AddPet(PetAddRequest? petAddRequest)
+        public async Task<ActionResult<PetDTO>> AddPet(PetAddRequest? petAddRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest(ModelState);
             }
             var existingUser = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
             if (existingUser == null)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "No Customer found";
-                businessResult.Data = petAddRequest;
-                return BadRequest(businessResult);
+                return NotFound("No customer found");
             }
 
-            var data = await _petService.AddPet(petAddRequest);
-            businessResult.Status = 200;
-            businessResult.Message = "Pet added";
-            businessResult.Data = data;
-            return Ok(businessResult);
+            var pet = await _petService.AddPet(petAddRequest);
+            return Ok(pet);
         }
 
         [HttpGet("{id}")]
