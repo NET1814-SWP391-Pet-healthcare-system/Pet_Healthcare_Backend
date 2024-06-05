@@ -25,13 +25,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<BusinessResult>> GetPets()
+        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPets()
         {
-            BusinessResult businessResult = new BusinessResult();
-            businessResult.Status = 200;
-            businessResult.Message = "Get all pets succesfully";
-            businessResult.Data = await _petService.GetAllPets();
-            return Ok(businessResult);
+            return Ok(await _petService.GetAllPets());
         }
 
         [HttpGet("user-pet/{username}")]
