@@ -16,7 +16,7 @@ namespace Repositories
         {
             _context = context;
         }
-
+        
         public async Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId)
         {
             // Get all vets
