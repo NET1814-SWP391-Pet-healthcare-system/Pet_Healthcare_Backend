@@ -58,7 +58,7 @@ namespace Services
         public async Task<PetDTO?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
         {
             var existingPet = await _petRepository.GetPetById(id);
-            if(existingPet == null)
+            if (existingPet == null)
             {
                 return null;
             }
