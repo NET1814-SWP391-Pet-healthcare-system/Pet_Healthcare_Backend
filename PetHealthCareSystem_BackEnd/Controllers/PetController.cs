@@ -25,135 +25,89 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<BusinessResult>> GetPets()
+        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPets()
         {
-            BusinessResult businessResult = new BusinessResult();
-            businessResult.Status = 200;
-            businessResult.Message = "Get all pets succesfully";
-            businessResult.Data = await _petService.GetAllPets();
-            return Ok(businessResult);
+            return Ok(await _petService.GetAllPets());
         }
 
-        [HttpGet("current-user")]
-        public async Task<ActionResult<User>> GetCurrentUser()
+        [HttpGet("user-pet/{username}")]
+        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPetsByUsername(string username)
         {
-            //var username = User.GetUsername();
-            //var currenUser = await _userManager.FindByNameAsync(username);
-            var userList = await _userManager.GetUsersInRoleAsync("Customer");
-            return Ok(userList);
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound("Username not found");
+            }
+            var petList = await _petService.GetAllPets();
+            var usersPet = petList.Where(p => p.CustomerId.Equals(user.Id));
+            if(!usersPet.Any())
+            {
+                return Ok("User doesn't have any pets");
+            }
+            return Ok(usersPet);
         }
 
         [HttpPost]
-        public async Task<ActionResult<BusinessResult>> AddPet(PetAddRequest? petAddRequest)
+        public async Task<ActionResult<PetDTO>> AddPet(PetAddRequest? petAddRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest(ModelState);
             }
-            var existingUser = await _userManager.FindByIdAsync(petAddRequest.CustomerId);
+            var existingUser = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
             if (existingUser == null)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "No Customer found";
-                businessResult.Data = petAddRequest;
-                return BadRequest(businessResult);
+                return NotFound("No customer found");
             }
 
-            var data = await _petService.AddPet(petAddRequest);
-            businessResult.Status = 200;
-            businessResult.Message = "Pet added";
-            businessResult.Data = data;
-            return Ok(businessResult);
+            var pet = await _petService.AddPet(petAddRequest);
+            return Ok(pet);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<BusinessResult>> GetPetById(int id)
+        public async Task<ActionResult<PetDTO>> GetPetById(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             var pet = await _petService.GetPetById(id);
             if (pet == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "No Pet found";
-                return NotFound(businessResult);
+                return NotFound();
             }
-            businessResult.Status = 200;
-            businessResult.Data = pet;
-            businessResult.Message = "Pet found";
-            return Ok(businessResult);
+            return Ok(pet);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<BusinessResult>> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
+        public async Task<ActionResult<PetDTO>> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest(ModelState);
             }
             if (id != petUpdateRequest.PetId)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Mismatched id";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest("Mismatched Id");
             }
-            var existingUser = await _userManager.FindByIdAsync(petUpdateRequest.CustomerId);
-            if (existingUser == null)
-            {
-                businessResult.Status = 400;
-                businessResult.Message = "No Customer found";
-                businessResult.Data = petUpdateRequest;
-                return BadRequest(businessResult);
-            }
-
             var result = await _petService.UpdatePet(id, petUpdateRequest);
             if (result == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = false;
-                businessResult.Message = "Pet not found";
-                return NotFound(businessResult);
+                return NotFound("Pet not found");
             }
-            businessResult.Status = 200;
-            businessResult.Data = result;
-            businessResult.Message = "Pet updated";
-            return Ok(businessResult);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BusinessResult>> DeletePetById(int id)
+        public async Task<ActionResult<PetDTO>> DeletePetById(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             var petData = await _petService.GetPetById(id);
             if (petData == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = false;
-                businessResult.Message = "Pet not found";
-                return NotFound(businessResult);
+                return NotFound("Pet not found");
             }
             var isDeleted = await _petService.RemovePetById(id);
             if (!isDeleted)
             {
-                businessResult.Status = 400;
-                businessResult.Data = petData;
-                businessResult.Message = "Didn't delete";
-
-                return BadRequest(businessResult);
+                return BadRequest("Pet deletion failed");
             }
-            businessResult.Status = 200;
-            businessResult.Data = petData;
-            businessResult.Message = "Pet deleted";
-            return Ok(businessResult);
+            return Ok(petData);
         }
     }
 }

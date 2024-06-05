@@ -16,12 +16,7 @@ namespace Repositories
         {
             _context = context;
         }
-
-        public async Task<Customer?> GetCustomerWithPetsAsync(string customerId)
-        {
-            return await _context.Customers.Include(c => c.Pets).FirstOrDefaultAsync(c => c.Id == customerId);
-        }
-
+        
         public async Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId)
         {
             // Get all vets

@@ -14,13 +14,12 @@ namespace ServiceContracts.Mappers
         {
             return new Pet()
             {
-                //CustomerId = petAddRequest.CustomerId,
-                //Name = petAddRequest.Name,
-                //Species = petAddRequest.Species,
-                //Breed = petAddRequest.Breed,
-                //Gender = petAddRequest.Gender,
-                //Weight = petAddRequest.Weight,
-                //ImageURL = petAddRequest.ImageURL
+                Name = petAddRequest.Name,
+                Species = petAddRequest.Species,
+                Breed = petAddRequest.Breed,
+                Gender = petAddRequest.Gender,
+                Weight = petAddRequest.Weight,
+                ImageURL = petAddRequest.ImageURL
             }; 
         }
 
@@ -28,14 +27,27 @@ namespace ServiceContracts.Mappers
         {
             return new Pet()
             {
-                //PetId = petUpdateRequest.PetId,
-                //CustomerId = petUpdateRequest.CustomerId,
-                //Name = petUpdateRequest.Name,
-                //Species = petUpdateRequest.Species,
-                //Breed = petUpdateRequest.Breed,
-                //Gender = petUpdateRequest.Gender,
-                //Weight = petUpdateRequest.Weight,
-                //ImageURL = petUpdateRequest.ImageURL
+                PetId = petUpdateRequest.PetId,
+                Name = petUpdateRequest.Name,
+                Species = petUpdateRequest.Species,
+                Breed = petUpdateRequest.Breed,
+                Gender = petUpdateRequest.Gender,
+                Weight = petUpdateRequest.Weight,
+                ImageURL = petUpdateRequest.ImageURL
+            };
+        }
+
+        public static PetDTO ToPetDto(this Pet pet)
+        {
+            return new PetDTO()
+            {
+                Id = pet.PetId,
+                CustomerId = pet.CustomerId,
+                Name = pet.Name,
+                Species = pet.Species,
+                Breed = pet.Breed,
+                Gender = pet.Gender,
+                Weight = pet.Weight
             };
         }
     }

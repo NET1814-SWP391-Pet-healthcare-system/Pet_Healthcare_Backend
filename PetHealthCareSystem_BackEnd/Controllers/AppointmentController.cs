@@ -77,9 +77,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("book")]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
         {
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             // Get logged in customer
@@ -89,7 +89,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (User.IsInRole("Customer"))
             {
                 appointmentAddRequest.CustomerUserName = username;
-                userModel = await _userManager.FindByNameAsync(username) as Customer;  
+                userModel = await _userManager.FindByNameAsync(username) as Customer;
             }
             else if (User.IsInRole("Employee"))
             {
@@ -151,7 +151,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
             }
-            else 
+            else
             {
                 var availableVet = await _userService.GetAvailableVetsAsync(appointmentDate, appointmentSlot);
                 if (availableVet == null)
@@ -191,9 +191,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("rate/{appointmentId}")]
         public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
             var appointmentModel = await _appointmentService.RateAppointmentAsync(appointmentId, AppointmentRatingRequest.ToAppointmentFromRating());
             if (appointmentModel == null)
