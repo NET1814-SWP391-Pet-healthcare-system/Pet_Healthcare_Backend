@@ -162,7 +162,7 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials()
-    .WithOrigins("https//localhost:5173")
+    .WithOrigins("https://example.com", "https//localhost:3000")
     .SetIsOriginAllowed(origin => true));
 
 app.UseAuthentication();

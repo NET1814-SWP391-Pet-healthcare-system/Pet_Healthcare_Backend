@@ -13,12 +13,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class RecordController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPetService _petService;
         private readonly IRecordService _recordService;
 
-        public RecordController(ApplicationDbContext context, IRecordService recordService)
+        public RecordController(PetService petService, IRecordService recordService)
         {
-            _context = context;
+            _petService = _petService;
             _recordService = recordService;
         }
 
@@ -32,7 +32,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
             var recordModel = record.ToRecordFromAdd();
-
+            //var IsPetHasRecord = _petService.GetPetById((int)recordModel.PetId).Result.RecordId;
+            //if(IsPetHasRecord != null)
+            //{
+            //    businessResult.Status = 400;
+            //    businessResult.Data = null;
+            //    businessResult.Message = "Pet already has a record";
+            //    return BadRequest(businessResult);
+            //}
             if (recordModel == null)
             {
                 businessResult.Status = 400;

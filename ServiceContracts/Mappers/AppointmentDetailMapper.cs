@@ -12,7 +12,7 @@ namespace ServiceContracts.Mappers
     {
         public static AppointDetail ToAppointDetailDto(this AppointmentDetail request)
         {
-            return new AppointDetail
+            return new AppointDetail()
             {
                 AppointmentDetailId = request.AppointmentDetailId,
                 AppointmentId = request.AppointmentId,
@@ -22,24 +22,20 @@ namespace ServiceContracts.Mappers
                 Medication = request.Medication
             };
         }
-        public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetailAddRequest request)
+        public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetailAddRequest? appointmentDetail)
         {
-            return new AppointmentDetail
-            {
-                AppointmentId = request.AppointmentId,
-                RecordId = request.RecordId,
-                Diagnosis = request.Diagnosis,
-                Treatment = request.Treatment,
-                Medication = request.Medication
+            return new AppointmentDetail()
+            { 
+                AppointmentId = appointmentDetail.AppointmentId,
+                Diagnosis = appointmentDetail.Diagnosis,
+                Treatment = appointmentDetail.Treatment,
+                Medication = appointmentDetail.Medication
             };
         }
         public static AppointmentDetail ToAppointmentDetailUpdateDiagnosis(this AppointmentDetailUpdateDiagnosis request)
         {
-            return new AppointmentDetail
+            return new AppointmentDetail()
             {
-                AppointmentDetailId = request.AppointmentDetailId,
-                AppointmentId = request.AppointmentId,
-                RecordId = request.RecordId,
                 Diagnosis = request.Diagnosis,
                 Treatment = request.Treatment,
                 Medication = request.Medication
