@@ -15,12 +15,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class AppointmentDetailController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAppointmentService _appointmentService;
         private readonly IAppointmentDetailService _appointmentDetailService;
 
-        public AppointmentDetailController(ApplicationDbContext context, IAppointmentDetailService appointmentDetailService)
+        public AppointmentDetailController(AppointmentService appointmentService, IAppointmentDetailService appointmentDetailService)
         {
-            _context = context;
+            _appointmentService = appointmentService;
             _appointmentDetailService = appointmentDetailService;
         }
         //Create
@@ -32,8 +32,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
             BusinessResult businessResult = new BusinessResult();
-            var appointmentDetailModel = appointmentDetail.ToAppointmentDetailFromAdd();
-            
+            AppointmentDetail appointmentDetailModel = appointmentDetail.ToAppointmentDetailFromAdd();
+            //appointmentDetailModel.RecordId = _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId).Result.Pet.RecordID;
             if (appointmentDetailModel == null)
             {
                 businessResult.Status = 404;
@@ -106,7 +106,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("update-diagnose/{id}")]
-        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id ,[FromBody]  AppointmentDetailUpdateDiagnosis appointmentDetail)
+        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id ,[FromBody]  AppointmentDetailUpdateDiagnosis? appointmentDetail)
         {
             BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
@@ -116,7 +116,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            var appointmentDetailModel = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
+            AppointmentDetail appointmentDetailModel = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
             var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(id, appointmentDetailModel);
             if (isUpdated == null)
             {
