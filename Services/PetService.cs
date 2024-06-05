@@ -1,4 +1,6 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
@@ -14,35 +16,46 @@ namespace Services
     public class PetService : IPetService
     {
         private readonly IPetRepository _petRepository;
+        private readonly UserManager<User> _userManager;
 
-        public PetService(IPetRepository petRepository)
+        public PetService(IPetRepository petRepository, UserManager<User> userManager)
         {
             _petRepository = petRepository;
+            _userManager = userManager;
         }
 
-        public async Task<Pet?> AddPet(PetAddRequest petAddRequest)
+        public async Task<PetDTO?> AddPet(PetAddRequest petAddRequest)
         {
-            var request = petAddRequest.ToPet();
-            var isAdded = await _petRepository.AddPet(request);
+            var pet = petAddRequest.ToPet();
+            var customer = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
+            pet.CustomerId = customer.Id;
+            var isAdded = await _petRepository.AddPet(pet);
             if (isAdded)
             {
-                return request;
+                return pet.ToPetDto();
             }
             return null;
 
         }
 
-        public async Task<Pet?> GetPetById(int id)
+        public async Task<PetDTO?> GetPetById(int id)
         {
-            return await _petRepository.GetPetById(id);
+            var pet = await _petRepository.GetPetById(id);
+            return pet.ToPetDto();
         }
 
-        public async Task<IEnumerable<Pet>> GetAllPets()
+        public async Task<IEnumerable<PetDTO>> GetAllPets()
         {
-            return await _petRepository.GetAllPet();
+            var petList = await _petRepository.GetAllPet();
+            List<PetDTO> result = new List<PetDTO>();
+            foreach (var pet in petList)
+            {
+                result.Add(pet.ToPetDto());
+            }
+            return result;
         }
 
-        public async Task<Pet?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
+        public async Task<PetDTO?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
         {
             var pet = await _petRepository.GetPetById(id);
             if (pet == null)
@@ -50,12 +63,13 @@ namespace Services
                 return null;
             }
             var request = petUpdateRequest.ToPet();
-            return await _petRepository.UpdatePet(id, request);
+            var updatedPet = await _petRepository.UpdatePet(id, request);
+            return updatedPet.ToPetDto();
         }
 
         public async Task<bool> RemovePetById(int id)
         {
-            var pet = await GetPetById(id);
+            var pet = await _petRepository.GetPetById(id);
             return await _petRepository.RemovePet(pet);
         }
 
