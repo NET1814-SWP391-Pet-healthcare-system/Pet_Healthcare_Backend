@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface IVaccineService
     {
-        Task<Vaccine?> AddVaccine(VaccineAddRequest vaccineAddRequest);
-        Task<Vaccine?> GetVaccineById(int id);
-        Task<IEnumerable<Vaccine>> GetAllVaccines();
-        Task<Vaccine> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest);
+        Task<VaccineDTO?> AddVaccine(VaccineAddRequest vaccineAddRequest);
+        Task<VaccineDTO?> GetVaccineById(int id);
+        Task<IEnumerable<VaccineDTO>> GetAllVaccines();
+        Task<VaccineDTO> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest);
         Task<bool> RemoveVaccine(int id);
     }
 }

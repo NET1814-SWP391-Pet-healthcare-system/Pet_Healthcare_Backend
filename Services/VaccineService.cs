@@ -20,43 +20,50 @@ namespace Services
             _vaccineRepository = vaccineRepository;
         }
 
-        public async Task<Vaccine?> AddVaccine(VaccineAddRequest vaccineAddRequest)
+        public async Task<VaccineDTO?> AddVaccine(VaccineAddRequest vaccineAddRequest)
         {
             var vaccine = vaccineAddRequest.ToVaccine();
             var isAdded = await _vaccineRepository.AddAsync(vaccine);
-            if (isAdded)
+            if(isAdded)
             {
-                return vaccine;
+                return vaccine.ToVaccineDto();
             }
             return null;
         }
 
-        public async Task<IEnumerable<Vaccine>> GetAllVaccines()
+        public async Task<IEnumerable<VaccineDTO>> GetAllVaccines()
         {
-            return await _vaccineRepository.GetAllAsync();
+            var vaccineList = await _vaccineRepository.GetAllAsync();
+            List<VaccineDTO> result = new List<VaccineDTO>();
+            foreach(var vaccine in vaccineList)
+            {
+                result.Add(vaccine.ToVaccineDto());
+            }
+            return result;
         }
 
-        public async Task<Vaccine?> GetVaccineById(int id)
+        public async Task<VaccineDTO?> GetVaccineById(int id)
         {
-            return await _vaccineRepository.GetByIdAsync(id);
+            var vaccine = await _vaccineRepository.GetByIdAsync(id);
+            return vaccine.ToVaccineDto() ?? null;
         }
 
         public async Task<bool> RemoveVaccine(int id)
         {
-            var vaccine = await GetVaccineById(id);
+            var vaccine = await _vaccineRepository.GetByIdAsync(id);
             return await _vaccineRepository.Remove(vaccine);
         }
 
-        public async Task<Vaccine?> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
+        public async Task<VaccineDTO?> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
         {
-            var vaccine = await _vaccineRepository.GetByIdAsync(id);
-            if(vaccine == null)
+            var existingVaccine = await _vaccineRepository.GetByIdAsync(id);
+            if(existingVaccine == null)
             {
                 return null;
             }
-            var request = vaccineUpdateRequest.ToVaccine();
-            return await _vaccineRepository.Update(id, request);
-            
+            var vaccine = vaccineUpdateRequest.ToVaccine();
+            var updatedVaccine = await _vaccineRepository.Update(id, vaccine);
+            return updatedVaccine.ToVaccineDto();
         }
     }
 }

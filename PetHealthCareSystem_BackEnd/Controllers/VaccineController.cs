@@ -20,48 +20,32 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<BusinessResult>> GetVaccines()
+        public async Task<ActionResult<IEnumerable<VaccineDTO>>> GetVaccines()
         {
-            BusinessResult businessResult = new BusinessResult();
-            businessResult.Status = 200;
-            businessResult.Message = "Get all vaccines successfully";
-            businessResult.Data = await _vaccineService.GetAllVaccines();
-            return Ok(businessResult);
+            var vaccineList = await _vaccineService.GetAllVaccines();
+            return Ok(vaccineList);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<BusinessResult>> GetVaccineById(int id)
+        public async Task<ActionResult<VaccineDTO>> GetVaccineById(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             var vaccine = await _vaccineService.GetVaccineById(id);
             if(vaccine == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Vaccine not found";
-                businessResult.Data = false;
+                return NotFound("Vaccine not found");
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Vaccine found";
-            businessResult.Data = vaccine;
-            return Ok(businessResult);
+            return Ok(vaccine);
         }
 
         [HttpPost]
         public async Task<ActionResult<BusinessResult>> AddVaccine(VaccineAddRequest vaccineAddRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest(ModelState);
             }
             var vaccine = await _vaccineService.AddVaccine(vaccineAddRequest);
-            businessResult.Status = 200;
-            businessResult.Message = "Vaccine added";
-            businessResult.Data = vaccine;
-            return Ok(businessResult);
+            return Ok(vaccine);
         }
 
         [HttpDelete("{id}")]
