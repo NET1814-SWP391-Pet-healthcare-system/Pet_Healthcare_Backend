@@ -11,9 +11,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class SlotController : Controller
     {
         private readonly ISlotService _slotService;
-        public SlotController(ISlotService slotService)
+        private readonly IUserService _userService;
+        public SlotController(ISlotService slotService, IUserService userService)
         {
             _slotService = slotService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -25,6 +27,32 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var slots = await _slotService.GetSlotsAsync();
             var slotDtos = slots.Select(s => s.ToSlotDto()).ToList();
+            return Ok(slotDtos);
+        }
+
+        [HttpGet("{date}")]
+        public async Task<IActionResult> GetSlotsByDate([FromRoute] DateTime date) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var appointmentDate = DateOnly.FromDateTime(date);
+            var slots = await _slotService.GetSlotsAsync();
+            var slotDtos = new List<SlotDto>();
+            foreach (var slot in slots)
+            {
+                var availableVets = await _userService.GetAvailableVetsAsync(appointmentDate, slot.SlotId);
+                var slotDto = slot.ToSlotDto();
+                if (availableVets!.Count() == 0)
+                {
+                    slotDto.Available = false;
+                }
+                else {
+                    slotDto.Available = true;
+                }
+                slotDtos.Add(slotDto);
+            }
             return Ok(slotDtos);
         }
 
