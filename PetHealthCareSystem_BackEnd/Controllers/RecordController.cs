@@ -74,9 +74,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return  Ok(businessResult);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<BusinessResult>> GetRecordById(int id)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             BusinessResult businessResult = new BusinessResult();
             var user = await _recordService.GetRecordByIdAsync(id);
             if (user == null)
@@ -95,6 +99,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<BusinessResult>> RemoveRecord(int id)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             BusinessResult businessResult = new BusinessResult();
             var record = await _recordService.RemoveRecordAsync(id);
             if (record!=null)
@@ -111,8 +119,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Update
-        [HttpPut("{id}")]
-        public async Task<ActionResult<BusinessResult>> UpdateRecord(int id, RecordUpdateRequest? record)
+        [HttpPut("update-record/{id}")]
+        public async Task<ActionResult<BusinessResult>> UpdateRecord([FromRoute]int id, RecordUpdateRequest? record)
         {
             BusinessResult businessResult = new BusinessResult();
 
