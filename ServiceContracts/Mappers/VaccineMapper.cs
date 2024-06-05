@@ -30,5 +30,16 @@ namespace ServiceContracts.Mappers
                 IsAnnualVaccine = vaccineUpdateRequest.IsAnnualVaccine,
             };
         }
+
+        public static VaccineDTO ToVaccineDto(this Vaccine vaccine)
+        {
+            return new VaccineDTO()
+            {
+                VaccineId = vaccine.VaccineId,
+                Name = vaccine.Name,
+                Description = vaccine.Description,
+                IsAnnualVaccine = vaccine.IsAnnualVaccine
+            };
+        }
     }
 }

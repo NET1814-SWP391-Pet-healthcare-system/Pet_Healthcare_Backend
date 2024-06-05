@@ -48,10 +48,6 @@ namespace Repositories
         public async Task<Vaccine?> Update(int id, Vaccine vaccine)
         {
             var existingVaccine = await GetByIdAsync(id);
-            if (existingVaccine == null)
-            {
-                return null;
-            }
             existingVaccine.Name = vaccine.Name;
             existingVaccine.Description = vaccine.Description;
             existingVaccine.IsAnnualVaccine = vaccine.IsAnnualVaccine;

@@ -30,7 +30,7 @@ namespace Services
             var customer = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
             pet.CustomerId = customer.Id;
             var isAdded = await _petRepository.AddPet(pet);
-            if (isAdded)
+            if(isAdded)
             {
                 return pet.ToPetDto();
             }
@@ -41,14 +41,14 @@ namespace Services
         public async Task<PetDTO?> GetPetById(int id)
         {
             var pet = await _petRepository.GetPetById(id);
-            return pet.ToPetDto();
+            return pet.ToPetDto() ?? null;
         }
 
         public async Task<IEnumerable<PetDTO>> GetAllPets()
         {
             var petList = await _petRepository.GetAllPet();
             List<PetDTO> result = new List<PetDTO>();
-            foreach (var pet in petList)
+            foreach(var pet in petList)
             {
                 result.Add(pet.ToPetDto());
             }
@@ -58,7 +58,7 @@ namespace Services
         public async Task<PetDTO?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
         {
             var existingPet = await _petRepository.GetPetById(id);
-            if (existingPet == null)
+            if(existingPet == null)
             {
                 return null;
             }
