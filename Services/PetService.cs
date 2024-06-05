@@ -57,13 +57,13 @@ namespace Services
 
         public async Task<PetDTO?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
         {
-            var pet = await _petRepository.GetPetById(id);
-            if (pet == null)
+            var existingPet = await _petRepository.GetPetById(id);
+            if (existingPet == null)
             {
                 return null;
             }
-            var request = petUpdateRequest.ToPet();
-            var updatedPet = await _petRepository.UpdatePet(id, request);
+            var pet = petUpdateRequest.ToPet();
+            var updatedPet = await _petRepository.UpdatePet(id, pet);
             return updatedPet.ToPetDto();
         }
 

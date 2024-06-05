@@ -27,14 +27,13 @@ namespace ServiceContracts.Mappers
         {
             return new Pet()
             {
-                //PetId = petUpdateRequest.PetId,
-                //CustomerId = petUpdateRequest.CustomerId,
-                //Name = petUpdateRequest.Name,
-                //Species = petUpdateRequest.Species,
-                //Breed = petUpdateRequest.Breed,
-                //Gender = petUpdateRequest.Gender,
-                //Weight = petUpdateRequest.Weight,
-                //ImageURL = petUpdateRequest.ImageURL
+                PetId = petUpdateRequest.PetId,
+                Name = petUpdateRequest.Name,
+                Species = petUpdateRequest.Species,
+                Breed = petUpdateRequest.Breed,
+                Gender = petUpdateRequest.Gender,
+                Weight = petUpdateRequest.Weight,
+                ImageURL = petUpdateRequest.ImageURL
             };
         }
 
