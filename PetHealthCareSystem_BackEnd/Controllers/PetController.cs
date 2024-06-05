@@ -100,12 +100,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("Mismatched Id");
             }
-            var existingUser = await _userManager.FindByNameAsync(petUpdateRequest.CustomerUsername);
-            if (existingUser == null)
-            {
-                return BadRequest($"Username not found {petUpdateRequest.CustomerUsername}");
-            }
-
             var result = await _petService.UpdatePet(id, petUpdateRequest);
             if (result == null)
             {
