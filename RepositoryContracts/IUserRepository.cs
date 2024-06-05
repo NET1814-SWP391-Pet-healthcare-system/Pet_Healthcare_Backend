@@ -9,7 +9,6 @@ namespace RepositoryContracts
 {
     public interface IUserRepository
     {
-        Task<Customer?> GetCustomerWithPetsAsync(string customerId);
         Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId);
     }
 }

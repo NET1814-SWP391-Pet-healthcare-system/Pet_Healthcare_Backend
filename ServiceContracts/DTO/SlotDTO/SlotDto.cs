@@ -12,5 +12,6 @@ namespace ServiceContracts.DTO.SlotDTO
         public TimeOnly? StartTime { get; set; }
         public TimeOnly? EndTime { get; set; }
         public TimeSpan? Duration => EndTime - StartTime;
+        public bool Available { get; set; }
     }
 }
