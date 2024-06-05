@@ -109,30 +109,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BusinessResult>> DeletePetById(int id)
+        public async Task<ActionResult<PetDTO>> DeletePetById(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             var petData = await _petService.GetPetById(id);
             if (petData == null)
             {
-                businessResult.Status = 404;
-                businessResult.Data = false;
-                businessResult.Message = "Pet not found";
-                return NotFound(businessResult);
+                return NotFound("Pet not found");
             }
             var isDeleted = await _petService.RemovePetById(id);
             if (!isDeleted)
             {
-                businessResult.Status = 400;
-                businessResult.Data = petData;
-                businessResult.Message = "Didn't delete";
-
-                return BadRequest(businessResult);
+                return BadRequest("Pet deletion failed");
             }
-            businessResult.Status = 200;
-            businessResult.Data = petData;
-            businessResult.Message = "Pet deleted";
-            return Ok(businessResult);
+            return Ok(petData);
         }
     }
 }
