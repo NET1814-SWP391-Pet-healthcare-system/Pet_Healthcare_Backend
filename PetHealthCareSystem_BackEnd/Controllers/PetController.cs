@@ -34,13 +34,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
-        [HttpGet("current-user")]
-        public async Task<ActionResult<User>> GetCurrentUser()
+        [HttpGet("user-pet/{username}")]
+        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPetsByUsername(string username)
         {
-            //var username = User.GetUsername();
-            //var currenUser = await _userManager.FindByNameAsync(username);
-            var userList = await _userManager.GetUsersInRoleAsync("Customer");
-            return Ok(userList);
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return BadRequest("Username not found");
+            }
+            var petList = await _petService.GetAllPets();
+            var usersPet = petList.Where(p => p.CustomerId.Equals(user.Id));
+            if(!usersPet.Any())
+            {
+                return Ok("User doesn't have any pets");
+            }
+            return Ok(usersPet);
         }
 
         [HttpPost]
@@ -54,7 +62,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Data = false;
                 return BadRequest(businessResult);
             }
-            var existingUser = await _userManager.FindByIdAsync(petAddRequest.CustomerId);
+            var existingUser = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
             if (existingUser == null)
             {
                 businessResult.Status = 400;
