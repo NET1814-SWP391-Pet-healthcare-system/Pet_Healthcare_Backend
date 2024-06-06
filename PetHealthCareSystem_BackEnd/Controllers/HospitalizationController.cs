@@ -91,7 +91,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest("Kennel does not exist");
             }
 
-            if(_hospitalizationService.GetHospitalizationByPetId(pet.PetId)!=null)
+            if(_hospitalizationService.GetHospitalizationByPetId(pet.Id)!=null)
             {
                 return BadRequest("This pet is already hospitalized");
             }
