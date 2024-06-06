@@ -80,7 +80,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("This pet is not exist");
             }
-            userModel = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+            userModel = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId!);
             if (userModel == null)
             {
                 return BadRequest("Vet does not exist");
