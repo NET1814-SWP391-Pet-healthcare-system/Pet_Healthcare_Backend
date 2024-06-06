@@ -185,8 +185,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(
                 new NewUserDto
                 {
-                    UserName = user.UserName,
-                    Email = user.Email,
+                    UserName = user.UserName!,
+                    Email = user.Email!,
                     Token = _tokenService.CreateToken(user, role[0])
                 }
             );
@@ -363,11 +363,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 var vet1 = await _userManager.FindByNameAsync("ewilson");
                 var vet2 = await _userManager.FindByNameAsync("mbrown");
 
-                await _userManager.AddToRoleAsync(admin, "Admin");
-                await _userManager.AddToRoleAsync(customer1, "Customer");
-                await _userManager.AddToRoleAsync(customer2, "Customer");
-                await _userManager.AddToRoleAsync(vet1, "Vet");
-                await _userManager.AddToRoleAsync(vet2, "Vet");
+                await _userManager.AddToRoleAsync(admin!, "Admin");
+                await _userManager.AddToRoleAsync(customer1!, "Customer");
+                await _userManager.AddToRoleAsync(customer2!, "Customer");
+                await _userManager.AddToRoleAsync(vet1!, "Vet");
+                await _userManager.AddToRoleAsync(vet2!, "Vet");
                 return Ok("Role seeded");
             }
             catch (Exception e)

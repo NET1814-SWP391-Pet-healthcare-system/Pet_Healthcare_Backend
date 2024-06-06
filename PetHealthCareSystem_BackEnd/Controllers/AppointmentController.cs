@@ -10,6 +10,7 @@ using Entities;
 using PetHealthCareSystem_BackEnd.Extensions;
 using RepositoryContracts;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Entities.Enum;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -76,6 +77,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(availableVets);
         }
 
+        [HttpGet("customer/{username}")]
+        public async Task<IActionResult> GetCustomerAppointments([FromRoute] string username) 
+        {
+            var customerModel = await _userManager.FindByNameAsync(username) as Customer;
+            if (customerModel == null)
+            {
+                return BadRequest("user doesn't exist");
+            }
+            var appointmentsModel = await _appointmentService.GetCustomerAppointments(customerModel.Id);
+            return Ok(appointmentsModel.Select(a => a.ToAppointmentDto()));
+        }
+
         [Authorize(Policy = "CustomerOrEmployeePolicy")]
         [HttpPost("book")]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
@@ -96,16 +109,23 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             else if (User.IsInRole("Employee"))
             {
-                userModel = await _userManager.FindByNameAsync(appointmentAddRequest.CustomerUserName) as Customer;
+                userModel = await _userManager.FindByNameAsync(appointmentAddRequest.CustomerUserName!) as Customer;
                 if (userModel == null)
                 {
                     return BadRequest("Customer does not exist");
                 }
             }
 
+            // Checks if a user has an unfinished appointment
+            var customerAppointments = await _appointmentService.GetCustomerAppointments(userModel!.Id);
+            if (customerAppointments.Any(a => a.Status == AppointmentStatus.Boooked || a.Status == AppointmentStatus.Processing))
+            {
+                return BadRequest("You cannot book an appointment when there's still an unfinished appointment");
+            }
+
             // Get customer pet
             var pet = await _petService.GetPetById(appointmentAddRequest.PetId);
-            if (pet.CustomerId != userModel.Id)
+            if (pet!.CustomerId != userModel.Id)
             {
                 return BadRequest("This pet is not yours");
             }
@@ -149,7 +169,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.CustomerId = userModel.Id;
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
-                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost;
+                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost!;
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
@@ -167,7 +187,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.CustomerId = userModel.Id;
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
-                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost;
+                appointmentModel.TotalCost = (double)appointmentModel.Service.Cost!;
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
 
