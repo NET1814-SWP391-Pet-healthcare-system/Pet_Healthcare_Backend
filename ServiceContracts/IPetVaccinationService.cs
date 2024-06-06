@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface IPetVaccinationService
     {
-        Task<PetVaccination> GetPetVaccinationById(int petId, int vaccineId);
-        Task<IEnumerable<PetVaccination>> GetAllPetVaccinations();
-        Task<PetVaccination> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest);
-        Task<PetVaccination?> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest);
+        Task<PetVaccinationDTO?> GetPetVaccinationById(int petId, int vaccineId);
+        Task<IEnumerable<PetVaccinationDTO>> GetAllPetVaccinations();
+        Task<PetVaccinationDTO> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest);
+        Task<PetVaccinationDTO?> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest);
         Task<bool> RemovePetVaccination(int petId, int vaccineId);
     }
 }
