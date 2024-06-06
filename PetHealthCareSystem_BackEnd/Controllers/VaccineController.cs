@@ -29,6 +29,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<VaccineDTO>> GetVaccineById(int id)
         {
+            if(!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
             var vaccine = await _vaccineService.GetVaccineById(id);
             if(vaccine == null)
             {
@@ -38,80 +43,57 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BusinessResult>> AddVaccine(VaccineAddRequest vaccineAddRequest)
+        public async Task<ActionResult<VaccineDTO>> AddVaccine(VaccineAddRequest vaccineAddRequest)
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
             var vaccine = await _vaccineService.AddVaccine(vaccineAddRequest);
             return Ok(vaccine);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BusinessResult>> DeleteVaccineById(int id)
+        public async Task<ActionResult<VaccineDTO>> DeleteVaccineById(int id)
         {
-            BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
-            var vaccineData = await _vaccineService.GetVaccineById(id);
-            if (vaccineData == null)
+            var vaccine = await _vaccineService.GetVaccineById(id);
+            if (vaccine == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Vaccine not found";
-                businessResult.Data = false;
-                return NotFound(businessResult);
+                return NotFound("Vaccine not found");
             }
             var isDeleted = await _vaccineService.RemoveVaccine(id);
             if(!isDeleted)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Didn't delete";
-                businessResult.Data = vaccineData;
-                return BadRequest(businessResult);
+                return BadRequest("Vaccine deletion failed");
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Vaccine deleted";
-            businessResult.Data = vaccineData;
-            return Ok(businessResult);
+            return Ok(vaccine);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<BusinessResult>> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
             if(id != vaccineUpdateRequest.VaccineId)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Mismatched id";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest("Mismatched Id");
             }
             
             var result = await _vaccineService.UpdateVaccine(id, vaccineUpdateRequest);
             if(result == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Vaccine not found";
-                businessResult.Data = vaccineUpdateRequest;
-                return NotFound(businessResult);
+                return NotFound(vaccineUpdateRequest);
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Vaccine updated";
-            businessResult.Data = result;
-            return Ok(businessResult);
+            return Ok(result);
         }
 
     }

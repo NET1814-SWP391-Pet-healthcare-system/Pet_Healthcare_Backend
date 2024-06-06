@@ -34,7 +34,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<ActionResult<IEnumerable<PetDTO>>> GetPetsByUsername(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
+            if(user == null)
             {
                 return NotFound("Username not found");
             }
@@ -50,12 +50,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<ActionResult<PetDTO>> AddPet(PetAddRequest? petAddRequest)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
             var existingUser = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
-            if (existingUser == null)
+            if(existingUser == null)
             {
                 return NotFound("No customer found");
             }
@@ -68,7 +69,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<ActionResult<PetDTO>> GetPetById(int id)
         {
             var pet = await _petService.GetPetById(id);
-            if (pet == null)
+            if(pet == null)
             {
                 return NotFound();
             }
@@ -78,16 +79,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<PetDTO>> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                if(!ModelState.IsValid)
+                {
+                    string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    return Problem(errorMessage);
+                }
             }
-            if (id != petUpdateRequest.PetId)
+            if(id != petUpdateRequest.PetId)
             {
                 return BadRequest("Mismatched Id");
             }
             var result = await _petService.UpdatePet(id, petUpdateRequest);
-            if (result == null)
+            if(result == null)
             {
                 return NotFound("Pet not found");
             }
@@ -98,12 +103,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<ActionResult<PetDTO>> DeletePetById(int id)
         {
             var petData = await _petService.GetPetById(id);
-            if (petData == null)
+            if(petData == null)
             {
                 return NotFound("Pet not found");
             }
             var isDeleted = await _petService.RemovePetById(id);
-            if (!isDeleted)
+            if(!isDeleted)
             {
                 return BadRequest("Pet deletion failed");
             }

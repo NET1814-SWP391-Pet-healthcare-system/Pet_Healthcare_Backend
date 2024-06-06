@@ -45,7 +45,11 @@ namespace Services
         public async Task<VaccineDTO?> GetVaccineById(int id)
         {
             var vaccine = await _vaccineRepository.GetByIdAsync(id);
-            return vaccine.ToVaccineDto() ?? null;
+            if(vaccine == null)
+            {
+                return null;
+            }
+            return vaccine.ToVaccineDto();
         }
 
         public async Task<bool> RemoveVaccine(int id)

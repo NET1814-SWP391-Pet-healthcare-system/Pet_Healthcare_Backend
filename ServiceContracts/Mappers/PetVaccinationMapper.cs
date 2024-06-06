@@ -28,5 +28,15 @@ namespace ServiceContracts.Mappers
                 VaccinationDate = petVaccinationUpdateRequest.VaccinationDate
             };
         }
+
+        public static PetVaccinationDTO ToPetVaccinationDto(this PetVaccination petVaccination)
+        {
+            return new PetVaccinationDTO
+            {
+                PetId = petVaccination.PetId,
+                VaccineId = petVaccination.VaccineId,
+                VaccinationDate = petVaccination.VaccinationDate
+            };
+        }
     }
 }
