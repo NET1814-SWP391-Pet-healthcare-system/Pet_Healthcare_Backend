@@ -106,6 +106,11 @@ builder.Services.AddAuthorization(options => {
     options.AddPolicy("CustomerOrEmployeePolicy", policy =>
             policy.RequireAssertion(context =>
                 context.User.IsInRole("Customer") || context.User.IsInRole("Employee")));
+    options.AddPolicy("EmployeeCustomerVetPolicy", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Employee") ||
+            context.User.IsInRole("Customer") ||
+            context.User.IsInRole("Vet")));
 });
 
 // Add Email Configs

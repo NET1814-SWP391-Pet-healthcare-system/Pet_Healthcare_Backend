@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using PetHealthCareSystem_BackEnd.Extensions;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
@@ -332,6 +334,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
             }
             return StatusCode(500, "This user does not exist");
+        }
+
+        [Authorize(Policy = "EmployeeCustomerVetPolicy")]
+        [HttpPut("update-profile/{username}")]
+        public async Task<ActionResult<UserDTO>> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        {
+            var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
+            if(result == null)
+            {
+                return NotFound("Username not found");
+            }
+            return Ok(result);
         }
 
         [HttpGet("run-seed-data-only-run-once")]
