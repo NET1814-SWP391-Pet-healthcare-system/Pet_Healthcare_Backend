@@ -14,10 +14,6 @@ namespace Repositories
         }
         public async Task<Hospitalization> Add(Hospitalization hospitalization)
         {
-                if (hospitalization == null)
-                {
-                    return null;
-                }
                 await _context.Hospitalizations.AddAsync(hospitalization);
                 await _context.SaveChangesAsync();
                 return hospitalization;
@@ -69,6 +65,22 @@ namespace Repositories
                 existhospitalization.TotalCost = hospitalization.TotalCost;
             await _context.SaveChangesAsync();
             return hospitalization;
+        }
+        public async Task<Hospitalization?> GetByPetId(int id)
+        {
+            return await _context.Hospitalizations
+                .Include(a => a.Pet)
+                .Include(a => a.Kennel)
+                .Include(a => a.Vet)
+                .FirstOrDefaultAsync(a => a.PetId == id);
+        }
+        public async Task<Hospitalization?> GetByVetId(string id)
+        {
+            return await _context.Hospitalizations
+                .Include(a => a.Pet)
+                .Include(a => a.Kennel)
+                .Include(a => a.Vet)
+                .FirstOrDefaultAsync(a => a.VetId == id);
         }
     }
 }
