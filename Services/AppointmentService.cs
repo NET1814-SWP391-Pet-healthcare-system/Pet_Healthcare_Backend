@@ -68,5 +68,10 @@ namespace Services
             existingAppointment.Status = AppointmentStatus.Processing;
             return await _appointmentRepository.UpdateAsync(existingAppointment);
         }
+
+        public async Task<IEnumerable<Appointment>> GetCustomerAppointments(string customerId)
+        {
+            return await _appointmentRepository.GetByUserIdAsync(customerId);
+        }
     }
 }
