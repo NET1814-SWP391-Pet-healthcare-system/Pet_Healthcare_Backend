@@ -171,13 +171,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
 
-                var customer = await _userManager.FindByNameAsync(User.GetUsername());
-                var bookAppointment = new Message(new string[] { customer.Email! }, "Booking", "You have successfully booked an appointment"!);
-                await _emailService.SendEmailAsync(bookAppointment);
+                //var customer = await _userManager.FindByNameAsync(User.GetUsername());
+                //var bookAppointment = new Message(new string[] { customer.Email! }, "Booking", "You have successfully booked an appointment"!);
+                //await _emailService.SendEmailAsync(bookAppointment);
 
-                var Remindermessage = new Message(new string[] { customer.Email! }, "Reminder", "You have a booking appointment"!);
-                var ScheduledTime = new DateTime(appointmentModel.Date.AddDays(-1), (TimeOnly)appointmentModel.Slot.StartTime);
-                 await _emailService.ScheduleOneTimeEmail(Remindermessage, ScheduledTime);
+                //var Remindermessage = new Message(new string[] { customer.Email! }, "Reminder", "You have a booking appointment"!);
+                //var ScheduledTime = new DateTime(appointmentModel.Date.AddDays(-1), (TimeOnly)appointmentModel.Slot.StartTime);
+                // await _emailService.ScheduleOneTimeEmail(Remindermessage, ScheduledTime);
 
 
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
