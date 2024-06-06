@@ -1,6 +1,7 @@
 ﻿using Entities;
 using MailKit.Net.Smtp;
 using MimeKit;
+using MailKit.Security;
 using ServiceContracts;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace Services
 {
     public class EmailService : IEmailService
     {
+        private Timer _timer;
         private readonly EmailConfiguration _emailConfig;
         public EmailService(EmailConfiguration emailConfig)
         {
             _emailConfig = emailConfig;
+            _timer = null;
         }
         public async Task SendEmailAsync(Message message)
         {
@@ -57,6 +60,24 @@ namespace Services
                 Text = message.Content
             };
             return emailMessage;
+        }
+        public async Task ScheduleOneTimeEmail( Message emailMessage, DateTime SendTime)
+        {
+            var dueTime = SendTime - DateTime.Now;
+            if (dueTime.TotalMilliseconds > 0)
+            {
+                _timer = new Timer(SendEmailCallback, null, dueTime, Timeout.InfiniteTimeSpan);
+            }
+            else
+            {
+                // Schedule the email for immediate delivery if the scheduled time has already passed
+                 SendEmailAsync(emailMessage).Wait();
+            }
+
+            void SendEmailCallback(object state)
+            {
+                 SendEmailAsync(emailMessage).Wait();
+            }
         }
     }
 }
