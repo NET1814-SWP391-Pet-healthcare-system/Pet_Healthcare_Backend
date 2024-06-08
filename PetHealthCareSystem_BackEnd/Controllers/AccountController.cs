@@ -12,6 +12,7 @@ using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
+using System.Data;
 using System.Reflection.Metadata;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -180,14 +181,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             if (!result.Succeeded) { return Unauthorized("Username not found or password incorrect"); }
 
-            var role = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault();
 
             return Ok(
                 new NewUserDto
                 {
                     UserName = user.UserName!,
                     Email = user.Email!,
-                    Token = _tokenService.CreateToken(user, role[0])
+                    Role = role!,
+                    Token = _tokenService.CreateToken(user, role!)
                 }
             );
         }
@@ -221,6 +224,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
                     if (roleResult.Succeeded)
                     {
+                        var roles = await _userManager.GetRolesAsync(customer);
+                        var role = roles.FirstOrDefault();
+
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
                         var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
                         var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
@@ -232,6 +238,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             {
                                 UserName = customer.UserName!,
                                 Email = customer.Email!,
+                                Role = role!,
                                 Token = _tokenService.CreateToken(customer, "Customer")
                             }
                         );
