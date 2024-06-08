@@ -39,7 +39,10 @@ namespace Services
             return await _serviceRepository.Remove(id);
 
         }
-
+        public async Task<Service?> GetServiceByName(string name)
+        {
+            return await _serviceRepository.GetByName(name);
+        }
         public async Task<Service?> UpdateService(int id, Service request)
         {
             var service = await _serviceRepository.GetById(id);

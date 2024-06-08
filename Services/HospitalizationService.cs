@@ -50,5 +50,13 @@ namespace Services
         {
             return await _hospitalizationRepository.GetAll();
         }
+        public async Task<Hospitalization?> GetHospitalizationByPetId(int id)
+        {
+            return await _hospitalizationRepository.GetByPetId(id);
+        }
+        public async Task<Hospitalization?> GetHospitalizationByVetId(string id)
+        {
+            return await _hospitalizationRepository.GetByVetId(id);
+        }
     }
 }

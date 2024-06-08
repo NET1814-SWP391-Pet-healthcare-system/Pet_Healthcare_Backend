@@ -14,5 +14,7 @@ namespace RepositoryContracts
         Task<IEnumerable<Hospitalization>> GetAll();
         Task<Hospitalization?> Update(int id, Hospitalization hospitalization);
         Task<Hospitalization?> Remove(int id);
+        Task<Hospitalization?> GetByPetId(int id);
+        Task<Hospitalization?> GetByVetId(string id);
     }
 }

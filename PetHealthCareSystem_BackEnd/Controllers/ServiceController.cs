@@ -34,6 +34,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                if (serviceAddRequest.Cost < 0)
+                {
+                    return BadRequest("Cost cannot be negative");
+                }
+                if (serviceAddRequest.Name == null || serviceAddRequest.Description == null)
+                {
+                    return BadRequest("Name and Description cannot be null");
+                }
+                if(await _serviceService.GetServiceByName(serviceAddRequest.Name) != null)
+                {
+                    return BadRequest("Service already exists");
+                }
                 await _serviceService.AddService(serviceAddRequest.ToServiceFromAdd());
                 return Ok("Added Service Successfully");
         }

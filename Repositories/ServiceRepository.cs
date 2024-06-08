@@ -18,10 +18,6 @@ namespace Repositories
         }
         public async Task<Service> Add(Service service)
         {
-            if(service == null)
-            {
-                return null;
-            }
             await _context.Services.AddAsync(service);
             await _context.SaveChangesAsync();
             return service;
@@ -61,6 +57,10 @@ namespace Repositories
             existService.Cost = service.Cost;
             await _context.SaveChangesAsync();
             return existService;
+        }
+        public async Task<Service?> GetByName(string name)
+        {
+            return await _context.Services.FirstOrDefaultAsync(a => a.Name == name);
         }
     }
 }
