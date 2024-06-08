@@ -1,15 +1,17 @@
 ﻿using Entities;
+using Entities.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    [Authorize(Policy = "AdminPolicy")]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -22,6 +24,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _tokenService = tokenService;
         }
 
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -37,6 +40,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(users);
         }
 
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUsersByUsername([FromRoute] string username)
         {
@@ -56,6 +60,30 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(usersContainsUsername);
         }
 
+        [Authorize(Policy = "AdminEmployeePolicy")]
+        [HttpGet("users/role/{role}")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByRole(string role)
+        {
+            switch(role.ToUpper())
+            {
+                case "CUSTOMER":
+                    var customerList = await _userManager.GetUserDtosInRoleAsync("Customer");
+                    return Ok(customerList);
+
+                case "VET":
+                    var vetList = await _userManager.GetUserDtosInRoleAsync("Vet");
+                    return Ok(vetList);
+
+                case "EMPLOYEE":
+                    var employeeList = await _userManager.GetUserDtosInRoleAsync("Employee");
+                    return Ok(employeeList);
+
+                default:
+                    return BadRequest("Role does not exist");
+            }
+        }
+
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] UserAddRequest userAddDto)
         {
@@ -196,6 +224,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut("{username}")]
         public async Task<IActionResult> UpdateUser([FromRoute] string username ,[FromBody] UserUpdateRequest userUpdateDto)
         {
@@ -247,6 +276,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string username)
         {
