@@ -23,7 +23,7 @@ namespace ServiceContracts.DTO.HospitalizationDTO
         [Required(ErrorMessage = "Must choose a date for the hospitalization")]
         [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
         public string? DischargeDate { get; set; }
-        public double? TotalCost { get; set; }
+        public double TotalCost { get; set; }
 
     }
 }

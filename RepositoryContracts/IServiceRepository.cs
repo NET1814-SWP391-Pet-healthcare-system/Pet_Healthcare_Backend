@@ -14,5 +14,6 @@ namespace RepositoryContracts
         Task<Service> Add(Service service);
         Task<Service?> Update(int id,Service service);
         Task<Service?> Remove(int id);
+        Task<Service?> GetByName(string name);
     }
 }

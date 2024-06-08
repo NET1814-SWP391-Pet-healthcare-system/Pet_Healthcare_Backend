@@ -23,7 +23,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 });
-builder.Services.AddControllers().AddNewtonsoftJson(options => { 
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 builder.Services.AddEndpointsApiExplorer();
@@ -66,24 +67,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // Add JWT Identity
-builder.Services.AddIdentity<User, IdentityRole>(options => {
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 3;
-})  .AddEntityFrameworkStores<ApplicationDbContext>()
+}).AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 // Add Authentication
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme =
     options.DefaultChallengeScheme =
     options.DefaultForbidScheme =
     options.DefaultScheme =
     options.DefaultSignInScheme =
     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -98,7 +102,8 @@ builder.Services.AddAuthentication(options => {
 });
 
 // Add Authorization 
-builder.Services.AddAuthorization(options => {
+builder.Services.AddAuthorization(options =>
+{
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
     options.AddPolicy("VetPolicy", policy => policy.RequireRole("Vet"));
@@ -106,6 +111,14 @@ builder.Services.AddAuthorization(options => {
     options.AddPolicy("CustomerOrEmployeePolicy", policy =>
             policy.RequireAssertion(context =>
                 context.User.IsInRole("Customer") || context.User.IsInRole("Employee")));
+    options.AddPolicy("EmployeeCustomerVetPolicy", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Employee") ||
+            context.User.IsInRole("Customer") ||
+            context.User.IsInRole("Vet")));
+    options.AddPolicy("AdminEmployeePolicy", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Admin") || context.User.IsInRole("Employee")));
 });
 
 // Add Email Configs
@@ -139,7 +152,7 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
-builder.Services.AddScoped<IVaccineService, VaccineService>(); 
+builder.Services.AddScoped<IVaccineService, VaccineService>();
 builder.Services.AddScoped<IPetVaccinationRepository, PetVaccinationRepository>();
 builder.Services.AddScoped<IPetVaccinationService, PetVaccinationService>();
 

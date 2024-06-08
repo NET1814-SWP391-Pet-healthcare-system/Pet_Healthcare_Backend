@@ -10,5 +10,6 @@ namespace ServiceContracts
     public interface IEmailService
     {
         Task SendEmailAsync(Message message);
+        Task ScheduleOneTimeEmail(Message message ,DateTime SendTime);
     }
 }

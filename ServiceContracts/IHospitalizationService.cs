@@ -15,5 +15,7 @@ namespace ServiceContracts
         Task <IEnumerable<Hospitalization>> GetHospitalizations();
         Task<Hospitalization?> UpdateHospitalization(int id, Hospitalization request);
         Task<Hospitalization?> RemoveHospitalization(int id);
+        Task<Hospitalization?> GetHospitalizationByPetId(int id);
+        Task<Hospitalization?> GetHospitalizationByVetId(string id);
     }
 }

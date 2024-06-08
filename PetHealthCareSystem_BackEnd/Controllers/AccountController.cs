@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using PetHealthCareSystem_BackEnd.Extensions;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
+using System.Data;
 using System.Reflection.Metadata;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -178,14 +181,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             if (!result.Succeeded) { return Unauthorized("Username not found or password incorrect"); }
 
-            var role = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault();
 
             return Ok(
                 new NewUserDto
                 {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    Token = _tokenService.CreateToken(user, role[0])
+                    UserName = user.UserName!,
+                    Email = user.Email!,
+                    Role = role!,
+                    Token = _tokenService.CreateToken(user, role!)
                 }
             );
         }
@@ -219,6 +224,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
                     if (roleResult.Succeeded)
                     {
+                        var roles = await _userManager.GetRolesAsync(customer);
+                        var role = roles.FirstOrDefault();
+
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
                         var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
                         var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
@@ -230,6 +238,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             {
                                 UserName = customer.UserName!,
                                 Email = customer.Email!,
+                                Role = role!,
                                 Token = _tokenService.CreateToken(customer, "Customer")
                             }
                         );
@@ -334,6 +343,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return StatusCode(500, "This user does not exist");
         }
 
+        [Authorize(Policy = "EmployeeCustomerVetPolicy")]
+        [HttpPut("update-profile/{username}")]
+        public async Task<ActionResult<UserDTO>> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        {
+            var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
+            if(result == null)
+            {
+                return NotFound("Username not found");
+            }
+            return Ok(result);
+        }
+
         [HttpGet("run-seed-data-only-run-once")]
         public async Task<IActionResult> SeedUserRoles()
         {
@@ -349,11 +370,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 var vet1 = await _userManager.FindByNameAsync("ewilson");
                 var vet2 = await _userManager.FindByNameAsync("mbrown");
 
-                await _userManager.AddToRoleAsync(admin, "Admin");
-                await _userManager.AddToRoleAsync(customer1, "Customer");
-                await _userManager.AddToRoleAsync(customer2, "Customer");
-                await _userManager.AddToRoleAsync(vet1, "Vet");
-                await _userManager.AddToRoleAsync(vet2, "Vet");
+                await _userManager.AddToRoleAsync(admin!, "Admin");
+                await _userManager.AddToRoleAsync(customer1!, "Customer");
+                await _userManager.AddToRoleAsync(customer2!, "Customer");
+                await _userManager.AddToRoleAsync(vet1!, "Vet");
+                await _userManager.AddToRoleAsync(vet2!, "Vet");
                 return Ok("Role seeded");
             }
             catch (Exception e)

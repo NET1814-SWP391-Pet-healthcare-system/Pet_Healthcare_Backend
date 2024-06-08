@@ -41,7 +41,11 @@ namespace Services
         public async Task<PetDTO?> GetPetById(int id)
         {
             var pet = await _petRepository.GetPetById(id);
-            return pet.ToPetDto() ?? null;
+            if (pet == null)
+            {
+                return null;
+            }
+            return pet.ToPetDto();
         }
 
         public async Task<IEnumerable<PetDTO>> GetAllPets()

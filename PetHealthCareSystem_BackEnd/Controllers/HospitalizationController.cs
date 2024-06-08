@@ -80,7 +80,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("This pet is not exist");
             }
-            userModel = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+            userModel = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId!);
             if (userModel == null)
             {
                 return BadRequest("Vet does not exist");
@@ -90,8 +90,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("Kennel does not exist");
             }
-            hospitalizationAddRequest.VetId = userModel.Id;
 
+            if(_hospitalizationService.GetHospitalizationByPetId(pet.Id)!=null)
+            {
+                return BadRequest("This pet is already hospitalized");
+            }
+            if(_hospitalizationService.GetHospitalizationByVetId(userModel.Id)!=null &&
+                _hospitalizationService.GetHospitalizationByVetId(userModel.Id).Result.AdmissionDate.Equals(DateOnly.Parse(hospitalizationAddRequest.AdmissionDate)))
+            {
+                return BadRequest("This vet is already hospitalized");
+            }
+            hospitalizationAddRequest.VetId = userModel.Id;
             await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
             return Ok("Added Hospitalization Successfully");
 

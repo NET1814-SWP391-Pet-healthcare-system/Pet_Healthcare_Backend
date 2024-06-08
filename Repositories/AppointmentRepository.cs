@@ -53,6 +53,18 @@ namespace Repositories
                 .FirstOrDefaultAsync(a => a.AppointmentId == id);
         }
 
+        public async Task<IEnumerable<Appointment>> GetByUserIdAsync(string userId)
+        {
+            return await _context.Appointments
+                .Where(a => a.CustomerId == userId || a.VetId == userId)
+                .Include(a => a.Customer)
+                .Include(a => a.Pet)
+                .Include(a => a.Vet)
+                .Include(a => a.Slot)
+                .Include(a => a.Service)
+                .ToListAsync();
+        }
+
         public async Task<Appointment?> RemoveAsync(int id)
         {
             var appointmentModel = await _context.Appointments.FindAsync(id);

@@ -16,5 +16,6 @@ namespace ServiceContracts
         Task<IEnumerable<Service>> GetServices();
         Task<Service?> UpdateService(int id,Service request);
         Task<Service?> RemoveService(int id);
+        Task<Service?> GetServiceByName(string name);
     }
 }

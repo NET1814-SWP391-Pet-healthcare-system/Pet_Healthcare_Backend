@@ -44,7 +44,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 var availableVets = await _userService.GetAvailableVetsAsync(appointmentDate, slot.SlotId);
                 var slotDto = slot.ToSlotDto();
-                if (availableVets!.Count() == 0)
+                if (availableVets == null)
                 {
                     slotDto.Available = false;
                 }

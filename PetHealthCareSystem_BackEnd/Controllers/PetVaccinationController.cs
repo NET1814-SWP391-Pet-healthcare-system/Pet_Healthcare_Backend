@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 using ServiceContracts;
@@ -25,159 +26,103 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<BusinessResult>> GetPetVaccinations()
+        public async Task<ActionResult<IEnumerable<PetVaccinationDTO>>> GetPetVaccinations() 
         {
-            BusinessResult businessResult = new BusinessResult();
-            businessResult.Status = 200;
-            businessResult.Message = "Get all pet vaccinations successfully";
-            businessResult.Data = await _petVaccinationService.GetAllPetVaccinations();
-            return Ok(businessResult);
+            return Ok(await _petVaccinationService.GetAllPetVaccinations());
         }
+        
 
         [HttpGet("{petId}/{vaccineId}")]
-        public async Task<ActionResult<BusinessResult>> GetPetVaccinations(int petId, int vaccineId)
+        public async Task<ActionResult<PetVaccinationDTO>> GetPetVaccinations(int petId, int vaccineId)
         {
-            BusinessResult businessResult = new BusinessResult();
-            var pet = _petService.GetPetById(petId);
+            var pet = await _petService.GetPetById(petId);
             if(pet == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Pet not found";
-                businessResult.Data = false;
-                return NotFound(businessResult);
+                return NotFound("Pet not found");
             }
             var vaccine = await _vaccineService.GetVaccineById(vaccineId);
             if(vaccine == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Vaccine not found";
-                businessResult.Data = false;
-                return NotFound(businessResult);
+                return NotFound("Vaccine not found");
             }
             var petVaccination = await _petVaccinationService.GetPetVaccinationById(petId, vaccineId);
             if(petVaccination == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Pet has not injected this vaccine";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest("Pet has not injected this vaccine");
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Get pet vaccination successfully";
-            businessResult.Data = petVaccination;
-            return Ok(businessResult);
+            return Ok(petVaccination);
         }
 
         [HttpPost]
-        public async Task<ActionResult<BusinessResult>> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest)
+        public async Task<ActionResult<PetVaccinationDTO>> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
-            var pet = _petService.GetPetById(petVaccinationAddRequest.PetId);
+            var pet = await _petService.GetPetById(petVaccinationAddRequest.PetId);
             if(pet == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Pet not found";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return NotFound("Pet not found");
             }
 
             var vaccine = await _vaccineService.GetVaccineById(petVaccinationAddRequest.VaccineId);
 
             if(vaccine == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Vaccine not found";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return NotFound("Vaccine not found");
             }
             var petVaccination = await _petVaccinationService.AddPetVaccination(petVaccinationAddRequest);
             if(petVaccination == null)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Didn't add";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest("Pet add failed");
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Pet vaccination added";
-            businessResult.Data = petVaccination;
-            return Ok(businessResult);
+            return Ok(petVaccination);
         }
 
         [HttpDelete("{petId}/{vaccineId}")]
-        public async Task<ActionResult<BusinessResult>> DeletePetVaccinationById(int petId, int vaccineId)
+        public async Task<ActionResult<PetVaccinationDTO>> DeletePetVaccinationById(int petId, int vaccineId)
         {
-            BusinessResult businessResult = new BusinessResult();
             var petVaccinationData = await _petVaccinationService.GetPetVaccinationById(petId, vaccineId);
             if(petVaccinationData == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Pet vaccination not found";
-                businessResult.Data = false;
-                return NotFound(businessResult);
+                return NotFound("Pet vaccination not found");
             }
 
             var isDeleted = await _petVaccinationService.RemovePetVaccination(petId, vaccineId);
             if(!isDeleted)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Didn't delete";
-                businessResult.Data = petVaccinationData;
-                return BadRequest(businessResult);
+                return BadRequest("Pet vaccination deletion failed");
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Pet vaccination deleted";
-            businessResult.Data = petVaccinationData;
-            return Ok(businessResult);
+            return Ok(petVaccinationData);
         }
 
         [HttpPut("{petId}/{vaccineId}")]
-        public async Task<ActionResult<BusinessResult>> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest)
+        public async Task<ActionResult<PetVaccinationDTO>> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest)
         {
-            BusinessResult businessResult = new BusinessResult();
             if(!ModelState.IsValid)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Invalid request";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
 
             if(petId != petVaccinationUpdateRequest.PetId)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Mismatched PetId";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest("Mismatched PetId");
             }
 
             if(vaccineId != petVaccinationUpdateRequest.VaccineId)
             {
-                businessResult.Status = 400;
-                businessResult.Message = "Mismatched VaccineId";
-                businessResult.Data = false;
-                return BadRequest(businessResult);
+                return BadRequest("Mismatched VaccineId");
             }
 
             var result = await _petVaccinationService.UpdatePetVaccination(petId, vaccineId, petVaccinationUpdateRequest);
             if(result == null)
             {
-                businessResult.Status = 404;
-                businessResult.Message = "Pet vaccination not found";
-                businessResult.Data = petVaccinationUpdateRequest;
-                return NotFound(businessResult);
+                return NotFound("Pet vaccination not found");
             }
-            businessResult.Status = 200;
-            businessResult.Message = "Pet vaccination updated";
-            businessResult.Data = result;
-            return Ok(businessResult);
+            return Ok(result);
         }
 
     }
