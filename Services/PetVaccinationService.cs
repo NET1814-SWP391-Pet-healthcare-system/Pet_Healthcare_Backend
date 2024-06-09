@@ -35,12 +35,7 @@ namespace Services
         public async Task<IEnumerable<PetVaccinationDTO>> GetAllPetVaccinations()
         {
             var petVaccinations = await _petVaccinationRepository.GetAllAsync();
-            List<PetVaccinationDTO> result = new List<PetVaccinationDTO>();
-            foreach(var petVaccination in petVaccinations)
-            {
-                result.Add(petVaccination.ToPetVaccinationDto());
-            }
-            return result;
+            return petVaccinations.Select(petVaccination => petVaccination.ToPetVaccinationDto());
         }
 
         public async Task<PetVaccinationDTO?> GetPetVaccinationById(int petId, int vaccineId)

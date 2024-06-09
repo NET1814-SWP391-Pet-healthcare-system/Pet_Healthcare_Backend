@@ -34,12 +34,7 @@ namespace Services
         public async Task<IEnumerable<VaccineDTO>> GetAllVaccines()
         {
             var vaccineList = await _vaccineRepository.GetAllAsync();
-            List<VaccineDTO> result = new List<VaccineDTO>();
-            foreach(var vaccine in vaccineList)
-            {
-                result.Add(vaccine.ToVaccineDto());
-            }
-            return result;
+            return vaccineList.Select(vaccine => vaccine.ToVaccineDto());
         }
 
         public async Task<VaccineDTO?> GetVaccineById(int id)
