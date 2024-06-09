@@ -36,7 +36,6 @@ namespace ServiceContracts.Mappers
             return new Kennel()
             {
                 Description = kennelUpdateRequest.Description,
-                Capacity = kennelUpdateRequest.Capacity,
                 DailyCost = kennelUpdateRequest.DailyCost
             };
         }
