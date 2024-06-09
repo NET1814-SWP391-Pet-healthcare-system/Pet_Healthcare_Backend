@@ -51,12 +51,7 @@ namespace Services
         public async Task<IEnumerable<PetDTO>> GetAllPets()
         {
             var petList = await _petRepository.GetAllPet();
-            List<PetDTO> result = new List<PetDTO>();
-            foreach(var pet in petList)
-            {
-                result.Add(pet.ToPetDto());
-            }
-            return result;
+            return petList.Select(pet => pet.ToPetDto());
         }
 
         public async Task<PetDTO?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
