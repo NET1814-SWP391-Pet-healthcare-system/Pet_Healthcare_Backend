@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.HospitalizationDTO;
-using ServiceContracts.DTO.AppointmentDTO;
 using ServiceContracts.Mappers;
 using Microsoft.AspNetCore.Identity;
 using PetHealthCareSystem_BackEnd.Extensions;
 using Services;
 using Microsoft.AspNetCore.Authorization;
+using PetHealthCareSystem_BackEnd.Validations;
+using Microsoft.EntityFrameworkCore;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -20,24 +20,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class HospitalizationController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IPetService _petService;
         private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
         private readonly IHospitalizationService _hospitalizationService;
+        private readonly HospitalizationValidation _hospitalizationValidation;
 
-        public HospitalizationController(ApplicationDbContext context, IHospitalizationService hospitalizationService, IUserService userService
-            , UserManager<User> userManager, IPetService petService)
+
+
+        public HospitalizationController(IHospitalizationService hospitalizationService, IUserService userService
+            , UserManager<User> userManager, HospitalizationValidation hospitalizationValidation)
         {
-            _context = context;
             _userService = userService;
             _userManager = userManager;
-            _petService = petService;
             _hospitalizationService = hospitalizationService;
+            _hospitalizationValidation = hospitalizationValidation;
         }
 
         //Create
-        [Authorize(Policy = "EmployeePolicy")]
+        // [Authorize(Policy = "EmployeePolicy")]
         [HttpPost]
         public async Task<IActionResult> AddHospitalization([FromBody] HospitalizationAddRequest hospitalizationAddRequest)
         {
@@ -52,55 +52,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            DateTime admissionDate = Convert.ToDateTime(hospitalizationAddRequest.AdmissionDate);
-            DateTime dischargeDate = Convert.ToDateTime(hospitalizationAddRequest.DischargeDate);
-
-            if (admissionDate > dischargeDate)
+            string error = await _hospitalizationValidation.HospitalizationVerificaiton(hospitalizationAddRequest);
+            if (error != null)
             {
-                return BadRequest("Admission Date cannot be greater than Discharge Date");
+                return BadRequest(error);
             }
-
-            if (admissionDate == dischargeDate)
-            {
-                return BadRequest("Admission Date cannot be equal to Discharge Date");
-            }
-
-            if (dischargeDate < admissionDate)
-            {
-                return BadRequest("Discharge Date cannot be less than Admission Date");
-            }
-
-            if (hospitalizationAddRequest.TotalCost < 0)
-            {
-                return BadRequest("Total Cost cannot be negative");
-            }
-            var pet = await _petService.GetPetById(hospitalizationAddRequest.PetId);
-            if (pet == null)
-            {
-                return BadRequest("This pet is not exist");
-            }
-            userModel = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId!);
-            if (userModel == null)
-            {
-                return BadRequest("Vet does not exist");
-            }
-            var kennel = await _context.Kennels.FindAsync(hospitalizationAddRequest.KennelId);
-            if (kennel == null)
-            {
-                return BadRequest("Kennel does not exist");
-            }
-
-            if(_hospitalizationService.GetHospitalizationByPetId(pet.Id)!=null)
-            {
-                return BadRequest("This pet is already hospitalized");
-            }
-            if(_hospitalizationService.GetHospitalizationByVetId(userModel.Id)!=null &&
-                _hospitalizationService.GetHospitalizationByVetId(userModel.Id).Result.AdmissionDate.Equals(DateOnly.Parse(hospitalizationAddRequest.AdmissionDate)))
-            {
-                return BadRequest("This vet is already hospitalized");
-            }
-            hospitalizationAddRequest.VetId = userModel.Id;
+            var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+            hospitalizationAddRequest.VetId = vet.Id;
             await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
             return Ok("Added Hospitalization Successfully");
 
@@ -163,5 +121,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             return Ok("Nuke successfully");
         }
+
+        [HttpPost("get-hospitalizations")]
+        public async Task<IActionResult> GetAllHospitalizationByVetID(string id)
+        {
+            var vet = await _userManager.FindByNameAsync(id);
+            id = vet.Id;
+            var hospitalization = await _hospitalizationService.GetAllHospitalizationByVetId(id);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (hospitalization == null)
+            {
+                return NotFound();
+            }
+            return Ok(hospitalization);
+        }
+
     }
 }

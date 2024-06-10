@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO.KennelDTO;
 using ServiceContracts.Mappers;
@@ -10,9 +11,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class KennelController : Controller
     {
         private readonly IKennelService _kennelService;
-        public KennelController(IKennelService kennelService)
+        private readonly IHospitalizationService _hospitalizationService;
+        public KennelController(IKennelService kennelService, IHospitalizationService hospitalizationService)
         {
             _kennelService = kennelService;
+            _hospitalizationService = hospitalizationService;
         }
 
         [HttpGet]
@@ -22,9 +25,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var kennels = await _kennelService.GetKennelsAsync();
-            var kennelDtos = kennels.Select(k => k.ToKennelDto()).ToList();
-            return Ok(kennelDtos);
+
+            return Ok(await _kennelService.GetKennelsAsync());
         }
 
         [HttpGet("{kennelId:int}")]
@@ -34,12 +36,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var kennelModel = await _kennelService.GetKennelByIdAsync(kennelId);
-            if (kennelModel == null)
+            var result = await _kennelService.GetKennelByIdAsync(kennelId);
+            if (result == null)
             {
                 return NotFound("Kennel does not exist");
             }
-            return Ok(kennelModel.ToKennelDto());
+            return Ok(result);
         }
 
         [HttpPost]
@@ -66,7 +68,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Kennel does not exist");
             }
-            return Ok(kennelModel.ToKennelDto());
+            var kennel = await _kennelService.GetKennelByIdAsync(kennelId);
+            var isAvailable = kennel.IsAvailable;
+            var result = kennelModel.ToKennelDto();
+            result.IsAvailable = isAvailable;
+            return Ok(result);
         }
 
         [HttpDelete("{kennelId:int}")]
@@ -75,6 +81,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            var kennel = await _kennelService.GetKennelByIdAsync(kennelId);
+            //kennel is occupied
+            if(kennel.IsAvailable == false)
+            {
+                return BadRequest("Kennel is currently occupied");
             }
             var kennelModel = await _kennelService.RemoveKennelAsync(kennelId);
             if (kennelModel == null)

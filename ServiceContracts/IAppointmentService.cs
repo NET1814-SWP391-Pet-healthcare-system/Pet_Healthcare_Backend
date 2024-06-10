@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Entities.Enum;
 using ServiceContracts.DTO.AppointmentDTO;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace ServiceContracts
         Task<Appointment?> CheckInAppointmentAsync(int id);
         Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel);
         Task<Appointment?> RemoveAppointmentAsync(int id);
+        Task<Appointment?> UpdateAppointmentStatus(int id, AppointmentStatus appointmentStatus);
     }
 }

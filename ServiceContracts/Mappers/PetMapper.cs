@@ -47,7 +47,8 @@ namespace ServiceContracts.Mappers
                 Species = pet.Species,
                 Breed = pet.Breed,
                 Gender = pet.Gender,
-                Weight = pet.Weight
+                Weight = pet.Weight,
+                ImageUrl = pet.ImageURL
             };
         }
     }

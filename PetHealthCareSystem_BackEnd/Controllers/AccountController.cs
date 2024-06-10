@@ -12,8 +12,7 @@ using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
-using System.Data;
-using System.Reflection.Metadata;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -35,151 +34,28 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _emailService = emailService;
         }
 
-        #region
-        ////Create
-        //[HttpPost]
-        //public ActionResult<BusinessResult> AddUser(UserAddRequest? userAddRequest)
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    if(!ModelState.IsValid)
-        //    {
-        //        businessResult.Status = 400;
-        //        businessResult.Data = false;
-        //        businessResult.Message = "Invalid request";
-        //        return BadRequest(businessResult);
-        //    }
-
-        //    _userService.AddUser(userAddRequest);
-        //    businessResult.Status = 200;
-        //    businessResult.Data = userAddRequest;
-        //    businessResult.Message = "User added";
-        //    return Ok(businessResult);
-        //}
-
-
-        ////Read
-        //[HttpGet]
-        //public ActionResult<BusinessResult> GetUsers()
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    businessResult.Data = _userService.GetUsers(); ;
-        //    businessResult.Message = "Successful";
-        //    businessResult.Status = 200;
-        //    return Ok(businessResult);
-        //}
-
-        //[HttpGet("customers")]
-        //public ActionResult<BusinessResult> GetCustomers()
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    businessResult.Data = _userService.GetCustomers();
-        //    businessResult.Message = "Successful";
-        //    businessResult.Status = 200;
-        //    return Ok(businessResult);
-        //}
-
-        //[HttpGet("vets")]
-        //public ActionResult<BusinessResult> GetVets()
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    businessResult.Data = _userService.GetVets();
-        //    businessResult.Message = "Successful";
-        //    businessResult.Status = 200;
-        //    return Ok(businessResult);
-        //}
-
-        //[HttpGet("id/{id}")]
-        //public ActionResult<BusinessResult> GetUserById(int id)
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    var user = _userService.GetUserById(id);
-        //    if(user == null)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = null;
-        //        businessResult.Message = "No User found";
-        //        return NotFound(businessResult);
-        //    }
-        //    businessResult.Status = 200;
-        //    businessResult.Data = user;
-        //    businessResult.Message = "User found";
-        //    return Ok(businessResult);
-        //}
-
-        ////Update
-        //[HttpPut("{id}")]
-        //public ActionResult<BusinessResult> UpdateUserById(int id, UserUpdateRequest? userUpdateRequest)
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    if(!ModelState.IsValid)
-        //    {
-        //        businessResult.Status = 400;
-        //        businessResult.Data = false;
-        //        businessResult.Message = "Request is null";
-        //        return BadRequest(businessResult);
-        //    }
-        //    if(id != userUpdateRequest.UserId)
-        //    {
-        //        businessResult.Status = 400;
-        //        businessResult.Data = false;
-        //        businessResult.Message = "Mismatched id";
-        //        return BadRequest(businessResult);
-        //    }
-        //    var result = _userService.UpdateUser(id, userUpdateRequest);
-        //    if(result == null)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = null;
-        //        businessResult.Message = "User not found";
-        //        return NotFound(businessResult);
-        //    }
-        //    businessResult.Status = 200;
-        //    businessResult.Data = result;
-        //    businessResult.Message = "User updated";
-        //    return Ok(businessResult);
-        //}
-
-        ////Delete
-        //[HttpDelete("{id}")]
-        //public ActionResult<BusinessResult> DeleteUserById(int id)
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    var userData = _userService.GetUserById(id);
-        //    if(userData == null)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = false;
-        //        businessResult.Message = "User not found";
-        //    }
-        //    var isDeleted = _userService.RemoveUser(id);
-        //    if(!isDeleted)
-        //    {
-        //        businessResult.Status = 400;
-        //        businessResult.Data = false;
-        //        businessResult.Message = "Didn't delete";
-        //        return NotFound(businessResult);
-        //    }
-        //    businessResult.Status = 200;
-        //    businessResult.Data = userData;
-        //    businessResult.Message = "User deleted";
-        //    return Ok(businessResult);
-        //}
-        #endregion
-
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
-            if (user == null) { return Unauthorized("Username not found or password incorrect"); }
+            if(user == null)
+            { return Unauthorized("Username not found or password incorrect"); }
+
+            //Check if account is banned
+            if(!user.IsActive ?? true)
+            {
+                return Forbid("Account is banned");
+            }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) { return Unauthorized("Username not found or password incorrect"); }
+            if(!result.Succeeded)
+            { return Unauthorized("Username not found or password incorrect"); }
 
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault();
@@ -200,7 +76,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                if(!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
@@ -219,10 +95,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                 var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password!);
 
-                if (createCustomer.Succeeded)
+                if(createCustomer.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
-                    if (roleResult.Succeeded)
+                    if(roleResult.Succeeded)
                     {
                         var roles = await _userManager.GetRolesAsync(customer);
                         var role = roles.FirstOrDefault();
@@ -253,7 +129,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return StatusCode(500, createCustomer.Errors);
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return StatusCode(500, e);
             }
@@ -262,20 +138,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest forgotPasswordRequest)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email!);
-            if (user != null)
+            if(user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                 var reactUrl = "http://localhost:5173/reset-password";
                 //var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
                 var queryString = $"?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email!)}";
-                var forgotPasswordLink = $"{ reactUrl }{ queryString }";
+                var forgotPasswordLink = $"{reactUrl}{queryString}";
                 var message = new Message(new string[] { user.Email! }, "Forgot Password Link", forgotPasswordLink!);
                 await _emailService.SendEmailAsync(message);
 
@@ -287,7 +163,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [HttpGet("reset-password")]
         public async Task<IActionResult> ResetPassword(string token, string email)
-        { 
+        {
             var resetPasswordModel = new ResetPasswordRequest { Token = token, Email = email };
             return Ok(resetPasswordModel);
         }
@@ -295,20 +171,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email!);
-            if (user != null) 
+            if(user != null)
             {
                 var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordRequest.Token!, resetPasswordRequest.Password!);
-                if (!resetPasswordResult.Succeeded)
+                if(!resetPasswordResult.Succeeded)
                 {
-                    foreach (var error in resetPasswordResult.Errors)
+                    foreach(var error in resetPasswordResult.Errors)
                     {
-                        ModelState.AddModelError(error.Code, error.Description);    
+                        ModelState.AddModelError(error.Code, error.Description);
                     }
                     return Ok(ModelState);
                 }
@@ -323,19 +199,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             var resetLink = "http://localhost:5173/";
             var message = new Message(new string[] { "soybean26102004@gmail.com" }, "Test", $"Reset your password using this link: <a href='{resetLink}'>link</a>");
-            
+
             await _emailService.SendEmailAsync(message);
             return Ok("Email Sent Successfully");
-        }   
+        }
 
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if (user != null)
+            if(user != null)
             {
                 var result = await _userManager.ConfirmEmailAsync(user, token);
-                if (result.Succeeded)
+                if(result.Succeeded)
                 {
                     return Ok("Email verified successfully");
                 }
@@ -343,10 +219,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return StatusCode(500, "This user does not exist");
         }
 
-        [Authorize(Policy = "EmployeeCustomerVetPolicy")]
-        [HttpPut("update-profile/{username}")]
-        public async Task<ActionResult<UserDTO>> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        [Authorize]
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile(UserUpdateRequest userUpdateRequest)
         {
+            var username = _userManager.GetUserName(this.User);
             var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
             if(result == null)
             {
@@ -355,12 +232,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> MyProfile()
+        {
+            var id = _userManager.GetUserId(this.User);
+            var currentUser = await _userManager.FindByIdAsync(id);
+            return Ok(currentUser.ToUserDtoFromUser());
+        }
+
         [HttpGet("run-seed-data-only-run-once")]
         public async Task<IActionResult> SeedUserRoles()
         {
             try
             {
-                if (!ModelState.IsValid)
+                if(!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
@@ -377,10 +263,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 await _userManager.AddToRoleAsync(vet2!, "Vet");
                 return Ok("Role seeded");
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return StatusCode(500, e);
             }
         }
+
+
     }
 }

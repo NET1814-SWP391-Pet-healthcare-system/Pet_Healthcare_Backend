@@ -25,13 +25,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPets()
+        public async Task<IActionResult> GetPets()
         {
             return Ok(await _petService.GetAllPets());
         }
 
         [HttpGet("user-pet/{username}")]
-        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPetsByUsername(string username)
+        public async Task<IActionResult> GetPetsByUsername(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
             if(user == null)
@@ -48,7 +48,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PetDTO>> AddPet(PetAddRequest? petAddRequest)
+        public async Task<IActionResult> AddPet(PetAddRequest? petAddRequest)
         {
             if(!ModelState.IsValid)
             {
@@ -66,7 +66,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PetDTO>> GetPetById(int id)
+        public async Task<IActionResult> GetPetById(int id)
         {
             var pet = await _petService.GetPetById(id);
             if(pet == null)
@@ -77,7 +77,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<PetDTO>> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
+        public async Task<IActionResult> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
         {
             if(!ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<PetDTO>> DeletePetById(int id)
+        public async Task<IActionResult> DeletePetById(int id)
         {
             var petData = await _petService.GetPetById(id);
             if(petData == null)

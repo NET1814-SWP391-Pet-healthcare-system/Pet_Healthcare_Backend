@@ -36,7 +36,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PetHealthTrack>> GetPetHealthTrackById(int id)
+        public async Task<IActionResult> GetPetHealthTrackById(int id)
         {
             var petHealthTrack = await _petHealthTrackService.GetPetHealthTrackByIdAsync(id);
             if (petHealthTrack == null)

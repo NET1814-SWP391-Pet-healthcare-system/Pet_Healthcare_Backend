@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Entities.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace RepositoryContracts
         Task<Appointment> AddAsync(Appointment appointmentModel);
         Task<Appointment?> UpdateAsync(Appointment appointmentModel);
         Task<Appointment?> RemoveAsync(int id);
+        Task<Appointment?> UpdateAppointmentStatusAsync(int id, AppointmentStatus status); 
     }
 }

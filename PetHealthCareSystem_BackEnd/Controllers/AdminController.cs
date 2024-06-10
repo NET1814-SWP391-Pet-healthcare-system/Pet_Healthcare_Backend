@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
@@ -53,7 +54,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     usersContainsUsername.Add(user);
                 }
             }
-            if (usersContainsUsername == null)
+            if (usersContainsUsername.IsNullOrEmpty())
             {
                 return NoContent();
             }
@@ -61,8 +62,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "AdminEmployeePolicy")]
+        [HttpPut("update-profile/{username}")]
+        public async Task<IActionResult> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        {
+            var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
+            if(result == null)
+            {
+                return NotFound("Username not found");
+            }
+            return Ok(result);
+        }
+
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet("users/role/{role}")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByRole(string role)
+        public async Task<IActionResult> GetUsersByRole(string role)
         {
             switch(role.ToUpper())
             {

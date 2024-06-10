@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using PetHealthCareSystem_BackEnd.Extensions;
+using PetHealthCareSystem_BackEnd.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,7 +98,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
-        )
+        ),
+        ValidateLifetime = true
     };
 });
 
@@ -155,7 +157,7 @@ builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
 builder.Services.AddScoped<IVaccineService, VaccineService>();
 builder.Services.AddScoped<IPetVaccinationRepository, PetVaccinationRepository>();
 builder.Services.AddScoped<IPetVaccinationService, PetVaccinationService>();
-
+builder.Services.AddScoped<HospitalizationValidation>();
 builder.Services.AddScoped<IPetHealthTrackRepository, PetHealthTrackRepository>();
 builder.Services.AddScoped<IPetHealthTrackService, PetHealthTrackService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Entities;
 using Entities.Enum;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.AppointmentDTO;
@@ -43,7 +44,7 @@ namespace Services
         public async Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if (existingAppointment == null || existingAppointment.Status != AppointmentStatus.Processing) 
+            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Processing)
             {
                 return null;
             }
@@ -61,7 +62,7 @@ namespace Services
         public async Task<Appointment?> CheckInAppointmentAsync(int id)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if (existingAppointment == null || existingAppointment.Status != AppointmentStatus.Boooked)
+            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Boooked)
             {
                 return null;
             }
@@ -72,6 +73,16 @@ namespace Services
         public async Task<IEnumerable<Appointment>> GetCustomerAppointments(string customerId)
         {
             return await _appointmentRepository.GetByUserIdAsync(customerId);
+        }
+
+        public async Task<Appointment?> UpdateAppointmentStatus(int id, AppointmentStatus status)
+        {
+            var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
+            if(existingAppointment == null)
+            {
+                return null;
+            }
+            return await _appointmentRepository.UpdateAppointmentStatusAsync(id, status);
         }
     }
 }

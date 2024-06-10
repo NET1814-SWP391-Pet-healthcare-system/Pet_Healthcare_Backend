@@ -20,14 +20,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VaccineDTO>>> GetVaccines()
+        public async Task<IActionResult> GetVaccines()
         {
             var vaccineList = await _vaccineService.GetAllVaccines();
             return Ok(vaccineList);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<VaccineDTO>> GetVaccineById(int id)
+        public async Task<IActionResult> GetVaccineById(int id)
         {
             if(!ModelState.IsValid)
             {
@@ -43,7 +43,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<VaccineDTO>> AddVaccine(VaccineAddRequest vaccineAddRequest)
+        public async Task<IActionResult> AddVaccine(VaccineAddRequest vaccineAddRequest)
         {
             if(!ModelState.IsValid)
             {
@@ -55,7 +55,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<VaccineDTO>> DeleteVaccineById(int id)
+        public async Task<IActionResult> DeleteVaccineById(int id)
         {
             if(!ModelState.IsValid)
             {
@@ -76,7 +76,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<BusinessResult>> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
+        public async Task<IActionResult> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
         {
             if(!ModelState.IsValid)
             {

@@ -13,5 +13,6 @@ namespace ServiceContracts.DTO.KennelDTO
         public string? Description { get; set; }
         public int Capacity { get; set; }
         public double DailyCost { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }
