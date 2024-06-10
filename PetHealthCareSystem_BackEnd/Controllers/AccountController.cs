@@ -219,10 +219,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return StatusCode(500, "This user does not exist");
         }
 
-        [Authorize(Policy = "EmployeeCustomerVetPolicy")]
-        [HttpPut("update-profile/{username}")]
-        public async Task<IActionResult> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        [Authorize]
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile(UserUpdateRequest userUpdateRequest)
         {
+            var username = _userManager.GetUserName(this.User);
             var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
             if(result == null)
             {
@@ -231,15 +232,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> MyProfile()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            if(currentUser == null)
-            {
-                return Unauthorized("User is not logged in");
-            }
-            return Ok(currentUser.ToUserDtoFromUser);
+            var id = _userManager.GetUserId(this.User);
+            var currentUser = await _userManager.FindByIdAsync(id);
+            return Ok(currentUser.ToUserDtoFromUser());
         }
 
         [HttpGet("run-seed-data-only-run-once")]

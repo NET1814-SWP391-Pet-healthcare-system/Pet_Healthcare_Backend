@@ -62,6 +62,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "AdminEmployeePolicy")]
+        [HttpPut("update-profile/{username}")]
+        public async Task<IActionResult> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        {
+            var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
+            if(result == null)
+            {
+                return NotFound("Username not found");
+            }
+            return Ok(result);
+        }
+
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet("users/role/{role}")]
         public async Task<IActionResult> GetUsersByRole(string role)
         {
