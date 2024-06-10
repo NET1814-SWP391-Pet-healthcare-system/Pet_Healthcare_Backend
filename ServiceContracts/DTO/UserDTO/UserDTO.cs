@@ -20,5 +20,6 @@ namespace ServiceContracts.DTO.UserDTO
         public string? PhoneNumber { get; set; }
         public int? Rating { get; set; }
         public int? YearsOfExperience { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

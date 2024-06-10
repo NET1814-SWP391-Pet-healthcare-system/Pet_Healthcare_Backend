@@ -129,15 +129,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
                             if (roleResult.Succeeded)
                             {
-                                return Ok(
-                                    new NewUserDto
-                                    {
-                                        UserName = customer.UserName,
-                                        Email = customer.Email,
-                                        Token = _tokenService.CreateToken(customer, "Customer")
-                                    }
-                                );
+                                return Ok(_tokenService.CreateToken(customer, "Customer"));
                             }
+                            
                             else
                             {
                                 return StatusCode(500, roleResult.Errors);
@@ -170,14 +164,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             var roleResult = await _userManager.AddToRoleAsync(vet, "Vet");
                             if (roleResult.Succeeded)
                             {
-                                return Ok(
-                                    new NewUserDto
-                                    {
-                                        UserName = vet.UserName,
-                                        Email = vet.Email,
-                                        Token = _tokenService.CreateToken(vet, "Vet")
-                                    }
-                                );
+                                return Ok(_tokenService.CreateToken(vet, "Vet"));
                             }
                             else
                             {
@@ -209,14 +196,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             var roleResult = await _userManager.AddToRoleAsync(employee, "Employee");
                             if (roleResult.Succeeded)
                             {
-                                return Ok(
-                                    new NewUserDto
-                                    {
-                                        UserName = employee.UserName,
-                                        Email = employee.Email,
-                                        Token = _tokenService.CreateToken(employee, "Employee")
-                                    }
-                                );
+                                return Ok(_tokenService.CreateToken(employee, "Employee"));
                             }
                             else
                             {

@@ -39,7 +39,8 @@ namespace ServiceContracts.Mappers
                 Email = user.Email,
                 Address = user.Address,
                 Country = user.Country,
-                IsActive = user.IsActive
+                IsActive = user.IsActive,
+                ImageUrl = user.ImageURL
             };
         }
     }

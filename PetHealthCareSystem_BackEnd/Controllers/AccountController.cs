@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using PetHealthCareSystem_BackEnd.Extensions;
@@ -13,6 +15,7 @@ using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
+using System.Security.Claims;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -59,16 +62,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault();
+            var authenticationResponse = _tokenService.CreateToken(user, role);
+            user.RefreshToken = authenticationResponse.RefreshToken;
+            user.RefreshTokenExpiryDate = authenticationResponse.RefreshTokenExpiryDate;
+            //update refresh token and its expiry date
+            await _userManager.UpdateAsync(user);
 
-            return Ok(
-                new NewUserDto
-                {
-                    UserName = user.UserName!,
-                    Email = user.Email!,
-                    Role = role!,
-                    Token = _tokenService.CreateToken(user, role!)
-                }
-            );
+            return Ok(authenticationResponse);
         }
 
         [HttpPost("register")]
@@ -108,16 +108,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
 
                         await _emailService.SendEmailAsync(message);
-
-                        return Ok(
-                            new NewUserDto
-                            {
-                                UserName = customer.UserName!,
-                                Email = customer.Email!,
-                                Role = role!,
-                                Token = _tokenService.CreateToken(customer, "Customer")
-                            }
-                        );
+                        
+                        return Ok(new NewUserDto
+                        {
+                            UserName = customer.UserName,
+                            Email = customer.Email,
+                            Role = role
+                        });
+;
                     }
                     else
                     {
@@ -158,7 +156,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return Ok($"Password change request is sent on Email {user.Email}. Please open your email & click the link");
             }
 
-            return BadRequest("Couldn't send link pls try again");
+            return BadRequest("Couldn't send link, please try again");
         }
 
         [HttpGet("reset-password")]
@@ -230,6 +228,60 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound("Username not found");
             }
             return Ok(result);
+        }
+
+        [HttpPost("generate-new-jwt-token")]
+        public async Task<IActionResult> GenerateNewAccessToken(TokenModel tokenModel)
+        {
+            if(tokenModel == null)
+            {
+                return BadRequest("Invalid client request");
+            }
+
+            ClaimsPrincipal? principal = _tokenService.GetPrincipalFromJwtToken(tokenModel.Token);
+
+            if(principal == null)
+            {
+                return BadRequest("Invalid JWT access token");
+            }
+
+            string? email = principal.FindFirstValue(ClaimTypes.Email);
+            string? role = principal.FindFirstValue(ClaimTypes.Role);
+            User user = await _userManager.FindByEmailAsync(email);
+            if(user == null || user.RefreshToken != tokenModel.RefreshToken || user.RefreshTokenExpiryDate <= DateTime.Now)
+            {
+                return BadRequest("Invalid refresh token");
+            }
+            AuthenticationResponse response = _tokenService.CreateToken(user, role);
+            user.RefreshToken = response.RefreshToken;
+            user.RefreshTokenExpiryDate = response.RefreshTokenExpiryDate;
+            await _userManager.UpdateAsync(user);
+            return Ok(response);
+        }
+
+        [Authorize]
+        [HttpGet("revoke")]
+        public async Task<IActionResult> Revoke()
+        {
+            var username = _userManager.GetUserName(this.User);
+
+            if(username is null)
+            {
+                return Unauthorized("Unauthorized user");
+            }
+
+            var user = await _userManager.FindByNameAsync(username);
+
+            if(user is null)
+            {
+                return Unauthorized("Unauthorized user");
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryDate = null;
+            await _userManager.UpdateAsync(user);
+
+            return Ok("Refresh token is revoked");
         }
 
         [Authorize]
