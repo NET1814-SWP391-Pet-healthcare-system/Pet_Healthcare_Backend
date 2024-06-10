@@ -1,4 +1,5 @@
-﻿using ServiceContracts.DTO.UserDTO;
+﻿using Entities;
+using ServiceContracts.DTO.UserDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,21 @@ namespace ServiceContracts.Mappers
                 IsActive = userUpdateRequest.IsActive,
                 Rating = userUpdateRequest.Rating,
                 YearsOfExperience = userUpdateRequest.YearsOfExperience
+            };
+        }
+
+        public static UserDTO ToUserDtoFromUser(this User user)
+        {
+            return new UserDTO
+            {
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Gender = user.Gender,
+                Email = user.Email,
+                Address = user.Address,
+                Country = user.Country,
+                IsActive = user.IsActive
             };
         }
     }

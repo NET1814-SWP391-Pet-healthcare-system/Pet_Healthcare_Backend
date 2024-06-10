@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
@@ -53,7 +54,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     usersContainsUsername.Add(user);
                 }
             }
-            if (usersContainsUsername == null)
+            if (usersContainsUsername.IsNullOrEmpty())
             {
                 return NoContent();
             }
