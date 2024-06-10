@@ -53,9 +53,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("PetHealthTrack not found");
             }
+            petHealthTrack.ToList();
             return Ok(petHealthTrack);
         }
-        [HttpGet("hospitalization/{Id}")]
+        [HttpGet("hospitalization/{id}")]
         public async Task<ActionResult<List<PetHealthTrack>>> GetPetHealthTracksByHospitalizationId(int id)
         {
             var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
