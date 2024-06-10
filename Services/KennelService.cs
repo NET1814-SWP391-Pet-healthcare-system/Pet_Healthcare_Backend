@@ -2,6 +2,8 @@
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.KennelDTO;
+using ServiceContracts.DTO.UserDTO;
+using ServiceContracts.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +15,11 @@ namespace Services
     public class KennelService : IKennelService
     {
         private readonly IKennelRepository _kennelRepository;
-        public KennelService(IKennelRepository kennelRepository)
+        private readonly IHospitalizationService _hospitalizationService;
+        public KennelService(IKennelRepository kennelRepository, IHospitalizationService hospitalizationService)
         {
             _kennelRepository = kennelRepository;
+            _hospitalizationService = hospitalizationService;
         }
 
         public async Task<Kennel> AddKennelAsync(Kennel kennelModel)
@@ -23,14 +27,44 @@ namespace Services
             return await _kennelRepository.AddAsync(kennelModel);
         }
 
-        public async Task<Kennel?> GetKennelByIdAsync(int id)
+        public async Task<KennelDto?> GetKennelByIdAsync(int id)
         {
-            return await _kennelRepository.GetByIdAsync(id);
+            var existingKennel = await _kennelRepository.GetByIdAsync(id);
+            if(existingKennel == null)
+            {
+                return null;
+            }
+            var result = existingKennel.ToKennelDto();
+            var hospitalizations = await _hospitalizationService.GetHospitalizations();
+            var hospitalizedKennelIds = hospitalizations.Where(h => h.KennelId.HasValue)
+                                                        .Select(h => h.KennelId.Value)
+                                                        .ToList();
+            if(hospitalizedKennelIds.Contains(result.KennelId))
+            {
+                result.IsAvailable = false;
+                return result;
+            }
+            result.IsAvailable = true;
+            return result;
         }
 
-        public async Task<IEnumerable<Kennel>> GetKennelsAsync()
+        public async Task<IEnumerable<KennelDto>> GetKennelsAsync()
         {
-            return await _kennelRepository.GetAllAsync();
+            var hospitalizations = await _hospitalizationService.GetHospitalizations();
+            var hospitalizedKennelIds = hospitalizations.Where(h => h.KennelId.HasValue)
+                                                        .Select(h => h.KennelId.Value)
+                                                        .Distinct();
+
+            var kennels = await _kennelRepository.GetAllAsync();
+            var kennelDtos = kennels.Select(k => new KennelDto
+            {
+                KennelId = k.KennelId,
+                Description = k.Description,
+                Capacity = k.Capacity,
+                DailyCost = k.DailyCost,
+                IsAvailable = !hospitalizedKennelIds.Contains(k.KennelId)
+            });
+            return kennelDtos;
         }
 
         public async Task<Kennel?> RemoveKennelAsync(int id)
@@ -42,13 +76,12 @@ namespace Services
         {
             var existingKennel = await _kennelRepository.GetByIdAsync(id);
             if (existingKennel == null)
-            {
+            {   
                 return null;
             }
-            existingKennel.Description = kennelModel.Description;
-            existingKennel.Capacity = kennelModel.Capacity;
-            existingKennel.DailyCost = kennelModel.DailyCost;
-            return await _kennelRepository.UpdateAsync(existingKennel);
+            kennelModel.Description = (kennelModel.Description == "") ? existingKennel.Description : kennelModel.Description;
+            kennelModel.DailyCost = (kennelModel.DailyCost == 0) ? existingKennel.DailyCost : kennelModel.DailyCost;
+            return await _kennelRepository.UpdateAsync(id, kennelModel);
         }
     }
 }

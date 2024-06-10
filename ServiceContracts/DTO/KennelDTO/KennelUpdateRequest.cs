@@ -11,11 +11,6 @@ namespace ServiceContracts.DTO.KennelDTO
     public class KennelUpdateRequest
     {
         public string Description { get; set; } = string.Empty;
-        [Required(ErrorMessage = "must enter capacity")]
-        [Range(1, 4)]
-        public int Capacity { get; set; }
-        [Required(ErrorMessage = "must enter daily cost")]
-        [Range(double.Epsilon, double.MaxValue)]
-        public double DailyCost { get; set; }
+        public double DailyCost { get; set; } = 0;
     }
 }

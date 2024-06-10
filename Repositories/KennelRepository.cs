@@ -41,10 +41,13 @@ namespace Repositories
             return kennelModel;
         }
 
-        public async Task<Kennel?> UpdateAsync(Kennel kennelModel)
+        public async Task<Kennel?> UpdateAsync(int id, Kennel kennelModel)
         {
+            var existingKennel = await GetByIdAsync(id);
+            existingKennel.Description = kennelModel.Description;
+            existingKennel.DailyCost = kennelModel.DailyCost;
             await _context.SaveChangesAsync();
-            return kennelModel;
+            return existingKennel;
         }
     }
 }

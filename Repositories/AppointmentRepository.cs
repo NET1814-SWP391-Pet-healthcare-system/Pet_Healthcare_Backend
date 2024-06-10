@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Entities.Enum;
 
 namespace Repositories
 {
@@ -81,6 +82,15 @@ namespace Repositories
         {
             await _context.SaveChangesAsync();
             return appointmentModel;
+        }
+
+        public async Task<Appointment?> UpdateAppointmentStatusAsync(int id, AppointmentStatus status)
+        {
+            var existingAppointment = await GetByIdAsync(id);
+            existingAppointment.Status = status;
+            existingAppointment.CancellationDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            await _context.SaveChangesAsync();
+            return existingAppointment;
         }
     }
 }

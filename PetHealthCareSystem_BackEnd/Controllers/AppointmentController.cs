@@ -27,7 +27,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly UserManager<User> _userManager;
         public AppointmentController(IAppointmentService appointmentService, IUserService userService
             , UserManager<User> userManager, IPetService petService, ISlotService slotService
-            , IServiceService serviceService,IEmailService emailService)
+            , IServiceService serviceService, IEmailService emailService)
         {
             _appointmentService = appointmentService;
             _userService = userService;
@@ -41,7 +41,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAppointments()
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -53,12 +53,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet("{appointmentId:int}")]
         public async Task<IActionResult> GetAppointmentById(int appointmentId)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
+            if(appointment == null)
             {
                 return NotFound();
             }
@@ -68,7 +68,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet("available-vets")]
         public async Task<IActionResult> GetAvailableVetsBySlotAndDate([FromQuery] DateTime date, int slotId)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -78,10 +78,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet("customer/{username}")]
-        public async Task<IActionResult> GetCustomerAppointments([FromRoute] string username) 
+        public async Task<IActionResult> GetCustomerAppointments([FromRoute] string username)
         {
             var customerModel = await _userManager.FindByNameAsync(username) as Customer;
-            if (customerModel == null)
+            if(customerModel == null)
             {
                 return BadRequest("user doesn't exist");
             }
@@ -93,7 +93,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("book")]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentAddRequest appointmentAddRequest)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -102,15 +102,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var username = User.GetUsername();
             var userModel = await _userManager.FindByNameAsync(username);
 
-            if (User.IsInRole("Customer"))
+            if(User.IsInRole("Customer"))
             {
                 appointmentAddRequest.CustomerUserName = username;
                 userModel = await _userManager.FindByNameAsync(username) as Customer;
             }
-            else if (User.IsInRole("Employee"))
+            else if(User.IsInRole("Employee"))
             {
                 userModel = await _userManager.FindByNameAsync(appointmentAddRequest.CustomerUserName!) as Customer;
-                if (userModel == null)
+                if(userModel == null)
                 {
                     return BadRequest("Customer does not exist");
                 }
@@ -118,28 +118,28 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             // Checks if a user has an unfinished appointment
             var customerAppointments = await _appointmentService.GetCustomerAppointments(userModel!.Id);
-            if (customerAppointments.Any(a => a.Status == AppointmentStatus.Boooked || a.Status == AppointmentStatus.Processing))
+            if(customerAppointments.Any(a => a.Status == AppointmentStatus.Boooked || a.Status == AppointmentStatus.Processing))
             {
                 return BadRequest("You cannot book an appointment when there's still an unfinished appointment");
             }
 
             // Get customer pet
             var pet = await _petService.GetPetById(appointmentAddRequest.PetId);
-            if (pet!.CustomerId != userModel.Id)
+            if(pet!.CustomerId != userModel.Id)
             {
                 return BadRequest("This pet is not yours");
             }
 
             // Get Slot
             var slot = await _slotService.GetSlotByIdAsync(appointmentAddRequest.SlotId);
-            if (slot == null)
+            if(slot == null)
             {
                 return BadRequest("Slot does not exist");
             }
 
             // Get Service
             var service = await _serviceService.GetServiceById(appointmentAddRequest.ServiceId);
-            if (service == null)
+            if(service == null)
             {
                 return BadRequest("Service does not exist");
             }
@@ -150,17 +150,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             // Get vet
             var vetUsername = appointmentAddRequest.VetUserName;
-            if (vetUsername != null)
+            if(vetUsername != null)
             {
                 var vet = await _userManager.FindByNameAsync(vetUsername) as Vet;
-                if (vet == null)
+                if(vet == null)
                 {
                     return BadRequest("Vet does not exist");
                 }
 
                 var appointmentsInDateAndSlot = await _appointmentService.GetAppointmentsByDateAndSlotAsync(appointmentDate, appointmentAddRequest.SlotId);
 
-                if (appointmentsInDateAndSlot.Any(a => a.VetId == vet.Id))
+                if(appointmentsInDateAndSlot.Any(a => a.VetId == vet.Id))
                 {
                     return BadRequest("The selected vet is already booked");
                 }
@@ -177,7 +177,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             else
             {
                 var availableVet = await _userService.GetAvailableVetsAsync(appointmentDate, appointmentSlot);
-                if (availableVet == null)
+                if(availableVet == null)
                 {
                     return BadRequest("No available vet for the chosen slot");
                 }
@@ -208,12 +208,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("check-in/{appointmentId}")]
         public async Task<IActionResult> CheckIn([FromRoute] int appointmentId)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var appointmentModel = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
-            if (appointmentModel == null)
+            if(appointmentModel == null)
             {
                 return BadRequest("Appointment is not eligable for check-in (needs to be booked state)");
             }
@@ -224,12 +224,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("rate/{appointmentId}")]
         public async Task<IActionResult> RateAppointment([FromRoute] int appointmentId, [FromBody] AppointmentRatingRequest AppointmentRatingRequest)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var appointmentModel = await _appointmentService.RateAppointmentAsync(appointmentId, AppointmentRatingRequest.ToAppointmentFromRating());
-            if (appointmentModel == null)
+            if(appointmentModel == null)
             {
                 return BadRequest("Appointment is not eligable for rating (needs to be processing state)");
             }
@@ -240,16 +240,40 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> DeleteAppointment([FromRoute] int appointmentId)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var appointmentModel = await _appointmentService.RemoveAppointmentAsync(appointmentId);
-            if (appointmentModel == null)
+            if(appointmentModel == null)
             {
                 return NotFound("Appointment does not exist");
             }
             return Ok(appointmentModel.ToAppointmentDto());
         }
+
+        [Authorize(Policy = "AdminEmployeePolicy")]
+        [HttpPut("update-appointment-status")]
+        public async Task<IActionResult> UpdateAppointmentStatus(AppointmentStatusUpdateRequest appointmentStatusUpdateRequest)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(!Enum.IsDefined(typeof(AppointmentStatus), appointmentStatusUpdateRequest.Status))
+            {
+                return BadRequest("Invalid status");
+            }
+
+            var result = await _appointmentService.UpdateAppointmentStatus(appointmentStatusUpdateRequest.Id, appointmentStatusUpdateRequest.Status);
+            if(result == null)
+            {
+                return NotFound($"Appointment Id: {appointmentStatusUpdateRequest.Id} not found");
+            }
+
+            return Ok(result.ToAppointmentDto());
+        }
+
     }
 }
