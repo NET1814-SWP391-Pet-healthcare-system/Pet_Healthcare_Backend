@@ -16,5 +16,7 @@ namespace RepositoryContracts
         Task<Hospitalization?> Remove(int id);
         Task<Hospitalization?> GetByPetId(int id);
         Task<Hospitalization?> GetByVetId(string id);
+        Task<List<Hospitalization?>> GetAllByVetId(string id);
+        Task<List<Hospitalization?>> GetAllByPetId(int id);
     }
 }
