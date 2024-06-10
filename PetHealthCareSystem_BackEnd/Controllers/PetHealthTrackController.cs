@@ -45,6 +45,32 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             return Ok(petHealthTrack);
         }
+        [HttpGet]
+        public async Task<ActionResult<PetHealthTrack>> GetAllPetHealthTrack()
+        {
+            var petHealthTrack = await _petHealthTrackService.GetPetHealthTracksAsync() ;
+            if (petHealthTrack == null)
+            {
+                return BadRequest("PetHealthTrack not found");
+            }
+            return Ok(petHealthTrack);
+        }
+        [HttpGet("hospitalization/{Id}")]
+        public async Task<ActionResult<List<PetHealthTrack>>> GetPetHealthTracksByHospitalizationId(int id)
+        {
+            var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
+            if (petHealthTracks == null)
+            {
+                return BadRequest("No pet health tracks found for the provided Hospitalization ID");
+            }
+
+            // Filter pet health tracks by pet ID
+            var petHealthTracksForPetId = petHealthTracks.Where(track => track.HospitalizationId == id).ToList();
+
+            return Ok(petHealthTracksForPetId);
+        }
+
+
 
         [HttpPut]
         public async Task<IActionResult> UpdatePetHealthTrack(PetHealthTrackUpdateRequest request)
@@ -74,5 +100,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             return Ok("Deleted successfully");
         }
+
     }
 }
