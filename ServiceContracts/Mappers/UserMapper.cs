@@ -31,6 +31,7 @@ namespace ServiceContracts.Mappers
         {
             return new UserDTO
             {
+                UserId = user.Id,
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
