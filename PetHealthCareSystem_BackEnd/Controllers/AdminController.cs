@@ -62,7 +62,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet("users/role/{role}")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByRole(string role)
+        public async Task<IActionResult> GetUsersByRole(string role)
         {
             switch(role.ToUpper())
             {

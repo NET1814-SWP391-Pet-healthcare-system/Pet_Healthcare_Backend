@@ -345,7 +345,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "EmployeeCustomerVetPolicy")]
         [HttpPut("update-profile/{username}")]
-        public async Task<ActionResult<UserDTO>> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        public async Task<IActionResult> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
         {
             var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
             if(result == null)

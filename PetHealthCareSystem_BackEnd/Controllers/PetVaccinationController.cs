@@ -26,14 +26,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PetVaccinationDTO>>> GetPetVaccinations() 
+        public async Task<IActionResult> GetPetVaccinations() 
         {
             return Ok(await _petVaccinationService.GetAllPetVaccinations());
         }
         
 
         [HttpGet("{petId}/{vaccineId}")]
-        public async Task<ActionResult<PetVaccinationDTO>> GetPetVaccinations(int petId, int vaccineId)
+        public async Task<IActionResult> GetPetVaccinations(int petId, int vaccineId)
         {
             var pet = await _petService.GetPetById(petId);
             if(pet == null)
@@ -54,7 +54,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PetVaccinationDTO>> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest)
+        public async Task<IActionResult> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest)
         {
             if(!ModelState.IsValid)
             {
@@ -82,7 +82,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpDelete("{petId}/{vaccineId}")]
-        public async Task<ActionResult<PetVaccinationDTO>> DeletePetVaccinationById(int petId, int vaccineId)
+        public async Task<IActionResult> DeletePetVaccinationById(int petId, int vaccineId)
         {
             var petVaccinationData = await _petVaccinationService.GetPetVaccinationById(petId, vaccineId);
             if(petVaccinationData == null)
@@ -99,7 +99,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut("{petId}/{vaccineId}")]
-        public async Task<ActionResult<PetVaccinationDTO>> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest)
+        public async Task<IActionResult> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest)
         {
             if(!ModelState.IsValid)
             {
