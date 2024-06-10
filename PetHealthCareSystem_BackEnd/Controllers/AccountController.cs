@@ -13,8 +13,6 @@ using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
-using System.Data;
-using System.Reflection.Metadata;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
