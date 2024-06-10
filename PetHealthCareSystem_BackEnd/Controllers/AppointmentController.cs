@@ -99,7 +99,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             // Get logged in customer
-            var username = User.GetUsername();
+            //var username = User.GetUsername();
+            var username = _userManager.GetUserName(this.User);
             var userModel = await _userManager.FindByNameAsync(username);
 
             if(User.IsInRole("Customer"))

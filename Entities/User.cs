@@ -19,5 +19,7 @@ namespace Entities
         public string? Country { get; set; }
         public string? ImageURL { get; set; }
         public bool? IsActive { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryDate { get; set; }
     }
 }

@@ -40,7 +40,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddHospitalization([FromBody] HospitalizationAddRequest hospitalizationAddRequest)
         {
-            var username = User.GetUsername();
+            //var username = User.GetUsername();
+            var username = _userManager.GetUserName(this.User);
             var userModel = await _userManager.FindByNameAsync(username);
 
             if (User.IsInRole("Customer"))
