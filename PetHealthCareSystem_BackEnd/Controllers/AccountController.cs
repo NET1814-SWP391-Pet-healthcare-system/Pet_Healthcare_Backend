@@ -232,7 +232,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet("me")]
-        public async Task<IActionResult> MyProfile(string username)
+        public async Task<IActionResult> MyProfile()
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if(currentUser == null)
