@@ -260,7 +260,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize]
-        [HttpGet("revoke")]
+        [HttpDelete("revoke")]
         public async Task<IActionResult> Revoke()
         {
             var username = _userManager.GetUserName(this.User);
