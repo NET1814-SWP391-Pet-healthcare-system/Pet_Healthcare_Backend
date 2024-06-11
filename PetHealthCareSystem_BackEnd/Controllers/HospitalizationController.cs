@@ -12,6 +12,7 @@ using PetHealthCareSystem_BackEnd.Extensions;
 using Services;
 using Microsoft.AspNetCore.Authorization;
 using PetHealthCareSystem_BackEnd.Validations;
+using Microsoft.EntityFrameworkCore;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -121,5 +122,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             return Ok("Nuke successfully");
         }
+
+        [HttpPost("get-hospitalizations")]
+        public async Task<IActionResult> GetAllHospitalizationByVetID(string id)
+        {
+            var vet = await _userManager.FindByNameAsync(id);
+            id = vet.Id;
+            var hospitalization = await _hospitalizationService.GetAllHospitalizationByVetId(id);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (hospitalization == null)
+            {
+                return NotFound();
+            }
+            return Ok(hospitalization);
+        }
+
     }
 }

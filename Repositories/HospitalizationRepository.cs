@@ -82,5 +82,23 @@ namespace Repositories
                 .Include(a => a.Vet)
                 .FirstOrDefaultAsync(a => a.VetId == id);
         }
+        public async Task<List<Hospitalization>> GetAllByVetId(string id)
+        {
+            return await _context.Hospitalizations
+                .Include(a => a.Pet)
+                .Include(a => a.Kennel)
+                .Include(a => a.Vet)
+                .Where(a => a.VetId == id)
+                .ToListAsync();
+        }
+        public async Task<List<Hospitalization>> GetAllByPetId(int id)
+        {
+            return await _context.Hospitalizations
+                .Include(a => a.Pet)
+                .Include(a => a.Kennel)
+                .Include(a => a.Vet)
+                .Where(a => a.PetId == id)
+                .ToListAsync();
+        }
     }
 }
