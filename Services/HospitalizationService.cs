@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using ServiceContracts;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace Services
 {
@@ -57,6 +58,16 @@ namespace Services
         public async Task<Hospitalization?> GetHospitalizationByVetId(string id)
         {
             return await _hospitalizationRepository.GetByVetId(id);
+        }
+
+        async Task<List<Hospitalization?>> IHospitalizationService.GetAllHospitalizationByVetId(string id)
+        {
+            return await _hospitalizationRepository.GetAllByVetId(id);
+        }
+
+         async Task<List<Hospitalization?>> IHospitalizationService.GetAllHospitalizationByPetId(int id)
+        {
+            return await _hospitalizationRepository.GetAllByPetId(id);
         }
     }
 }
