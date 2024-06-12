@@ -10,9 +10,7 @@ namespace ServiceContracts.DTO.AppointmentDetailDTO
 {
     public class AppointmentDetailUpdateDiagnosis
     {
-        [Required]
-        public int AppointmentDetailId { get; set; }
-        public int? AppointmentId { get; set; }
+        [Required (ErrorMessage = "Please fill the Record ID")]
         public int? RecordId { get; set; }
         [Required (ErrorMessage = "Please fill the Diagnosis")]
         public string? Diagnosis { get; set; }

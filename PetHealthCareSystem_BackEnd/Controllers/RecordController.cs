@@ -16,9 +16,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly IPetService _petService;
         private readonly IRecordService _recordService;
 
-        public RecordController(PetService petService, IRecordService recordService)
+        public RecordController(IPetService petService, IRecordService recordService)
         {
-            _petService = _petService;
+            _petService = petService;
             _recordService = recordService;
         }
 

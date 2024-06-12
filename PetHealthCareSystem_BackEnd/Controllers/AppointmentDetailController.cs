@@ -17,11 +17,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IAppointmentDetailService _appointmentDetailService;
+        private readonly IRecordService _recordService;
 
-        public AppointmentDetailController(AppointmentService appointmentService, IAppointmentDetailService appointmentDetailService)
+        public AppointmentDetailController(IAppointmentService appointmentService, IAppointmentDetailService appointmentDetailService, IRecordService recordService)
         {
             _appointmentService = appointmentService;
             _appointmentDetailService = appointmentDetailService;
+            _recordService = recordService;
         }
         //Create
         [HttpPost]
@@ -41,14 +43,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "AppointmentDetail request is null";
                 return NotFound(businessResult);
             }
-            if (AppointmentDetailValidation.IsAppointmentDetailValid(appointmentDetailModel) == false)
-            {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "AppointmentId or RecordId request is not exist";
-                return BadRequest(businessResult);
-            }
-        
+
             var data = await _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetailModel);
 
             if(data != null)
@@ -116,7 +111,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Request is null";
                 return BadRequest(businessResult);
             }
-            AppointmentDetail appointmentDetailModel = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
+
+            var appointmentDetailModel = await _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
+            var UpdateDiagnosis = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
+            appointmentDetailModel.RecordId = UpdateDiagnosis.RecordId;
+            appointmentDetailModel.Record = await _recordService.GetRecordByIdAsync(id);
+            appointmentDetailModel.Diagnosis = UpdateDiagnosis.Diagnosis;
+            appointmentDetailModel.Medication = UpdateDiagnosis.Medication;
+            appointmentDetailModel.Treatment = UpdateDiagnosis.Treatment;
+            if (AppointmentDetailValidation.IsAppointmentDetailValid(appointmentDetailModel,_appointmentService,_recordService) ==false)
+            {
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "Invalid appointmentDetail";
+                return BadRequest(businessResult);
+            }
             var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(id, appointmentDetailModel);
             if (isUpdated == null)
             {
@@ -141,7 +150,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             BusinessResult businessResult = new BusinessResult();
             var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(appointmentDetailId);
-            if (isDeleted == null)
+            if (isDeleted != null)
             {
                 businessResult.Status = 200;
                 businessResult.Data = isDeleted;

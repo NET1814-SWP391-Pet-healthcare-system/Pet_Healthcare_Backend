@@ -116,13 +116,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return BadRequest("Customer does not exist");
                 }
             }
-
-            // Checks if a user has an unfinished appointment
-            var customerAppointments = await _appointmentService.GetCustomerAppointments(userModel!.Id);
-            if(customerAppointments.Any(a => a.Status == AppointmentStatus.Boooked || a.Status == AppointmentStatus.Processing))
-            {
-                return BadRequest("You cannot book an appointment when there's still an unfinished appointment");
-            }
+        
+            //// Checks if a user has an unfinished appointment
+            //var customerAppointments = await _appointmentService.GetCustomerAppointments(userModel!.Id);
+            //if(customerAppointments.Any(a => a.Status == AppointmentStatus.Boooked || a.Status == AppointmentStatus.Processing))
+            //{
+            //    return BadRequest("You cannot book an appointment when there's still an unfinished appointment");
+            //}
 
             // Get customer pet
             var pet = await _petService.GetPetById(appointmentAddRequest.PetId);
