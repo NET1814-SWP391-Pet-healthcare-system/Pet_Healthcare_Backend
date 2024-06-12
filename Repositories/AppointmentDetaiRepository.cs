@@ -28,14 +28,18 @@ namespace Repositories
         {
             return await _context.AppointmentDetails
                 .Include(a => a.Appointment)
-                .Include(r => r.Record)
+                .Include(a => a.Record)
                 .ToListAsync();
 
         }
 
-        public async Task<AppointmentDetail>? GetByIdAsync(int id)
+        public async Task<AppointmentDetail?> GetByIdAsync(int id)
         {
-            return _context.AppointmentDetails.FirstOrDefault(x => x.AppointmentDetailId == id);
+            return await _context.AppointmentDetails
+                .Include (a => a.Appointment)
+                .Include(a => a.Record)
+                .FirstOrDefaultAsync(a => a.AppointmentDetailId == id);
+                
         }
 
         public async Task<AppointmentDetail>? RemoveAsync(int id)

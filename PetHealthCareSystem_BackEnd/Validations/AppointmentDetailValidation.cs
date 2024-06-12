@@ -7,13 +7,16 @@ namespace PetHealthCareSystem_BackEnd.Validations
 {
     public static class AppointmentDetailValidation
     {
-        private static readonly IAppointmentService _appointmentService;
-        private static readonly IRecordService _recordService;
-        public static bool IsAppointmentDetailValid(AppointmentDetail appointmentDetail)
+        private static  IAppointmentService _appointmentService;
+        private static  IRecordService _recordService;
+        public static bool IsAppointmentDetailValid(AppointmentDetail appointmentDetail, IAppointmentService appointmentService, IRecordService recordService)
         {
+            _appointmentService = appointmentService;
+            _recordService = recordService;
             int appointmentId = (int)appointmentDetail.AppointmentId;
             int recordId = (int)appointmentDetail.RecordId;
-            if(_appointmentService.GetAppointmentByIdAsync(appointmentId)==null || _recordService.GetRecordByIdAsync(recordId)==null)
+            if(_appointmentService.GetAppointmentByIdAsync(appointmentId)==null ||
+                _recordService.GetRecordByIdAsync(recordId)==null)
             {
                 return false;
             }

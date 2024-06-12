@@ -38,15 +38,15 @@ namespace Services
              return await _appointmentDetailRepository.RemoveAsync(id);
         }
 
-        public async Task<AppointmentDetail> UpdateAppointmentDetailAsync(int i ,AppointmentDetail request)
+        public async Task<AppointmentDetail> UpdateAppointmentDetailAsync(int id ,AppointmentDetail request)
         {
-            var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(i);
+            var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(id);
             if(request == null || request == null || ExistingAppointmentDetail==null)
             {
                 return null;
             }
             var AppointmentDetail = request;
-            ExistingAppointmentDetail.Appointment = request.Appointment;
+            ExistingAppointmentDetail.AppointmentId = request.AppointmentId;
             ExistingAppointmentDetail.Treatment = request.Treatment;
             ExistingAppointmentDetail.Diagnosis = request.Diagnosis;
             ExistingAppointmentDetail.Record = request.Record;

@@ -36,6 +36,7 @@ namespace ServiceContracts.Mappers
         {
             return new AppointmentDetail()
             {
+                RecordId = request.RecordId,
                 Diagnosis = request.Diagnosis,
                 Treatment = request.Treatment,
                 Medication = request.Medication

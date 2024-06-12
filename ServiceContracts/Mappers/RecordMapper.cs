@@ -23,7 +23,6 @@ namespace ServiceContracts.Mappers
         {
             return new Record
             {
-                RecordId = request.RecordId,
                 PetId = request.PetId,
                 NumberOfVisits = request.NumberOfVisits
             };
