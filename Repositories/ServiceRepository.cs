@@ -60,7 +60,7 @@ namespace Repositories
         }
         public async Task<Service?> GetByName(string name)
         {
-            return await _context.Services.FirstOrDefaultAsync(a => a.Name == name);
+            return await _context.Services.FirstOrDefaultAsync(a => EF.Functions.Like(a.Name, name)); 
         }
     }
 }

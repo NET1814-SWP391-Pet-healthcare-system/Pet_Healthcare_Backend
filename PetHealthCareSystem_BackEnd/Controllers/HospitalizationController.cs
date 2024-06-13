@@ -23,17 +23,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
         private readonly IHospitalizationService _hospitalizationService;
-        private readonly HospitalizationValidation _hospitalizationValidation;
+        private readonly IPetService _petService;
+        private readonly IKennelService _kennelService;
 
 
 
         public HospitalizationController(IHospitalizationService hospitalizationService, IUserService userService
-            , UserManager<User> userManager, HospitalizationValidation hospitalizationValidation)
+            , UserManager<User> userManager, IPetService petService, IKennelService kennelService)
         {
             _userService = userService;
             _userManager = userManager;
             _hospitalizationService = hospitalizationService;
-            _hospitalizationValidation = hospitalizationValidation;
+            _petService = petService;
+            _kennelService = kennelService;
         }
 
         //Create
@@ -41,27 +43,38 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddHospitalization([FromBody] HospitalizationAddRequest hospitalizationAddRequest)
         {
-            //var username = User.GetUsername();
-            var username = _userManager.GetUserName(this.User);
-            var userModel = await _userManager.FindByNameAsync(username);
+            try
+            {
+                //var username = User.GetUsername();
+                var username = _userManager.GetUserName(this.User);
+                var userModel = await _userManager.FindByNameAsync(username);
 
-            if (User.IsInRole("Customer"))
-            {
-                return BadRequest("Employee only");
+                if (User.IsInRole("Customer"))
+                {
+                    return BadRequest("Employee only");
+                }
+                if (hospitalizationAddRequest == null || !ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                string error = HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest,_kennelService,_petService,_userManager);
+                if (error != null)
+                {
+                    return BadRequest(error);
+                }
+                if (await _hospitalizationService.IsVetFree(hospitalizationAddRequest.ToHospitalizationFromAdd()))
+                {
+                    return BadRequest("Vet is not free");
+                }
+                var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+                hospitalizationAddRequest.VetId = vet.Id;
+                await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
+                return Ok("Added Hospitalization Successfully");
             }
-            if (hospitalizationAddRequest == null || !ModelState.IsValid)
+            catch(Exception ex)
             {
-                return BadRequest(ModelState);
+                return StatusCode(500, "An error occurred while processing your request");
             }
-            string error = await _hospitalizationValidation.HospitalizationVerificaiton(hospitalizationAddRequest);
-            if (error != null)
-            {
-                return BadRequest(error);
-            }
-            var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
-            hospitalizationAddRequest.VetId = vet.Id;
-            await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
-            return Ok("Added Hospitalization Successfully");
 
         }
 

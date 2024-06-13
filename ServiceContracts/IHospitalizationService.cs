@@ -16,7 +16,8 @@ namespace ServiceContracts
         Task<Hospitalization?> UpdateHospitalization(int id, Hospitalization request);
         Task<Hospitalization?> RemoveHospitalization(int id);
         Task<Hospitalization?> GetHospitalizationByPetId(int id);
-        Task<List<Hospitalization?>> GetAllHospitalizationByVetId(string id);
-        Task<List<Hospitalization?>> GetAllHospitalizationByPetId(int id);
+        Task<List<Hospitalization>> GetAllHospitalizationByVetId(string id);
+        Task<List<Hospitalization>> GetAllHospitalizationByPetId(int id);
+        Task<bool> IsVetFree(Hospitalization hospitalization);
     }
 }
