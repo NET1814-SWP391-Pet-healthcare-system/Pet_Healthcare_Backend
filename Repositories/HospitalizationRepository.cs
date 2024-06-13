@@ -100,5 +100,10 @@ namespace Repositories
                 .Where(a => a.PetId == id)
                 .ToListAsync();
         }
+        public async Task<bool> IsVetDateConflict(Hospitalization hospitalization)
+        {
+            return await _context.Hospitalizations
+                .AnyAsync(a => a.VetId == hospitalization.VetId && hospitalization.AdmissionDate >= a.AdmissionDate && hospitalization.AdmissionDate <= a.DischargeDate);
+        }
     }
 }

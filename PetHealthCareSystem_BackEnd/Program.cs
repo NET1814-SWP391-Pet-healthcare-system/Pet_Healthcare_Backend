@@ -157,7 +157,6 @@ builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
 builder.Services.AddScoped<IVaccineService, VaccineService>();
 builder.Services.AddScoped<IPetVaccinationRepository, PetVaccinationRepository>();
 builder.Services.AddScoped<IPetVaccinationService, PetVaccinationService>();
-builder.Services.AddScoped<HospitalizationValidation>();
 builder.Services.AddScoped<IPetHealthTrackRepository, PetHealthTrackRepository>();
 builder.Services.AddScoped<IPetHealthTrackService, PetHealthTrackService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

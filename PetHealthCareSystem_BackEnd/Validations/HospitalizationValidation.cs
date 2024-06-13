@@ -11,35 +11,50 @@ namespace PetHealthCareSystem_BackEnd.Validations
     public class HospitalizationValidation
     {
 
-        private readonly IUserService _userService;
-        private  readonly UserManager<User> _userManager;
-        private readonly IKennelService _kennelService;
-        private readonly IPetService _petService;
+        private static IUserService _userService;
+        private static  UserManager<User> _userManager;
+        private static IKennelService _kennelService;
+        private static  IPetService _petService;
 
-        public HospitalizationValidation(IUserService userService, UserManager<User> userManager, IKennelService kennelService, IPetService petService)
-        {
-            _userService = userService;
-            _userManager = userManager;
-            _kennelService = kennelService;
-            _petService = petService;
-        }   
-        public async Task<string> HospitalizationVerificaiton(HospitalizationAddRequest hospitalization)
+
+        public static string HospitalizationVerification(HospitalizationAddRequest hospitalization,IKennelService kennelService, IPetService petService,UserManager<User> userManager)
         {
             DateTime adDate = DateTime.Parse(hospitalization.AdmissionDate);
             DateTime disDate = DateTime.Parse(hospitalization.DischargeDate);
-            var pet =  await _petService.GetPetById(hospitalization.PetId);
-            var kennel = await _kennelService.GetKennelByIdAsync(hospitalization.KennelId);
-            var vet = await _userManager.FindByNameAsync(hospitalization.VetId);
-            var actions = new List<Tuple<bool, string>>
-{
-    new Tuple<bool, string>(adDate > disDate, "Start date cannot be greater than end date"),
-    new Tuple<bool, string>(hospitalization.TotalCost < 0, "Total cost cannot be negative"),
-    new Tuple<bool, string>(pet==null, "This pet does not exist"),
-    new Tuple<bool, string>(vet==null, "This vet does not exist"),
-    new Tuple<bool, string>(kennel == null, "This kennel does not exist"),
-};
+            _kennelService = kennelService;
+            _petService = petService;
+            _userManager=userManager;
 
-            return actions.FirstOrDefault(x => x.Item1)?.Item2;
+            if (adDate > disDate)
+            {
+                return "Start date cannot be greater than end date";
+            }
+
+            if (hospitalization.TotalCost < 0)
+            {
+                return "Total cost cannot be negative";
+            }
+
+            var pet =  _petService.GetPetById(hospitalization.PetId);
+            if (pet == null)
+            {
+                return "This pet does not exist";
+            }
+
+            var kennel = _kennelService.GetKennelByIdAsync(hospitalization.KennelId);
+            if (kennel == null)
+            {
+                return "This kennel does not exist";
+            }
+
+            var vet = _userManager.FindByNameAsync(hospitalization.VetId);
+            if (vet == null)
+            {
+                return "This vet does not exist";
+            }
+
+            return null;
         }
     }
+
 }

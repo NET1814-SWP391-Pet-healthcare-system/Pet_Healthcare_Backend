@@ -30,24 +30,43 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddService([FromBody]ServiceAddRequest serviceAddRequest)
         {
-                if (serviceAddRequest == null || !ModelState.IsValid)
+            try
+            {
+                if (serviceAddRequest == null)
+                {
+                    return BadRequest("Service data is required");
+                }
+
+                if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
+
                 if (serviceAddRequest.Cost < 0)
                 {
                     return BadRequest("Cost cannot be negative");
                 }
-                if (serviceAddRequest.Name == null || serviceAddRequest.Description == null)
+
+                if (string.IsNullOrWhiteSpace(serviceAddRequest.Name) || string.IsNullOrWhiteSpace(serviceAddRequest.Description))
                 {
-                    return BadRequest("Name and Description cannot be null");
+                    return BadRequest("Name and Description cannot be null or whitespace");
                 }
-                if(await _serviceService.GetServiceByName(serviceAddRequest.Name) != null)
+
+                var existingService = await _serviceService.GetServiceByName(serviceAddRequest.Name);
+                if (existingService != null)
                 {
-                    return BadRequest("Service already exists");
+                    return Conflict("Service with the same name already exists");
                 }
-                await _serviceService.AddService(serviceAddRequest.ToServiceFromAdd());
-                return Ok("Added Service Successfully");
+
+                var newService = await _serviceService.AddService(serviceAddRequest.ToServiceFromAdd());
+
+                return CreatedAtAction(nameof(GetServiceById), new { id = newService.ServiceId }, newService);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "An error occurred while processing your request");
+            }
         }
 
         //Read

@@ -60,14 +60,18 @@ namespace Services
             return await _hospitalizationRepository.GetByVetId(id);
         }
 
-        async Task<List<Hospitalization?>> IHospitalizationService.GetAllHospitalizationByVetId(string id)
+        public async Task<List<Hospitalization?>>GetAllHospitalizationByVetId(string id)
         {
             return await _hospitalizationRepository.GetAllByVetId(id);
         }
 
-         async Task<List<Hospitalization?>> IHospitalizationService.GetAllHospitalizationByPetId(int id)
+        public async Task<List<Hospitalization?>> GetAllHospitalizationByPetId(int id)
         {
             return await _hospitalizationRepository.GetAllByPetId(id);
+        }
+        public async Task<bool> IsVetFree(Hospitalization hospitalization)
+        {
+            return await _hospitalizationRepository.IsVetDateConflict(hospitalization);
         }
     }
 }

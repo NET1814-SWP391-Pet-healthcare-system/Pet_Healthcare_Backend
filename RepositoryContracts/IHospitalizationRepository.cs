@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace RepositoryContracts
         Task<Hospitalization?> GetByVetId(string id);
         Task<List<Hospitalization?>> GetAllByVetId(string id);
         Task<List<Hospitalization?>> GetAllByPetId(int id);
+        Task<bool> IsVetDateConflict(Hospitalization hospitalization);
     }
 }
