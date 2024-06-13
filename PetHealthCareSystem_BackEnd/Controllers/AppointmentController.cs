@@ -275,6 +275,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             return Ok(result.ToAppointmentDto());
         }
+
+        [HttpDelete]
         public async Task<IActionResult> CancelAppointment([FromRoute] int id)
         {
             if (!ModelState.IsValid)

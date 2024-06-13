@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetHealthCareSystem_BackEnd.Validations;
@@ -24,6 +25,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Create
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> AddRecordAsync(RecordAddRequest? record)
         {
@@ -72,6 +74,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Read
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpGet("records")]
         public async Task<IActionResult> GetRecords()
         {
@@ -90,6 +93,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return  Ok(businessResult);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRecordById(int id)
         {
@@ -112,6 +116,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveRecord(int id)
         {
@@ -135,6 +140,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Update
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("update-record/{id}")]
         public async Task<IActionResult> UpdateRecord([FromRoute]int id, RecordUpdateRequest? record)
         {

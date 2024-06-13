@@ -121,6 +121,12 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminEmployeePolicy", policy =>
         policy.RequireAssertion(context =>
             context.User.IsInRole("Admin") || context.User.IsInRole("Employee")));
+    options.AddPolicy("VetEmployeeAdminPolicy", policy =>
+    policy.RequireAssertion(context =>
+        context.User.IsInRole("Vet") ||
+        context.User.IsInRole("Employee") ||
+        context.User.IsInRole("Admin")));
+
 });
 
 // Add Email Configs
