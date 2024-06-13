@@ -1,6 +1,7 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.RecordDTO;
 using ServiceContracts.DTO.Result;
@@ -47,6 +48,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Record request is null";
                 return BadRequest(businessResult);
             }
+
+            if(RecordValidation.IsRecordValid(recordModel, _recordService, _petService) == false)
+            {
+                businessResult.Status = 400;
+                businessResult.Data = null;
+                businessResult.Message = "Record is not valid";
+                return BadRequest(businessResult);
+            }   
 
             var data = await _recordService.AddRecordAsync(recordModel);
             if(data == null)
