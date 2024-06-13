@@ -276,7 +276,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result.ToAppointmentDto());
         }
 
-        [HttpDelete]
+        [HttpPut("cancle-appointment/id/{id}")]
         public async Task<IActionResult> CancelAppointment([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -303,8 +303,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             appointment.Status= AppointmentStatus.Cancelled;
             appointment.CancellationDate = DateOnly.FromDateTime(DateTime.Now);
             return Ok(appointment.ToAppointmentDto());
-
-
         }
 
     }
