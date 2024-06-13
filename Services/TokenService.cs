@@ -33,7 +33,7 @@ namespace Services
             //    new Claim(ClaimTypes.Role, role)
             //};
             //since the server is on different country, utc+7 is the best
-            DateTime tokenExpiryDate = DateTime.UtcNow.AddHours(7).AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"]));
+            DateTime tokenExpiryDate = DateTime.Now.AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"]));
             Claim[] claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
@@ -64,7 +64,7 @@ namespace Services
                 UserName = user.UserName,
                 TokenExpiryDate = tokenExpiryDate,
                 RefreshToken = GenerateRefreshToken(),
-                RefreshTokenExpiryDate = DateTime.UtcNow.AddHours(7).AddDays(Convert.ToInt32(_config["RefreshToken:EXPIRATION_DAYS"]))
+                RefreshTokenExpiryDate = DateTime.Now.AddDays(Convert.ToInt32(_config["RefreshToken:EXPIRATION_DAYS"]))
             };
         }
 
