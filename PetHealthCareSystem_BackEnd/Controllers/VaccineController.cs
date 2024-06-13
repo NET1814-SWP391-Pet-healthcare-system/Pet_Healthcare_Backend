@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
@@ -19,6 +20,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _vaccineService = vaccineService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetVaccines()
         {
@@ -26,6 +28,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(vaccineList);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVaccineById(int id)
         {
@@ -42,6 +45,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(vaccine);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> AddVaccine(VaccineAddRequest vaccineAddRequest)
         {
@@ -54,6 +58,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(vaccine);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVaccineById(int id)
         {
@@ -75,6 +80,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(vaccine);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
         {

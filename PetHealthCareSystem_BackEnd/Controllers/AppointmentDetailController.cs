@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetHealthCareSystem_BackEnd.Validations;
@@ -11,6 +12,7 @@ using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AppointmentDetailController : ControllerBase

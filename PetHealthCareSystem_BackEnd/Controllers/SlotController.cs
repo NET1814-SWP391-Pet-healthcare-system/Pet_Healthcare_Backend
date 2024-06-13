@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.SlotDTO;
@@ -18,6 +19,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetSlots() 
         {
@@ -30,6 +32,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(slotDtos);
         }
 
+        [Authorize]
         [HttpGet("{date}")]
         public async Task<IActionResult> GetSlotsByDate([FromRoute] DateTime date) 
         {
@@ -56,6 +59,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(slotDtos);
         }
 
+        [Authorize]
         [HttpGet("{slotId:int}")]
         public async Task<IActionResult> GetSlotById([FromRoute] int slotId) 
         {
@@ -72,6 +76,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(slotDto);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> AddSlot([FromBody] SlotAddRequest slotAddRequest)
         {
@@ -89,6 +94,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return CreatedAtAction(nameof(GetSlotById), new { slotId = slotModel.SlotId }, slotModel.ToSlotDto());
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("{slotId:int}")]
         public async Task<IActionResult> UpdateSlot([FromRoute] int slotId, [FromBody] SlotUpdateRequest slotUpdateRequest)
         {
@@ -110,6 +116,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(slotDto);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{slotId:int}")]
         public async Task<IActionResult> DeleteSlot(int slotId) 
         {

@@ -1,4 +1,5 @@
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +18,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IServiceService _serviceService;
 
-        public ServiceController(ApplicationDbContext context, IServiceService serviceService)
+        public ServiceController(IServiceService serviceService)
         {
-            _context = context;
             _serviceService = serviceService;
         }
 
         //Create
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> AddService([FromBody]ServiceAddRequest serviceAddRequest)
         {
@@ -70,6 +70,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Read
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetServices()
         {
@@ -81,7 +82,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var serviceDtos = services.Select(x => x.ToServiceDto());
             return Ok(serviceDtos);
         }
-
+        [Authorize]
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetServiceById(int id)
         {
@@ -99,6 +100,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
         //Update
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateService(int id, [FromBody]ServiceUpdateRequest serviceUpdateRequest)
         {
@@ -116,6 +118,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Delete
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {

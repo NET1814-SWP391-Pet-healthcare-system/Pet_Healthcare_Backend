@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PetController : ControllerBase
@@ -24,6 +26,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _userManager = userManager;
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> GetPets()
         {

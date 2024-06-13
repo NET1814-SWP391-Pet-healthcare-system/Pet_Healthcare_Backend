@@ -5,19 +5,19 @@ using ServiceContracts;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.Mappers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize(Policy = "VetEmployeeAdminPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class PetHealthTrackController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IPetHealthTrackService _petHealthTrackService;
 
-        public PetHealthTrackController(ApplicationDbContext context, IPetHealthTrackService petHealthTrackService)
+        public PetHealthTrackController(IPetHealthTrackService petHealthTrackService)
         {
-            _context = context;
             _petHealthTrackService = petHealthTrackService;
         }
 
