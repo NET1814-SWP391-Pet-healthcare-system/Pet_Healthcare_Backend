@@ -160,6 +160,7 @@ builder.Services.AddScoped<IPetVaccinationService, PetVaccinationService>();
 builder.Services.AddScoped<IPetHealthTrackRepository, PetHealthTrackRepository>();
 builder.Services.AddScoped<IPetHealthTrackService, PetHealthTrackService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 var app = builder.Build();
 

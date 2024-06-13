@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
 using RepositoryContracts;
 using ServiceContracts;
@@ -27,14 +28,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly IPhotoService _photoService;
 
         public AccountController(UserManager<User> userManager,
-            ITokenService tokenService, SignInManager<User> signInManager, IEmailService emailService)
+            ITokenService tokenService, SignInManager<User> signInManager, IEmailService emailService, IPhotoService photoService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _emailService = emailService;
+            _photoService = photoService;
         }
 
         [HttpPost("login")]
@@ -292,6 +295,38 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var currentUser = await _userManager.FindByIdAsync(id);
             return Ok(currentUser.ToUserDtoFromUser());
         }
+
+        [Authorize]
+        [HttpPost("upload-profile-image")]
+        public async Task<IActionResult> UploadProfileImage(IFormFile imageFile)
+        {
+            var id = _userManager.GetUserId(this.User);
+            var currentUser = await _userManager.FindByIdAsync(id);
+            if (currentUser.ImageURL.IsNullOrEmpty())
+            {
+                var imageResult = await _photoService.AddPhotoAsync(imageFile);
+                currentUser.ImageURL = imageResult.Url.ToString();
+                _userManager.UpdateAsync(currentUser);
+                return Ok(currentUser.ToUserDtoFromUser());
+            }
+            else
+            {
+                try
+                {
+                    await _photoService.DeletePhotoAsync(currentUser.ImageURL);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest($"Could not delete photo, exception: {ex.Message}");
+                }
+                var imageResult = await _photoService.AddPhotoAsync(imageFile);
+                currentUser.ImageURL = imageResult.Url.ToString();
+                _userManager.UpdateAsync(currentUser);
+                return Ok(currentUser.ToUserDtoFromUser());
+            }
+
+        }
+
 
         [HttpGet("run-seed-data-only-run-once")]
         public async Task<IActionResult> SeedUserRoles()
