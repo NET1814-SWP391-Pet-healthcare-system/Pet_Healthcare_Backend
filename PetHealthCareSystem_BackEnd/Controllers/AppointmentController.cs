@@ -277,7 +277,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "EmployeePolicy")]
-        [HttpPut("cancel-appointment")]
+        [HttpPut("cancel-appointment/{id}")]
         public async Task<IActionResult> CancelAppointment([FromRoute] int id)
         {
             if (!ModelState.IsValid)
