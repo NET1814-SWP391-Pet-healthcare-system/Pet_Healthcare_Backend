@@ -84,5 +84,25 @@ namespace Services
             }
             return await _appointmentRepository.UpdateAppointmentStatusAsync(id, status);
         }
+        public async Task<Appointment?> CancelAppointment(int id)
+        {
+            var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
+            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Boooked)
+            {
+                return null;
+            }
+            existingAppointment.Status = AppointmentStatus.Cancelled;
+            var datebetween = DateOnly.FromDateTime(DateTime.Now).DayNumber -existingAppointment.Date.DayNumber ;
+            if (datebetween > 7)
+            {
+                existingAppointment.RefundAmount = 0;
+            }
+            else
+            {
+                existingAppointment.RefundAmount = existingAppointment.TotalCost;
+            } 
+            existingAppointment.CancellationDate = DateOnly.FromDateTime(DateTime.Now);
+            return await _appointmentRepository.UpdateAsync(existingAppointment);
+        }
     }
 }

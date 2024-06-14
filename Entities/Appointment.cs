@@ -35,5 +35,6 @@ namespace Entities
         public int? Rating { get; set; }
         public string? Comments { get; set; }
         public AppointmentStatus Status{ get; set; }
+        public bool? isPaid { get; set; }
     }
 }
