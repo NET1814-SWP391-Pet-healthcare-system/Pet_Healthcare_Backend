@@ -20,5 +20,9 @@ namespace Services
         {
             return await _userRepository.GetAvailableVetsAsync(date, slotId);
         }
+        public async Task<Vet?> GetAvailableVetById(string id)
+        {
+            return await _userRepository.GetVetById(id);
+        }
     }
 }
