@@ -43,21 +43,11 @@ namespace Repositories
             return true;
         }
 
-        public async Task<Pet> UpdatePet(int id, Pet pet)
+        public async Task<bool> UpdatePet(Pet pet)
         {
-            var existingPet = await GetPetById(id);
-            Pet result = null;
-            //update
-            existingPet.Name = pet.Name;
-            existingPet.Species = pet.Species;
-            existingPet.Breed = pet.Breed;
-            existingPet.Gender = pet.Gender;
-            existingPet.Weight = pet.Weight;
-            existingPet.ImageURL = pet.ImageURL;
-
-            result = existingPet;
+            _context.Entry(pet).State = EntityState.Modified;
             await SaveChangesAsync();
-            return result;
+            return true;
         }
     }
 }
