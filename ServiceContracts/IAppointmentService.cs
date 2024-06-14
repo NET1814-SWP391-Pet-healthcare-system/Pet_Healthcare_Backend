@@ -20,5 +20,6 @@ namespace ServiceContracts
         Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel);
         Task<Appointment?> RemoveAppointmentAsync(int id);
         Task<Appointment?> UpdateAppointmentStatus(int id, AppointmentStatus appointmentStatus);
+        Task<Appointment?> CancelAppointment(int id); 
     }
 }
