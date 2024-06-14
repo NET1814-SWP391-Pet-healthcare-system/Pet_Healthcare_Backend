@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts
 {
-    public interface IBraintreeService
+    public interface IBrainTreeConfig
     {
         IBraintreeGateway CreateGateway();
         IBraintreeGateway GetGateway();

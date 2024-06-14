@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class BraintreeService : IBraintreeService
+    public class BraintreeConfig : IBrainTreeConfig
     {
         private readonly IConfiguration _config;
 
-        public BraintreeService(IConfiguration config)
+        public BraintreeConfig(IConfiguration config)
         {
             _config = config;
         }
@@ -29,6 +29,16 @@ namespace Services
                 PublicKey = _config.GetValue<string>("BraintreeGateway:PublicKey"),
                 PrivateKey = _config.GetValue<string>("BraintreeGateway:PrivateKey")
             };
+            if(newGateway == null)
+            {
+                newGateway = new BraintreeGateway()
+                {
+                    Environment = Braintree.Environment.SANDBOX,
+                    MerchantId = "7hsbdwssq9dbhycd",
+                    PublicKey = "63jk2fj3mc99kx3j",
+                    PrivateKey = "da6fa41565db1282df581e7edfd71c9e"
+                };
+            }
 
 
             return newGateway;
