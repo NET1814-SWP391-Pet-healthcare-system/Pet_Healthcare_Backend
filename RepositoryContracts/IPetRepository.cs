@@ -12,7 +12,7 @@ namespace RepositoryContracts
         Task<IEnumerable<Pet>> GetAllPet();
         Task<Pet?> GetPetById(int id);
         Task<bool> AddPet(Pet pet);
-        Task<Pet> UpdatePet(int id, Pet pet);
+        Task<bool> UpdatePet(Pet pet);
         Task<bool> RemovePet(Pet pet);
         Task<bool> SaveChangesAsync();
     }

@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
+using ServiceContracts.Mappers;
 using Services;
 using System.Security.Claims;
 
@@ -21,11 +23,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     {
         private readonly IPetService _petService;
         private readonly UserManager<User> _userManager;
+        private readonly IPhotoService _photoService;
 
-        public PetController(IPetService petService, UserManager<User> userManager)
+        public PetController(IPetService petService, UserManager<User> userManager, IPhotoService photoService)
         {
             _petService = petService;
             _userManager = userManager;
+            _photoService = photoService;
         }
 
         [HttpGet]
@@ -51,6 +55,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(usersPet);
         }
 
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPost]
         public async Task<IActionResult> AddPet(PetAddRequest? petAddRequest)
         {
@@ -64,20 +69,46 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("No customer found");
             }
+            Pet pet = petAddRequest.ToPet();
+            pet.CustomerId = existingUser.Id;
+            var result = await _petService.AddPet(pet);
+            return Ok(result);
+        }
 
-            var pet = await _petService.AddPet(petAddRequest);
-            return Ok(pet);
+        [Authorize(Policy = "CustomerPolicy")]
+        [HttpPost("add-my-pet")]
+        public async Task<IActionResult> AddMyPet(PetAddRequest? petAddRequest)
+        {
+            if(!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+            Pet pet = petAddRequest.ToPet();
+            pet.CustomerId = _userManager.GetUserId(this.User);
+            var result = await _petService.AddPet(pet);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPetById(int id)
         {
-            var pet = await _petService.GetPetById(id);
-            if(pet == null)
+            var existingPet = await _petService.GetPetById(id);
+
+            if(this.User.IsInRole("Customer"))
+            {
+                var customer = await _userManager.GetUserAsync(this.User);
+                if(existingPet.CustomerId != customer.Id)
+                {
+                    return NotFound("You don't have this pet");
+                }
+            }
+
+            if(existingPet == null)
             {
                 return NotFound();
             }
-            return Ok(pet);
+            return Ok(existingPet);
         }
 
         [HttpPut("{id}")]
@@ -91,11 +122,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return Problem(errorMessage);
                 }
             }
-            if(id != petUpdateRequest.PetId)
+            var existingPet = await _petService.GetPetById(id);
             {
-                return BadRequest("Mismatched Id");
+                if(existingPet == null)
+                {
+                    return NotFound("PetId not found");
+                }
             }
-            var result = await _petService.UpdatePet(id, petUpdateRequest);
+            Pet pet = petUpdateRequest.ToPet();
+            pet.PetId = id;
+            var result = await _petService.UpdatePet(pet);
             if(result == null)
             {
                 return NotFound("Pet not found");
@@ -106,17 +142,76 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetById(int id)
         {
-            var petData = await _petService.GetPetById(id);
-            if(petData == null)
+            var existingPet = await _petService.GetPetById(id);
+            if(existingPet is null)
             {
                 return NotFound("Pet not found");
+            }
+            if(this.User.IsInRole("Customer"))
+            {
+                var customer = await _userManager.GetUserAsync(this.User);
+                if(existingPet.CustomerId != customer.Id)
+                {
+                    return NotFound("You don't have this pet");
+                }
             }
             var isDeleted = await _petService.RemovePetById(id);
             if(!isDeleted)
             {
                 return BadRequest("Pet deletion failed");
             }
-            return Ok(petData);
+            return Ok(existingPet);
         }
+
+        [HttpPost("upload-pet-image/{petId}")]
+        public async Task<IActionResult> UploadProfileImage(IFormFile imageFile, int petId)
+        {
+            var existingPet = await _petService.GetPetById(petId);
+            if(existingPet is null)
+            {
+                return NotFound("Pet not found");
+            }
+            if(this.User.IsInRole("Customer"))
+            {
+                var customer = await _userManager.GetUserAsync(this.User);
+                if(existingPet.CustomerId != customer.Id)
+                {
+                    return NotFound("You don't have this pet");
+                }
+            }
+            
+            if(existingPet.ImageUrl.IsNullOrEmpty())
+            {
+                var imageResult = await _photoService.AddPhotoAsync(imageFile);
+                Pet pet = new Pet()
+                {
+                    PetId = petId,
+                    ImageURL = imageResult.Url.ToString()
+                };
+                var result = await _petService.UpdatePet(pet);
+                return Ok(result);
+            }
+            else
+            {
+                try
+                {
+                    await _photoService.DeletePhotoAsync(existingPet.ImageUrl);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest($"Could not delete photo, exception: {ex.Message}");
+                }
+                var imageResult = await _photoService.AddPhotoAsync(imageFile);
+                Pet pet = new Pet
+                {
+                    PetId = petId,
+                    ImageURL = imageResult.Url.ToString()
+                };
+                var result = await _petService.UpdatePet(pet);
+                return Ok(result);
+            }
+
+        }
+
     }
 }

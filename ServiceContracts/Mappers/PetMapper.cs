@@ -27,7 +27,6 @@ namespace ServiceContracts.Mappers
         {
             return new Pet()
             {
-                PetId = petUpdateRequest.PetId,
                 Name = petUpdateRequest.Name,
                 Species = petUpdateRequest.Species,
                 Breed = petUpdateRequest.Breed,

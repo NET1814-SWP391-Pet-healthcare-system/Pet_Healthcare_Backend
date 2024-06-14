@@ -1,6 +1,7 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
@@ -24,18 +25,13 @@ namespace Services
             _userManager = userManager;
         }
 
-        public async Task<PetDTO?> AddPet(PetAddRequest petAddRequest)
+        public async Task<PetDTO?> AddPet(Pet pet)
         {
-            var pet = petAddRequest.ToPet();
-            var customer = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
-            pet.CustomerId = customer.Id;
-            var isAdded = await _petRepository.AddPet(pet);
-            if(isAdded)
-            {
-                return pet.ToPetDto();
-            }
-            return null;
+            if(pet == null)
+                return null;
 
+            await _petRepository.AddPet(pet);
+            return pet.ToPetDto();
         }
 
         public async Task<PetDTO?> GetPetById(int id)
@@ -54,16 +50,22 @@ namespace Services
             return petList.Select(pet => pet.ToPetDto());
         }
 
-        public async Task<PetDTO?> UpdatePet(int id, PetUpdateRequest petUpdateRequest)
+        public async Task<PetDTO?> UpdatePet(Pet pet)
         {
-            var existingPet = await _petRepository.GetPetById(id);
-            if (existingPet == null)
+            if (pet == null)
             {
                 return null;
             }
-            var pet = petUpdateRequest.ToPet();
-            var updatedPet = await _petRepository.UpdatePet(id, pet);
-            return updatedPet.ToPetDto();
+            var existingPet = await _petRepository.GetPetById(pet.PetId);
+            existingPet.Name = string.IsNullOrEmpty(pet.Name) ? existingPet.Name : pet.Name;
+            existingPet.Species = string.IsNullOrEmpty(pet.Species) ? existingPet.Species : pet.Species;
+            existingPet.Breed = string.IsNullOrEmpty(pet.Breed) ? existingPet.Breed : pet.Breed;
+            existingPet.Gender = pet.Gender == null ? existingPet.Gender : pet.Gender;
+            existingPet.Weight = pet.Weight == null ? existingPet.Weight : pet.Weight;
+            existingPet.ImageURL = string.IsNullOrEmpty(pet.ImageURL) ? existingPet.ImageURL : pet.ImageURL;
+
+            await _petRepository.UpdatePet(existingPet);
+            return existingPet.ToPetDto();
         }
 
         public async Task<bool> RemovePetById(int id)
@@ -71,6 +73,6 @@ namespace Services
             var pet = await _petRepository.GetPetById(id);
             return await _petRepository.RemovePet(pet);
         }
-
+            
     }
 }
