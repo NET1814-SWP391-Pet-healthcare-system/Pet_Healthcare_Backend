@@ -33,14 +33,14 @@ namespace Services
             //    new Claim(ClaimTypes.Role, role)
             //};
             //since the server is on different country, utc+7 is the best
-            DateTime tokenExpiryDate = DateTime.Now.AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"]));
+            //DateTime tokenExpiryDate = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"]));
             Claim[] claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                //new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //JWT unique ID
-                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString()),
+                //new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, $"{user.FirstName} {user.LastName}"),
-                new Claim(JwtRegisteredClaimNames.Exp, ((DateTimeOffset)tokenExpiryDate).ToUnixTimeSeconds().ToString()),
+                //new Claim(JwtRegisteredClaimNames.Exp, ((DateTimeOffset)tokenExpiryDate).ToUnixTimeSeconds().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
@@ -48,11 +48,12 @@ namespace Services
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+
             var token = new JwtSecurityToken(
-                _config["JWT:Issuer"],
-                _config["JWT:Audience"],
-                claims,
-                expires: tokenExpiryDate,
+                issuer: _config["JWT:Issuer"],
+                audience: _config["JWT:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"])),
                 signingCredentials: creds
                 );
 
@@ -62,9 +63,9 @@ namespace Services
                 Email = user.Email,
                 Role = role,
                 UserName = user.UserName,
-                TokenExpiryDate = tokenExpiryDate,
+                TokenExpiryDate = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"])),
                 RefreshToken = GenerateRefreshToken(),
-                RefreshTokenExpiryDate = DateTime.Now.AddDays(Convert.ToInt32(_config["RefreshToken:EXPIRATION_DAYS"]))
+                RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(Convert.ToInt32(_config["RefreshToken:EXPIRATION_DAYS"]))
             };
         }
 

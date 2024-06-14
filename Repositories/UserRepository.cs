@@ -46,5 +46,9 @@ namespace Repositories
 
             return availableVets;
         }
+        public async Task<Vet?> GetVetById(string id)
+        {
+            return await _context.Vets.FindAsync(id);
+        }
     }
 }

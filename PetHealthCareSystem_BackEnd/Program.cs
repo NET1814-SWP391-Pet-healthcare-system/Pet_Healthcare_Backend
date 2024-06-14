@@ -99,7 +99,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         ),
-        ValidateLifetime = true
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -138,6 +139,8 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod())
 );
+//Add BrainTree
+builder.Services.AddTransient<IBrainTreeConfig, BraintreeConfig>();
 
 // Add Scoped for every repositories and services
 builder.Services.AddScoped<IEmailService, EmailService>();

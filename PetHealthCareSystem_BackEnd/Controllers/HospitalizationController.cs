@@ -57,7 +57,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                string error = HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest,_kennelService,_petService,_userManager);
+                var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+                hospitalizationAddRequest.VetId = vet.Id;
+                string error = HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest,_kennelService,_petService,_userManager,_userService);
                 if (error != null)
                 {
                     return BadRequest(error);
@@ -66,8 +68,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return BadRequest("Vet is not free");
                 }
-                var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
-                hospitalizationAddRequest.VetId = vet.Id;
                 await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
                 return Ok("Added Hospitalization Successfully");
             }

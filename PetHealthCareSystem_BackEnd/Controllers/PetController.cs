@@ -8,7 +8,9 @@ using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
+using ServiceContracts.DTO.UserDTO;
 using Services;
+using System.Security.Claims;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -26,7 +28,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _userManager = userManager;
         }
 
-        
         [HttpGet]
         public async Task<IActionResult> GetPets()
         {

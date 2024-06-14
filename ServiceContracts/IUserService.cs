@@ -10,5 +10,6 @@ namespace ServiceContracts
     public interface IUserService
     {
         Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId);
+        Task<Vet?> GetAvailableVetById(string id);
     }
 }

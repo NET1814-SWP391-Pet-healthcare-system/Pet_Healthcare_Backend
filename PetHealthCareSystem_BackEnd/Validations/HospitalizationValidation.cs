@@ -17,13 +17,14 @@ namespace PetHealthCareSystem_BackEnd.Validations
         private static  IPetService _petService;
 
 
-        public static string HospitalizationVerification(HospitalizationAddRequest hospitalization,IKennelService kennelService, IPetService petService,UserManager<User> userManager)
+        public static string HospitalizationVerification(HospitalizationAddRequest hospitalization,IKennelService kennelService, IPetService petService,UserManager<User> userManager,IUserService userService)
         {
             DateTime adDate = DateTime.Parse(hospitalization.AdmissionDate);
             DateTime disDate = DateTime.Parse(hospitalization.DischargeDate);
             _kennelService = kennelService;
             _petService = petService;
             _userManager=userManager;
+            _userService=userService;
 
             if (adDate > disDate)
             {
@@ -47,8 +48,8 @@ namespace PetHealthCareSystem_BackEnd.Validations
                 return "This kennel does not exist";
             }
 
-            var vet = _userManager.FindByNameAsync(hospitalization.VetId);
-            if (vet == null)
+            var vet = _userManager.FindByIdAsync(hospitalization.VetId);
+            if (vet == null || _userService.GetAvailableVetById(hospitalization.VetId) == null )
             {
                 return "This vet does not exist";
             }

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Braintree.Test;
 using Entities.Enum;
 
 namespace Entities
@@ -35,5 +36,6 @@ namespace Entities
         public int? Rating { get; set; }
         public string? Comments { get; set; }
         public AppointmentStatus Status{ get; set; }
+        public bool? isPaid { get; set; }
     }
 }
