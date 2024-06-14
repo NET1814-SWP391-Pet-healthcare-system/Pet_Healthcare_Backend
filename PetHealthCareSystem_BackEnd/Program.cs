@@ -132,6 +132,8 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod())
 );
+//Add BrainTree
+builder.Services.AddTransient<IBraintreeService, BraintreeService>();
 
 // Add Scoped for every repositories and services
 builder.Services.AddScoped<IEmailService, EmailService>();
