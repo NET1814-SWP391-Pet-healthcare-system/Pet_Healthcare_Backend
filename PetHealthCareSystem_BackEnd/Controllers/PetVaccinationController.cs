@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
@@ -25,13 +26,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _vaccineService = vaccineService;
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpGet]
         public async Task<IActionResult> GetPetVaccinations() 
         {
             return Ok(await _petVaccinationService.GetAllPetVaccinations());
         }
-        
 
+        [Authorize]
         [HttpGet("{petId}/{vaccineId}")]
         public async Task<IActionResult> GetPetVaccinations(int petId, int vaccineId)
         {
@@ -53,6 +55,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(petVaccination);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest)
         {
@@ -81,6 +84,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(petVaccination);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{petId}/{vaccineId}")]
         public async Task<IActionResult> DeletePetVaccinationById(int petId, int vaccineId)
         {
@@ -98,6 +102,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(petVaccinationData);
         }
 
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("{petId}/{vaccineId}")]
         public async Task<IActionResult> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO.KennelDTO;
@@ -6,6 +7,7 @@ using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize(Policy = "AdminEmployeePolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class KennelController : Controller

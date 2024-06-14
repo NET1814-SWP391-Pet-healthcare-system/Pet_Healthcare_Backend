@@ -32,6 +32,7 @@ namespace Services
             //    new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
             //    new Claim(ClaimTypes.Role, role)
             //};
+            //since the server is on different country, utc+7 is the best
             DateTime tokenExpiryDate = DateTime.Now.AddMinutes(Convert.ToDouble(_config["JWT:EXPIRATION_MINUTES"]));
             Claim[] claims = new Claim[]
             {

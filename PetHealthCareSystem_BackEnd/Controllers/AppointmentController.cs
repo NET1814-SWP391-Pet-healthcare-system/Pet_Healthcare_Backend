@@ -275,35 +275,35 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             return Ok(result.ToAppointmentDto());
         }
-        public async Task<IActionResult> CancelAppointment([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
-            if (appointment == null)
-            {
-                return NotFound();
-            }
-            if(appointment.Status == AppointmentStatus.Done)
-            {
-                return BadRequest("Cannot cancel a paid appointment");
-            }
-            if(appointment.Status == AppointmentStatus.Cancelled)
-            {
-                return BadRequest("Appointment is already cancelled");
-            }
-            if(appointment.Status == AppointmentStatus.Processing)
-            {
-                return BadRequest("Cannot cancel an appointment that is being processed");
-            }
-            appointment.Status= AppointmentStatus.Cancelled;
-            appointment.CancellationDate = DateOnly.FromDateTime(DateTime.Now);
-            return Ok(appointment.ToAppointmentDto());
 
-
-        }
+        //[HttpPut("cancle-appointment/id/{id}")]
+        //public async Task<IActionResult> CancelAppointment([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+        //    if (appointment == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    if(appointment.Status == AppointmentStatus.Done)
+        //    {
+        //        return BadRequest("Cannot cancel a paid appointment");
+        //    }
+        //    if(appointment.Status == AppointmentStatus.Cancelled)
+        //    {
+        //        return BadRequest("Appointment is already cancelled");
+        //    }
+        //    if(appointment.Status == AppointmentStatus.Processing)
+        //    {
+        //        return BadRequest("Cannot cancel an appointment that is being processed");
+        //    }
+        //    appointment.Status= AppointmentStatus.Cancelled;
+        //    appointment.CancellationDate = DateOnly.FromDateTime(DateTime.Now);
+        //    return Ok(appointment.ToAppointmentDto());
+        //}
 
     }
 }
