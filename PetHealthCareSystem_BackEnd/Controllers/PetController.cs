@@ -158,7 +158,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest("Pet deletion failed");
             }
             return Ok(existingPet);
-        }
+         }
 
         [HttpPost("upload-pet-image/{petId}")]
         public async Task<IActionResult> UploadProfileImage(IFormFile imageFile, int petId)
@@ -207,8 +207,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 var result = await _petService.UpdatePet(pet);
                 return Ok(result);
             }
-
         }
-
     }
 }
