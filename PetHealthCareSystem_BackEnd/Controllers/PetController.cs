@@ -116,11 +116,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             if(!ModelState.IsValid)
             {
-                if(!ModelState.IsValid)
-                {
-                    string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                    return Problem(errorMessage);
-                }
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
             var existingPet = await _petService.GetPetById(id);
             {
@@ -179,7 +176,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return NotFound("You don't have this pet");
                 }
             }
-            
+
             if(existingPet.ImageUrl.IsNullOrEmpty())
             {
                 var imageResult = await _photoService.AddPhotoAsync(imageFile);
