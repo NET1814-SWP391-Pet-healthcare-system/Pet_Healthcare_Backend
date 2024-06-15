@@ -14,6 +14,7 @@ namespace ServiceContracts.DTO.UserDTO
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? Gender { get; set; }
+        [EmailAddress(ErrorMessage = "Please enter a valid email address format")]
         public string? Email { get; set; }
         public string? Username { get; set; }
         public string? Address { get; set; }

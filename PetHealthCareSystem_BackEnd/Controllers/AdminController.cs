@@ -62,13 +62,27 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "AdminEmployeePolicy")]
-        [HttpPut("update-profile/{username}")]
-        public async Task<IActionResult> UpdateProfile(string username, UserUpdateRequest userUpdateRequest)
+        [HttpPut("update-profile/{userId}")]
+        public async Task<IActionResult> UpdateProfile(string userId, UserUpdateRequest userUpdateRequest)
         {
-            var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
+            if(!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+            if(await _userManager.FindByEmailAsync(userUpdateRequest?.Email) != null)
+            {
+                return Conflict("The requested email is already in use. Please choose a different email.");
+            }
+            if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
+            {
+                return Conflict("The requested username is already in use. Please choose a different username.");
+            }
+
+            var result = await _userManager.UpdateUserAsync(userId, userUpdateRequest);
             if(result == null)
             {
-                return NotFound("Username not found");
+                return NotFound("UserId not found");
             }
             return Ok(result);
         }
