@@ -224,11 +224,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateProfile(UserUpdateRequest userUpdateRequest)
         {
-            var username = _userManager.GetUserName(this.User);
-            var result = await _userManager.UpdateUserAsync(username, userUpdateRequest);
+            if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
+            {
+                return Conflict("The requested username is already in use. Please choose a different username.");
+            }
+            var currenteUserId = _userManager.GetUserId(this.User);
+            var result = await _userManager.UpdateUserAsync(currenteUserId, userUpdateRequest);
             if(result == null)
             {
-                return NotFound("Username not found");
+                return NotFound("UserId not found");
             }
             return Ok(result);
         }

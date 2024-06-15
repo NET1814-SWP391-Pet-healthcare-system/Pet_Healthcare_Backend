@@ -8,9 +8,9 @@ namespace PetHealthCareSystem_BackEnd.Extensions
 {
     public static class UserManagerExtension
     {
-        public async static Task<UserDTO> UpdateUserAsync(this UserManager<User> userManager, string username, UserUpdateRequest userUpdateRequest)
+        public async static Task<UserDTO> UpdateUserAsync(this UserManager<User> userManager, string userId, UserUpdateRequest userUpdateRequest)
         {
-            var existingUser = await userManager.FindByNameAsync(username);
+            var existingUser = await userManager.FindByIdAsync(userId);
             if(existingUser == null)
             {
                 return null;
