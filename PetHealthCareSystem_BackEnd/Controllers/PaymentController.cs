@@ -64,7 +64,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         }
         [HttpPost, Route("Checkout")]
-        public async Task<IActionResult> Checkout(int appointmentid)
+        public async Task<IActionResult> Checkout(int appointmentid, string Nonce)
         {
             BusinessResult businessResult = new BusinessResult();
             string paymentStatus = string.Empty;
@@ -96,7 +96,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var request = new TransactionRequest
             {
                 Amount = (decimal)model.RefundAmount,
-                PaymentMethodNonce = "CreditCard",
+                PaymentMethodNonce = Nonce,
 
                 Options = new TransactionOptionsRequest
                 {
