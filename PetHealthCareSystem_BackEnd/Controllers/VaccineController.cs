@@ -96,10 +96,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return Problem(errorMessage);
             }
             var existingVaccine = await _vaccineService.GetVaccineById(id);
+
             if(existingVaccine is null)
             {
                 return NotFound("VaccineId not found");
             }
+
             Vaccine vaccine = vaccineUpdateRequest.ToVaccineFromUpdate();
             vaccine.VaccineId = id;
             var result = await _vaccineService.UpdateVaccine(vaccine);

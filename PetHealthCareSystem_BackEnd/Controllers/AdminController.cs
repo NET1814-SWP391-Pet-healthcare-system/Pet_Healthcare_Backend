@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
+using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -33,12 +34,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             var users = await _userManager.Users.ToListAsync();
+            var result = new List<UserDTO>();
+            foreach (var user in users)
+            {
+                var role = await _userManager.GetRolesAsync(user);
+                var userDto = user.ToUserDtoFromUser();
+                userDto.Role = role.SingleOrDefault();
+                result.Add(userDto);
+            }
             if (users == null)
             {
                 return NoContent();
             }
-            return Ok(users);
+            return Ok(result);
         }
 
         [Authorize(Policy = "AdminEmployeePolicy")]
@@ -69,10 +79,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
-            }
-            if(await _userManager.FindByEmailAsync(userUpdateRequest?.Email) != null)
-            {
-                return Conflict("The requested email is already in use. Please choose a different email.");
             }
             if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
             {
@@ -223,58 +229,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         }
                     default:
                         return BadRequest($"{userAddDto.Role} is not a suitable role");
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e);
-            }
-        }
-
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpPut("{username}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] string username ,[FromBody] UserUpdateRequest userUpdateDto)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                var user = await _userManager.FindByNameAsync(username);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                user.UserName = (userUpdateDto.Username != "") ? userUpdateDto.Username : user.UserName;
-                user.Email = (userUpdateDto.Email != "") ? userUpdateDto.Email : user.Email;
-                user.FirstName = (userUpdateDto.FirstName != "") ? userUpdateDto.FirstName : user.FirstName;
-                user.LastName = (userUpdateDto.LastName != "") ? userUpdateDto.LastName : user.LastName;
-                user.Gender = (userUpdateDto.Gender != null) ? userUpdateDto.Gender : user.Gender;
-                user.Address = (userUpdateDto.Address != "") ? userUpdateDto.Address : user.Address;
-                user.Country = (userUpdateDto.Country != "") ? userUpdateDto.Country : user.Country;
-                user.ImageURL = (userUpdateDto.ImageURL != "") ? userUpdateDto.ImageURL : user.ImageURL;
-                user.IsActive = (userUpdateDto.IsActive != null) ? userUpdateDto.IsActive : user.IsActive;
-                if (user is Vet)
-                {
-                    Vet vet = (Vet)user;
-                    vet.Rating = (userUpdateDto.Rating != null) ? userUpdateDto.Rating : vet.Rating;
-                    vet.YearsOfExperience = (userUpdateDto.YearsOfExperience != null) ? userUpdateDto.YearsOfExperience : vet.YearsOfExperience;
-                    await _userManager.UpdateAsync(vet);
-                    await _userManager.UpdateAsync(user);
-                    return Ok(vet);
-                }
-                else if (user is Customer)
-                {
-                    Customer customer = (Customer)user;
-                    await _userManager.UpdateAsync(customer);
-                    await _userManager.UpdateAsync(user);
-                    return Ok(customer);
-                }
-                else
-                {
-                    await _userManager.UpdateAsync(user);
-                    return Ok(user);
                 }
             }
             catch (Exception e)
