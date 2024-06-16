@@ -10,15 +10,17 @@ namespace RepositoryContracts
 {
     public interface IHospitalizationRepository
     {
-        Task<Hospitalization> Add(Hospitalization hospitalization);
+        Task<bool> Add(Hospitalization hospitalization);
         Task<Hospitalization?> GetById(int id);
         Task<IEnumerable<Hospitalization>> GetAll();
-        Task<Hospitalization?> Update(int id, Hospitalization hospitalization);
-        Task<Hospitalization?> Remove(int id);
+        Task<bool> Update(Hospitalization hospitalization);
+        Task<bool> Remove(Hospitalization hospitalization);
         Task<Hospitalization?> GetByPetId(int id);
         Task<Hospitalization?> GetByVetId(string id);
-        Task<List<Hospitalization?>> GetAllByVetId(string id);
-        Task<List<Hospitalization?>> GetAllByPetId(int id);
-        Task<bool> IsVetDateConflict(Hospitalization hospitalization);
+        Task<IEnumerable<Hospitalization>> GetAllByVetId(string id);
+        Task<IEnumerable<Hospitalization>> GetAllByPetId(int id);
+        Task<bool> IsVetDateConflict(string id, DateOnly AddmissionDate, DateOnly DischargeDate);
+        Task<bool> SaveChangesAsync();
+
     }
 }
