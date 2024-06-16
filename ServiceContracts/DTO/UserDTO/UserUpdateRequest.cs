@@ -14,11 +14,10 @@ namespace ServiceContracts.DTO.UserDTO
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? Gender { get; set; }
-        [EmailAddress(ErrorMessage = "Please enter a valid email address format")]
-        public string? Email { get; set; }
         public string? Username { get; set; }
         public string? Address { get; set; }
         public string? Country { get; set; }
+        public string? PhoneNumber { get; set; }
         public string? ImageURL { get; set; }
         public bool? IsActive { get; set; }
         public int? Rating { get; set; }

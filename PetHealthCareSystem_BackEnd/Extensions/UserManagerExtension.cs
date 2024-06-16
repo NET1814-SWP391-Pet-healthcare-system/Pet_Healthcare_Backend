@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Entities.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using ServiceContracts.DTO.UserDTO;
@@ -16,20 +17,20 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                 return null;
             }
             existingUser.UserName = (userUpdateRequest.Username != "") ? userUpdateRequest.Username : existingUser.UserName;
-            existingUser.Email = (userUpdateRequest.Email != "") ? userUpdateRequest.Email : existingUser.Email;
             existingUser.FirstName = (userUpdateRequest.FirstName != "") ? userUpdateRequest.FirstName : existingUser.FirstName;
             existingUser.LastName = (userUpdateRequest.LastName != "") ? userUpdateRequest.LastName : existingUser.LastName;
             existingUser.Gender = (userUpdateRequest.Gender != null) ? userUpdateRequest.Gender : existingUser.Gender;
             existingUser.Address = (userUpdateRequest.Address != "") ? userUpdateRequest.Address : existingUser.Address;
             existingUser.Country = (userUpdateRequest.Country != "") ? userUpdateRequest.Country : existingUser.Country;
             existingUser.ImageURL = (userUpdateRequest.ImageURL != "") ? userUpdateRequest.ImageURL : existingUser.ImageURL;
-            existingUser.IsActive = (userUpdateRequest.IsActive != null) ? userUpdateRequest.IsActive : existingUser.IsActive;  
-            if(await userManager.IsInRoleAsync(existingUser, "Customer"))
+            existingUser.IsActive = (userUpdateRequest.IsActive != null) ? userUpdateRequest.IsActive : existingUser.IsActive;
+            existingUser.PhoneNumber = (userUpdateRequest.PhoneNumber != null) ? userUpdateRequest.PhoneNumber : existingUser.PhoneNumber;
+            if(await userManager.IsInRoleAsync(existingUser, UserRole.Customer))
             {
                 Customer customer = existingUser as Customer;
                 await userManager.UpdateAsync(customer);
             }
-            else if(await userManager.IsInRoleAsync(existingUser, "Vet"))
+            else if(await userManager.IsInRoleAsync(existingUser, UserRole.Vet))
             {
                 Vet vet = existingUser as Vet;
                 vet.Rating = (userUpdateRequest.Rating != null) ? userUpdateRequest.Rating : vet.Rating;
@@ -40,8 +41,9 @@ namespace PetHealthCareSystem_BackEnd.Extensions
             {
                 await userManager.UpdateAsync(existingUser);
             }
-            var result = userUpdateRequest.ToUserDto();
-            result.UserId = existingUser.Id;
+            var result = existingUser.ToUserDtoFromUser();
+            var userRole = await userManager.GetRolesAsync(existingUser);
+            result.Role = userRole.SingleOrDefault();
             return result;
         }
 

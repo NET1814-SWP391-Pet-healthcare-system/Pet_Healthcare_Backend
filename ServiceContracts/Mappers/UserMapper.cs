@@ -18,7 +18,6 @@ namespace ServiceContracts.Mappers
                 FirstName = userUpdateRequest.FirstName,
                 LastName = userUpdateRequest.LastName,
                 Gender = userUpdateRequest.Gender,
-                Email = userUpdateRequest.Email,
                 Address = userUpdateRequest.Address,
                 Country = userUpdateRequest.Country,
                 IsActive = userUpdateRequest.IsActive,
