@@ -229,10 +229,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            if(await _userManager.FindByEmailAsync(userUpdateRequest?.Email) != null)
-            {
-                return Conflict("The requested email is already in use. Please choose a different email.");
-            }
             if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
             {
                 return Conflict("The requested username is already in use. Please choose a different username.");

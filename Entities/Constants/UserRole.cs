@@ -10,7 +10,7 @@ namespace Entities.Constants
     {
         public const string Admin = "Admin";
         public const string Customer = "Customer";
-        public const string Veterinarian = "Veterinarian";
+        public const string Vet = "Vet";
         public const string Employee = "Employee";
     }
 }
