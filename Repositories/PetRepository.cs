@@ -13,25 +13,25 @@ namespace Repositories
             _context = context;
         }
 
-        public async Task<bool> AddPet(Pet pet)
+        public async Task<bool> AddAsync(Pet pet)
         {
             await _context.Pets.AddAsync(pet);
             return await SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Pet>> GetAllPet()
+        public async Task<IEnumerable<Pet>> GetAllAsync()
         {
             return await _context.Pets
                          .ToListAsync();
         }
 
-        public async Task<Pet?> GetPetById(int id)
+        public async Task<Pet?> GetByIdAsync(int id)
         {
             return await _context.Pets
                          .FirstOrDefaultAsync(p => p.PetId == id);
         }
 
-        public async Task<bool> RemovePet(Pet pet)
+        public async Task<bool> RemoveAsync(Pet pet)
         {
             _context.Pets.Remove(pet);
             return await SaveChangesAsync();
@@ -39,15 +39,13 @@ namespace Repositories
 
         public async Task<bool> SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdatePet(Pet pet)
+        public async Task<bool> UpdateAsync(Pet pet)
         {
             _context.Entry(pet).State = EntityState.Modified;
-            await SaveChangesAsync();
-            return true;
+            return await SaveChangesAsync();
         }
     }
 }
