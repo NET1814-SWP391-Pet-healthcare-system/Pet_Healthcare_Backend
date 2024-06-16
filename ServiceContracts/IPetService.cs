@@ -11,10 +11,10 @@ namespace ServiceContracts
 {
     public interface IPetService
     {
-        Task<PetDTO?> AddPet(Pet pet);
-        Task<PetDTO?> GetPetById(int id);
-        Task<IEnumerable<PetDTO>> GetAllPets();
-        Task<PetDTO?> UpdatePet(Pet pet);
+        Task<Pet?> AddPet(Pet pet);
+        Task<Pet?> GetPetById(int id);
+        Task<IEnumerable<Pet>> GetAllPets();
+        Task<Pet?> UpdatePet(Pet pet);
         Task<bool> RemovePetById(int id);
     }
 }

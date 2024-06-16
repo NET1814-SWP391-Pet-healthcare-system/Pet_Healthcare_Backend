@@ -20,8 +20,8 @@ namespace Repositories
 
         public async Task<bool> AddAsync(Vaccine vaccine)
         {
-                await _context.AddAsync(vaccine);
-                return await SaveChangesAsync();
+            await _context.AddAsync(vaccine);
+            return await SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Vaccine>> GetAllAsync()
@@ -34,7 +34,7 @@ namespace Repositories
             return await _context.Vaccines.Include(v => v.PetVaccinations).FirstOrDefaultAsync(v => v.VaccineId == id);
         }
 
-        public async Task<bool> Remove(Vaccine vaccine)
+        public async Task<bool> RemoveAsync(Vaccine vaccine)
         {
             _context.Remove(vaccine);
             return await SaveChangesAsync();
@@ -45,15 +45,10 @@ namespace Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Vaccine?> Update(int id, Vaccine vaccine)
+        public async Task<bool> UpdateAsync(Vaccine vaccine)
         {
-            var existingVaccine = await GetByIdAsync(id);
-            existingVaccine.Name = vaccine.Name;
-            existingVaccine.Description = vaccine.Description;
-            existingVaccine.IsAnnualVaccine = vaccine.IsAnnualVaccine;
-
-            await SaveChangesAsync();
-            return existingVaccine;
+            _context.Entry(vaccine).State = EntityState.Modified;
+            return await SaveChangesAsync();
         }
     }
 }

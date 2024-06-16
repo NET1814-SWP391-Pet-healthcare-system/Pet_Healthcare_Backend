@@ -12,8 +12,8 @@ namespace RepositoryContracts
         Task<IEnumerable<PetVaccination>> GetAllAsync();
         Task<PetVaccination?> GetByIdAsync(int petId, int vaccineId);
         Task<bool> AddAsync(PetVaccination petVaccination);
-        Task<PetVaccination> UpdateAsync(int petId, int vaccineId, PetVaccination petVaccination);
-        Task<bool> Remove(PetVaccination petVaccination);
+        Task<bool> UpdateAsync(PetVaccination petVaccination);
+        Task<bool> RemoveAsync(PetVaccination petVaccination);
         Task<bool> SaveChangesAsync();
     }
 }
