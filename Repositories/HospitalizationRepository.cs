@@ -12,11 +12,11 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task<Hospitalization> Add(Hospitalization hospitalization)
+        public async Task<bool> Add(Hospitalization hospitalization)
         {
                 await _context.Hospitalizations.AddAsync(hospitalization);
-                await _context.SaveChangesAsync();
-                return hospitalization;
+                return await SaveChangesAsync();
+
         }
 
         public async Task<IEnumerable<Hospitalization>> GetAll()
@@ -37,34 +37,18 @@ namespace Repositories
                 .FirstOrDefaultAsync(a => a.HospitalizationId == id);
         }
 
-        public async Task<Hospitalization?> Remove(int id)
+        public async Task<bool> Remove(Hospitalization hospitalization)
         {
-            var hospitalization = await _context.Hospitalizations.FindAsync(id); ;
-            if(hospitalization == null)
-            {
-                return null;
-            }
             _context.Hospitalizations.Remove(hospitalization);
-            await _context.SaveChangesAsync();
-            return hospitalization;
+            return await SaveChangesAsync();
         }
 
 
-        public async Task<Hospitalization?> Update(int id,Hospitalization hospitalization)
+        public async Task<bool> Update(Hospitalization existhospitalization)
         {
-                var existhospitalization = await GetById(id);
-                if (existhospitalization == null)
-                {
-                    return null;
-                }
-                existhospitalization.AdmissionDate = hospitalization.AdmissionDate;
-                existhospitalization.PetId = hospitalization.PetId;
-               existhospitalization.KennelId = hospitalization.KennelId;
-               existhospitalization.VetId = hospitalization.VetId;
-                existhospitalization.DischargeDate = hospitalization.DischargeDate;
-                existhospitalization.TotalCost = hospitalization.TotalCost;
-            await _context.SaveChangesAsync();
-            return hospitalization;
+            _context.Entry(existhospitalization).State = EntityState.Modified;
+            await SaveChangesAsync();
+            return true;
         }
         public async Task<Hospitalization?> GetByPetId(int id)
         {
@@ -82,7 +66,7 @@ namespace Repositories
                 .Include(a => a.Vet)
                 .FirstOrDefaultAsync(a => a.VetId == id);
         }
-        public async Task<List<Hospitalization>> GetAllByVetId(string id)
+        public async Task<IEnumerable<Hospitalization>> GetAllByVetId(string id)
         {
             return await _context.Hospitalizations
                 .Include(a => a.Pet)
@@ -91,7 +75,7 @@ namespace Repositories
                 .Where(a => a.VetId == id)
                 .ToListAsync();
         }
-        public async Task<List<Hospitalization>> GetAllByPetId(int id)
+        public async Task<IEnumerable<Hospitalization>> GetAllByPetId(int id)
         {
             return await _context.Hospitalizations
                 .Include(a => a.Pet)
@@ -100,10 +84,17 @@ namespace Repositories
                 .Where(a => a.PetId == id)
                 .ToListAsync();
         }
-        public async Task<bool> IsVetDateConflict(Hospitalization hospitalization)
+        public async Task<bool> IsVetDateConflict(string id,DateOnly AdmissionDate, DateOnly DischargeDate)
         {
             return await _context.Hospitalizations
-                .AnyAsync(a => a.VetId == hospitalization.VetId && hospitalization.AdmissionDate >= a.AdmissionDate && hospitalization.AdmissionDate <= a.DischargeDate);
+            .AnyAsync(a => a.VetId == id
+        && ((AdmissionDate < a.DischargeDate && AdmissionDate >= a.AdmissionDate) 
+            || (DischargeDate > a.AdmissionDate && DischargeDate <= a.DischargeDate)
+            || (AdmissionDate <= a.AdmissionDate && DischargeDate >= a.DischargeDate)));
+        }
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync()>0;
         }
     }
 }

@@ -46,30 +46,30 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             try
             {
                 //var username = User.GetUsername();
-                var username = _userManager.GetUserName(this.User);
-                var userModel = await _userManager.FindByNameAsync(username);
+                //var username = _userManager.GetUserName(this.User);
+                //var userModel = await _userManager.FindByNameAsync(username);
 
-                if (User.IsInRole("Customer"))
+                if (!ModelState.IsValid)
                 {
-                    return BadRequest("Employee only");
+                    string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    return Problem(errorMessage);
                 }
-                if (hospitalizationAddRequest == null || !ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                DateOnly adDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate);
+                DateOnly disDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate); 
                 var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
                 hospitalizationAddRequest.VetId = vet.Id;
-                string error = HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest,_kennelService,_petService,_userManager,_userService);
+                bool isVetFree = await _hospitalizationService.IsVetFree(hospitalizationAddRequest.VetId, adDate, disDate);
+                if (isVetFree)
+                {
+                    return BadRequest("Vet is busy");
+                }
+                var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
+                string error =  HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest,_kennelService,_petService,_userManager,_userService);
                 if (error != null)
                 {
                     return BadRequest(error);
                 }
-                if (await _hospitalizationService.IsVetFree(hospitalizationAddRequest.ToHospitalizationFromAdd()))
-                {
-                    return BadRequest("Vet is not free");
-                }
-                await _hospitalizationService.AddHospitalization(hospitalizationAddRequest.ToHospitalizationFromAdd());
-                return Ok("Added Hospitalization Successfully");
+                return Ok(await _hospitalizationService.AddHospitalization(hospi));
             }
             catch(Exception ex)
             {
@@ -82,10 +82,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetHospitalizations()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var hospitalizations = await _hospitalizationService.GetHospitalizations();
             var hospitalizationDtos = hospitalizations.Select(x => x.ToHospitalizationDto());
             return Ok(hospitalizationDtos);
@@ -111,42 +107,58 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHospitalization(int id, [FromBody] HospitalizationUpdateRequest hospitalizationUpdateRequest)
         {
+            
+
+                if (!ModelState.IsValid)
+                {
+                    string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    return Problem(errorMessage);
+                }
             var existingHospitalization = await _hospitalizationService.GetHospitalizationById(id);
-            if (hospitalizationUpdateRequest == null || !ModelState.IsValid || existingHospitalization == null)
-            {
-                return BadRequest(ModelState);
-            }
-            var isUpdated = await _hospitalizationService.UpdateHospitalization(id, hospitalizationUpdateRequest.ToHospitalizationUpdate());
+
+                if (existingHospitalization == null)
+                {
+                    return NotFound("Hospitalization not found");
+                }
+                var hospi = hospitalizationUpdateRequest.ToHospitalizationUpdate();
+            hospi.HospitalizationId = id;
+            var isUpdated = await _hospitalizationService.UpdateHospitalization(hospi);
             if (isUpdated == null)
             {
                 return BadRequest(ModelState);
             }
-            return Ok("Updated Successfully");
+            return Ok(isUpdated);
         }
 
         //Delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHospitalizationByHospitalizationByID(int id)
         {
-            var isDeleted = await _hospitalizationService.RemoveHospitalization(id);
-            if (!ModelState.IsValid || isDeleted == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
-            return Ok("Nuke successfully");
+            var existingHospitalization = await _hospitalizationService.GetHospitalizationById(id);
+            if (existingHospitalization == null)
+            {
+                return NotFound("Hospitalization not found");
+            }
+            var isDeleted = await _hospitalizationService.RemoveHospitalization(id);
+            return Ok(existingHospitalization);
         }
 
-        [HttpPost("get-hospitalizations")]
+        [HttpGet("VetName{id}")]
         public async Task<IActionResult> GetAllHospitalizationByVetID(string id)
         {
+            if (!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
             var vet = await _userManager.FindByNameAsync(id);
             id = vet.Id;
             var hospitalization = await _hospitalizationService.GetAllHospitalizationByVetId(id);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             if (hospitalization == null)
             {
                 return NotFound();

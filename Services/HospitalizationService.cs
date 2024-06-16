@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Entities;
 using ServiceContracts;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using ServiceContracts.Mappers;
+using Repositories;
 
 namespace Services
 {
@@ -20,58 +22,94 @@ namespace Services
         {
             _hospitalizationRepository = hospitalizationRepository;
         }
-        public async Task<Hospitalization> AddHospitalization(Hospitalization request)
+        public async Task<HospitalizationDTO?> AddHospitalization(Hospitalization request)
         {
-            return await _hospitalizationRepository.Add(request);
-        }
-
-        public async Task<Hospitalization?> UpdateHospitalization(int id,Hospitalization request)
-        {
-            var existingHospitalization = await _hospitalizationRepository.GetById(id);
-            if (existingHospitalization == null || request == null)
+            if(request==null)
             {
                 return null;
             }
-            existingHospitalization.DischargeDate = request.DischargeDate;
-
-            return await _hospitalizationRepository.Update(id,existingHospitalization);
+            await _hospitalizationRepository.Add(request);
+            return request.ToHospitalizationDto();
         }
 
-        public async Task<Hospitalization?> RemoveHospitalization(int id)
+        public async Task<HospitalizationDTO?> UpdateHospitalization(Hospitalization request)
         {
-            return await _hospitalizationRepository.Remove(id);
+            if(request==null)
+            {
+                return null;
+            }
+            var hospitalization = await _hospitalizationRepository.GetById(request.HospitalizationId);
+            if(hospitalization==null)
+            {
+                return null;
+            }
+            hospitalization.VetId = hospitalization.VetId;
+            hospitalization.PetId = hospitalization.PetId;
+            hospitalization.KennelId =hospitalization.KennelId;
+            hospitalization.AdmissionDate = hospitalization.AdmissionDate;
+            hospitalization.DischargeDate = request.DischargeDate == null ? hospitalization.DischargeDate:request.DischargeDate;
+            hospitalization.TotalCost = hospitalization.TotalCost;
+
+            await _hospitalizationRepository.Update(hospitalization);
+            return hospitalization.ToHospitalizationDto();
+
         }
 
-        public async Task<Hospitalization?> GetHospitalizationById(int id)
+        public async Task<bool> RemoveHospitalization(int id)
         {
-            return await _hospitalizationRepository.GetById(id);
+            var hospitalization = await _hospitalizationRepository.GetById(id);
+            if(hospitalization==null)
+            {
+                return false;
+            }
+            return await _hospitalizationRepository.Remove(hospitalization);
+        }
+
+        public async Task<HospitalizationDTO?> GetHospitalizationById(int id)
+        {
+            var hospitalization = await _hospitalizationRepository.GetById(id);
+            if(hospitalization == null)
+            {
+                return null;
+            }
+            return hospitalization.ToHospitalizationDto();
         }
 
         public async Task<IEnumerable<Hospitalization>> GetHospitalizations()
         {
             return await _hospitalizationRepository.GetAll();
         }
-        public async Task<Hospitalization?> GetHospitalizationByPetId(int id)
+        public async Task<HospitalizationDTO?> GetHospitalizationByPetId(int id)
         {
-            return await _hospitalizationRepository.GetByPetId(id);
+           var hospi =  await _hospitalizationRepository.GetByPetId(id);
+            if(hospi==null)
+            {
+                return null;
+            }
+            return hospi.ToHospitalizationDto();
         }
-        public async Task<Hospitalization?> GetHospitalizationByVetId(string id)
+        public async Task<HospitalizationDTO?> GetHospitalizationByVetId(string id)
         {
-            return await _hospitalizationRepository.GetByVetId(id);
+            var hospi = await _hospitalizationRepository.GetByVetId(id);
+            if(hospi == null)
+            {
+                return null;
+            }
+            return hospi.ToHospitalizationDto();
         }
 
-        public async Task<List<Hospitalization?>>GetAllHospitalizationByVetId(string id)
+        public async Task<IEnumerable<Hospitalization>> GetAllHospitalizationByVetId(string id)
         {
             return await _hospitalizationRepository.GetAllByVetId(id);
         }
 
-        public async Task<List<Hospitalization?>> GetAllHospitalizationByPetId(int id)
+        public async Task<IEnumerable<Hospitalization>> GetAllHospitalizationByPetId(int id)
         {
             return await _hospitalizationRepository.GetAllByPetId(id);
         }
-        public async Task<bool> IsVetFree(Hospitalization hospitalization)
+        public async Task<bool> IsVetFree(string id, DateOnly AddmissionDate, DateOnly DischargeDate)
         {
-            return await _hospitalizationRepository.IsVetDateConflict(hospitalization);
+            return await _hospitalizationRepository.IsVetDateConflict(id, AddmissionDate, DischargeDate);
         }
     }
 }
