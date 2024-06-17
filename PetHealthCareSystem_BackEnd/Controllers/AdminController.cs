@@ -56,23 +56,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "AdminEmployeePolicy")]
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetUsersByUsername([FromRoute] string username)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUsersById([FromRoute] string userId)
         {
-            var users = await _userManager.Users.ToListAsync();
-            var usersContainsUsername = new List<User>();
-            foreach(var user in users)
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user is null || user.IsDeleted)
             {
-                if(user.UserName.Contains(username) && !user.IsDeleted)
-                {
-                    usersContainsUsername.Add(user);
-                }
+                return NotFound("UserId not found");
             }
-            if(usersContainsUsername.IsNullOrEmpty())
-            {
-                return NoContent();
-            }
-            return Ok(usersContainsUsername);
+            var result = user.ToUserDtoFromUser();
+            var role = await _userManager.GetRolesAsync(user);
+            result.Role = role.SingleOrDefault();
+            return Ok(result);
         }
 
         [Authorize(Policy = "AdminEmployeePolicy")]
@@ -86,6 +81,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var user = await _userManager.FindByIdAsync(userId);
+            if(user == null || user.IsDeleted)
+            {
+                return NotFound("UserId not found");
+            }
             if(userUpdateRequest.Username != null)
             {
                 //check if the requested username, if not the same as old username and is used by an another user
@@ -107,10 +106,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var result = await _userManager.UpdateUserAsync(userId, userUpdateRequest);
-            if(result == null)
-            {
-                return NotFound("UserId not found");
-            }
             return Ok(result);
         }
 
