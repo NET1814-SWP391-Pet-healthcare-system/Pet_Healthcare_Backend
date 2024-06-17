@@ -89,15 +89,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Appointment Already Paid";
                 return BadRequest(businessResult);
             }
-
-            if(model.RefundAmount == null)
-            {
-                model.RefundAmount = 0;
-            }
+            
+            var PayAmount = model.Service.Cost;
 
             var request = new TransactionRequest
             {
-                Amount = (decimal)model.RefundAmount,
+                Amount = (decimal)PayAmount,
                 PaymentMethodNonce = Nonce,
 
                 Options = new TransactionOptionsRequest
