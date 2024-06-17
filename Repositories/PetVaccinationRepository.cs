@@ -26,10 +26,12 @@ namespace Repositories
 
         public async Task<IEnumerable<PetVaccination>> GetAllAsync()
         {
-            return await _context.PetVaccinations
+            var petVaccinationList = await _context.PetVaccinations
                 .Include(pv => pv.Pet)
                 .Include(pv => pv.Vaccine)
                 .ToListAsync();
+                
+            return petVaccinationList;
         }
 
         public async Task<PetVaccination?> GetByIdAsync(int petId, int vaccineId)
@@ -40,7 +42,7 @@ namespace Repositories
                 .FirstOrDefaultAsync(pv => pv.PetId == petId && pv.VaccineId == vaccineId);
         }
 
-        public async Task<bool> Remove(PetVaccination petVaccination)
+        public async Task<bool> RemoveAsync(PetVaccination petVaccination)
         {
             _context.Remove(petVaccination);
             return await SaveChangesAsync();
@@ -51,12 +53,10 @@ namespace Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<PetVaccination> UpdateAsync(int petId, int vaccineId, PetVaccination petVaccination)
+        public async Task<bool> UpdateAsync(PetVaccination petVaccination)
         {
-            var existingPetVaccination = await GetByIdAsync(petId, vaccineId);
-            existingPetVaccination.VaccinationDate = petVaccination.VaccinationDate;
-            await SaveChangesAsync();
-            return existingPetVaccination;
+            _context.Entry(petVaccination).State = EntityState.Modified;
+            return await SaveChangesAsync();
         }
     }
 }

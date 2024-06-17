@@ -21,49 +21,46 @@ namespace Services
             _petVaccinationRepository = petVaccinationRepository;
         }
 
-        public async Task<PetVaccinationDTO> AddPetVaccination(PetVaccinationAddRequest petVaccinationAddRequest)
+        public async Task<PetVaccination> AddPetVaccination(PetVaccination petVaccination)
         {
-            var petVaccination = petVaccinationAddRequest.ToPetVaccination();
-            var isAdded = await _petVaccinationRepository.AddAsync(petVaccination);
-            if(isAdded)
-            {
-                return petVaccination.ToPetVaccinationDto();
+            if(petVaccination is null){
+                return null;
             }
-            return null;
+            await _petVaccinationRepository.AddAsync(petVaccination);
+            return petVaccination;
         }
 
-        public async Task<IEnumerable<PetVaccinationDTO>> GetAllPetVaccinations()
+        public async Task<IEnumerable<PetVaccination>> GetAllPetVaccinations()
         {
-            var petVaccinations = await _petVaccinationRepository.GetAllAsync();
-            return petVaccinations.Select(petVaccination => petVaccination.ToPetVaccinationDto());
+            return await _petVaccinationRepository.GetAllAsync();
         }
 
-        public async Task<PetVaccinationDTO?> GetPetVaccinationById(int petId, int vaccineId)
+        public async Task<PetVaccination?> GetPetVaccinationById(int petId, int vaccineId)
         {
             var petVaccination = await _petVaccinationRepository.GetByIdAsync(petId, vaccineId);
             if(petVaccination == null)
             {
                 return null;
             }
-            return petVaccination.ToPetVaccinationDto();
+            return petVaccination;
         }
 
         public async Task<bool> RemovePetVaccination(int petId, int vaccineId)
         {
             var petVaccination = await _petVaccinationRepository.GetByIdAsync(petId, vaccineId);
-            return await _petVaccinationRepository.Remove(petVaccination);
+            return await _petVaccinationRepository.RemoveAsync(petVaccination);
         }
 
-        public async Task<PetVaccinationDTO?> UpdatePetVaccination(int petId, int vaccineId, PetVaccinationUpdateRequest petVaccinationUpdateRequest)
+        public async Task<PetVaccination?> UpdatePetVaccination(PetVaccination petVaccination)
         {
-            var existingPetVaccination = await _petVaccinationRepository.GetByIdAsync(petId, vaccineId);
-            if(existingPetVaccination == null)
+            if(petVaccination is null)
             {
-                return null;
+                return null;    
             }
-            var petVaccination = petVaccinationUpdateRequest.ToPetVaccination();
-            var updatedPetVaccination = await _petVaccinationRepository.UpdateAsync(petId, vaccineId, petVaccination);
-            return updatedPetVaccination.ToPetVaccinationDto();
+            var existingPetVaccination = await _petVaccinationRepository.GetByIdAsync(petVaccination.PetId, petVaccination.VaccineId);
+            existingPetVaccination.VaccinationDate = petVaccination.VaccinationDate;
+            await _petVaccinationRepository.UpdateAsync(existingPetVaccination);
+            return existingPetVaccination;
         }
     }
 }

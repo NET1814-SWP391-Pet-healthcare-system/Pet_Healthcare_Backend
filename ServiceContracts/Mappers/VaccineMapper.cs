@@ -10,7 +10,7 @@ namespace ServiceContracts.Mappers
 {
     public static class VaccineMapper
     {
-        public static Vaccine ToVaccine(this VaccineAddRequest vaccineAddRequest)
+        public static Vaccine ToVaccineFromAdd(this VaccineAddRequest vaccineAddRequest)
         {
             return new Vaccine()
             {
@@ -20,11 +20,10 @@ namespace ServiceContracts.Mappers
             };
         }
 
-        public static Vaccine ToVaccine(this VaccineUpdateRequest vaccineUpdateRequest)
+        public static Vaccine ToVaccineFromUpdate(this VaccineUpdateRequest vaccineUpdateRequest)
         {
             return new Vaccine()
             {
-                VaccineId = vaccineUpdateRequest.VaccineId,
                 Name = vaccineUpdateRequest.Name,
                 Description = vaccineUpdateRequest.Description,
                 IsAnnualVaccine = vaccineUpdateRequest.IsAnnualVaccine,

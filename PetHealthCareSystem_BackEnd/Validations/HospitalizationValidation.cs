@@ -1,9 +1,11 @@
 using Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 using ServiceContracts;
 using ServiceContracts.DTO.HospitalizationDTO;
 using ServiceContracts.DTO.PetDTO;
+using ServiceContracts.Mappers;
 using Services;
 namespace PetHealthCareSystem_BackEnd.Validations
 {
@@ -19,13 +21,12 @@ namespace PetHealthCareSystem_BackEnd.Validations
 
         public static string HospitalizationVerification(HospitalizationAddRequest hospitalization,IKennelService kennelService, IPetService petService,UserManager<User> userManager,IUserService userService)
         {
-            DateTime adDate = DateTime.Parse(hospitalization.AdmissionDate);
-            DateTime disDate = DateTime.Parse(hospitalization.DischargeDate);
+            var adDate = DateOnly.Parse(hospitalization.AdmissionDate);
+            var disDate = DateOnly.Parse(hospitalization.DischargeDate);
             _kennelService = kennelService;
             _petService = petService;
-            _userManager=userManager;
-            _userService=userService;
-
+            _userManager = userManager;
+            _userService = userService;    
             if (adDate > disDate)
             {
                 return "Start date cannot be greater than end date";
@@ -36,7 +37,7 @@ namespace PetHealthCareSystem_BackEnd.Validations
                 return "Total cost cannot be negative";
             }
 
-            var pet =  _petService.GetPetById(hospitalization.PetId);
+            var pet = _petService.GetPetById(hospitalization.PetId);
             if (pet == null)
             {
                 return "This pet does not exist";
@@ -49,11 +50,10 @@ namespace PetHealthCareSystem_BackEnd.Validations
             }
 
             var vet = _userManager.FindByIdAsync(hospitalization.VetId);
-            if (vet == null || _userService.GetAvailableVetById(hospitalization.VetId) == null )
+            if (vet == null || _userService.GetAvailableVetById(hospitalization.VetId) == null)
             {
                 return "This vet does not exist";
             }
-
             return null;
         }
     }

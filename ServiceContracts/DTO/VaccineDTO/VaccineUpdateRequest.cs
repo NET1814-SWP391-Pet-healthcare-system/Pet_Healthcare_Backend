@@ -10,8 +10,6 @@ namespace ServiceContracts.DTO.VaccineDTO
 {
     public class VaccineUpdateRequest
     {
-        [Required(ErrorMessage = "Vaccine's id is required")]
-        public int VaccineId { get; set; }
         public string? Name { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public bool? IsAnnualVaccine { get; set; }

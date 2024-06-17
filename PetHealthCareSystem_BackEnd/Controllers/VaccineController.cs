@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.VaccineDTO;
+using ServiceContracts.Mappers;
+using Services;
 using System.Net;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -25,7 +29,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetVaccines()
         {
             var vaccineList = await _vaccineService.GetAllVaccines();
-            return Ok(vaccineList);
+            var result = vaccineList.Select(vaccine => vaccine.ToVaccineDto());
+
+            return Ok(result);
         }
 
         [Authorize]
@@ -42,10 +48,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Vaccine not found");
             }
-            return Ok(vaccine);
+            return Ok(vaccine.ToVaccineDto());
         }
 
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPost]
         public async Task<IActionResult> AddVaccine(VaccineAddRequest vaccineAddRequest)
         {
@@ -54,11 +60,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            var vaccine = await _vaccineService.AddVaccine(vaccineAddRequest);
-            return Ok(vaccine);
+            var vaccine = await _vaccineService.AddVaccine(vaccineAddRequest.ToVaccineFromAdd());
+            return Ok(vaccine.ToVaccineDto());
         }
 
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVaccineById(int id)
         {
@@ -67,20 +73,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            var vaccine = await _vaccineService.GetVaccineById(id);
-            if (vaccine == null)
+            var existingVaccine = await _vaccineService.GetVaccineById(id);
+            if (existingVaccine is null)
             {
                 return NotFound("Vaccine not found");
             }
-            var isDeleted = await _vaccineService.RemoveVaccine(id);
+            var isDeleted = await _vaccineService.RemoveVaccineById(id);
             if(!isDeleted)
             {
                 return BadRequest("Vaccine deletion failed");
             }
-            return Ok(vaccine);
+            return Ok(existingVaccine.ToVaccineDto());
         }
 
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
         {
@@ -89,17 +95,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            if(id != vaccineUpdateRequest.VaccineId)
+            var existingVaccine = await _vaccineService.GetVaccineById(id);
+
+            if(existingVaccine is null)
             {
-                return BadRequest("Mismatched Id");
+                return NotFound("VaccineId not found");
             }
-            
-            var result = await _vaccineService.UpdateVaccine(id, vaccineUpdateRequest);
+
+            Vaccine vaccine = vaccineUpdateRequest.ToVaccineFromUpdate();
+            vaccine.VaccineId = id;
+            var result = await _vaccineService.UpdateVaccine(vaccine);
             if(result == null)
             {
-                return NotFound(vaccineUpdateRequest);
+                return NotFound("Vaccine not found");
             }
-            return Ok(result);
+            return Ok(result.ToVaccineDto());
         }
 
     }

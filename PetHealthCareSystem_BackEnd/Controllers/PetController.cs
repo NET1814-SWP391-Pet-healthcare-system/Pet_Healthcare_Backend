@@ -16,7 +16,6 @@ using System.Security.Claims;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PetController : ControllerBase
@@ -32,22 +31,36 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _photoService = photoService;
         }
 
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet]
         public async Task<IActionResult> GetPets()
         {
-            return Ok(await _petService.GetAllPets());
+            var petList = await _petService.GetAllPets();
+            var result = petList.Select(pet => pet.ToPetDto());
+            return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("user-pet/{username}")]
         public async Task<IActionResult> GetPetsByUsername(string username)
         {
+            if(this.User.IsInRole("Customer"))
+            {
+                var currentUsername = _userManager.GetUserName(this.User);
+                if(currentUsername != username)
+                {
+                    return NotFound("Access Denied: You are not authorized to view or manage pets that do not belong to your account.");
+                }
+            }
             var user = await _userManager.FindByNameAsync(username);
             if(user == null)
             {
                 return NotFound("Username not found");
             }
+
             var petList = await _petService.GetAllPets();
-            var usersPet = petList.Where(p => p.CustomerId.Equals(user.Id));
+            var petListDto = petList.Select(pet => pet.ToPetDto());
+            var usersPet = petListDto.Where(p => p.CustomerId.Equals(user.Id));
             if(!usersPet.Any())
             {
                 return Ok("User doesn't have any pets");
@@ -55,7 +68,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(usersPet);
         }
 
-        [Authorize(Policy = "AdminEmployeePolicy")]
+        [Authorize(Policy = "CustomerOrEmployeePolicy")]
         [HttpPost]
         public async Task<IActionResult> AddPet(PetAddRequest? petAddRequest)
         {
@@ -64,6 +77,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
+            if(this.User.IsInRole("Customer"))
+            {
+                var customer = await _userManager.GetUserAsync(this.User);
+                petAddRequest.CustomerUsername = customer.UserName;
+            }
+
             var existingUser = await _userManager.FindByNameAsync(petAddRequest.CustomerUsername);
             if(existingUser == null)
             {
@@ -72,29 +91,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             Pet pet = petAddRequest.ToPet();
             pet.CustomerId = existingUser.Id;
             var result = await _petService.AddPet(pet);
-            return Ok(result);
+            return Ok(result.ToPetDto());
         }
 
-        [Authorize(Policy = "CustomerPolicy")]
-        [HttpPost("add-my-pet")]
-        public async Task<IActionResult> AddMyPet(PetAddRequest? petAddRequest)
-        {
-            if(!ModelState.IsValid)
-            {
-                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
-            Pet pet = petAddRequest.ToPet();
-            pet.CustomerId = _userManager.GetUserId(this.User);
-            var result = await _petService.AddPet(pet);
-            return Ok(result);
-        }
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPetById(int id)
         {
             var existingPet = await _petService.GetPetById(id);
-
+            if(existingPet == null)
+            {
+                return NotFound();
+            }
             if(this.User.IsInRole("Customer"))
             {
                 var customer = await _userManager.GetUserAsync(this.User);
@@ -104,13 +112,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
             }
 
-            if(existingPet == null)
-            {
-                return NotFound();
-            }
-            return Ok(existingPet);
+            return Ok(existingPet.ToPetDto());
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePet(int id, PetUpdateRequest? petUpdateRequest)
         {
@@ -120,12 +125,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return Problem(errorMessage);
             }
             var existingPet = await _petService.GetPetById(id);
+
+            if(existingPet == null)
             {
-                if(existingPet == null)
+                return NotFound("PetId not found");
+            }
+            if(this.User.IsInRole("Customer"))
+            {
+                var currentUserId = _userManager.GetUserId(this.User);
+                if(currentUserId != existingPet.CustomerId)
                 {
-                    return NotFound("PetId not found");
+                    return NotFound("You don't have this pet");
                 }
             }
+
             Pet pet = petUpdateRequest.ToPet();
             pet.PetId = id;
             var result = await _petService.UpdatePet(pet);
@@ -133,9 +146,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Pet not found");
             }
-            return Ok(result);
+            return Ok(result.ToPetDto());
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetById(int id)
         {
@@ -157,9 +171,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("Pet deletion failed");
             }
-            return Ok(existingPet);
-         }
+            return Ok(existingPet.ToPetDto());
+        }
 
+        [Authorize]
         [HttpPost("upload-pet-image/{petId}")]
         public async Task<IActionResult> UploadProfileImage(IFormFile imageFile, int petId)
         {
@@ -177,7 +192,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
             }
 
-            if(existingPet.ImageUrl.IsNullOrEmpty())
+            if(existingPet.ImageURL.IsNullOrEmpty())
             {
                 var imageResult = await _photoService.AddPhotoAsync(imageFile);
                 Pet pet = new Pet()
@@ -192,7 +207,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 try
                 {
-                    await _photoService.DeletePhotoAsync(existingPet.ImageUrl);
+                    await _photoService.DeletePhotoAsync(existingPet.ImageURL);
                 }
                 catch(Exception ex)
                 {

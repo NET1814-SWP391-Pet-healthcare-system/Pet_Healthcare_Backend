@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using Braintree;
+using Entities;
+using Entities.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using ServiceContracts.DTO.UserDTO;
@@ -11,37 +13,52 @@ namespace PetHealthCareSystem_BackEnd.Extensions
         public async static Task<UserDTO> UpdateUserAsync(this UserManager<User> userManager, string userId, UserUpdateRequest userUpdateRequest)
         {
             var existingUser = await userManager.FindByIdAsync(userId);
+            UserDTO result = null;
             if(existingUser == null)
             {
                 return null;
             }
-            existingUser.UserName = (userUpdateRequest.Username != "") ? userUpdateRequest.Username : existingUser.UserName;
-            existingUser.Email = (userUpdateRequest.Email != "") ? userUpdateRequest.Email : existingUser.Email;
-            existingUser.FirstName = (userUpdateRequest.FirstName != "") ? userUpdateRequest.FirstName : existingUser.FirstName;
-            existingUser.LastName = (userUpdateRequest.LastName != "") ? userUpdateRequest.LastName : existingUser.LastName;
-            existingUser.Gender = (userUpdateRequest.Gender != null) ? userUpdateRequest.Gender : existingUser.Gender;
-            existingUser.Address = (userUpdateRequest.Address != "") ? userUpdateRequest.Address : existingUser.Address;
-            existingUser.Country = (userUpdateRequest.Country != "") ? userUpdateRequest.Country : existingUser.Country;
-            existingUser.ImageURL = (userUpdateRequest.ImageURL != "") ? userUpdateRequest.ImageURL : existingUser.ImageURL;
-            existingUser.IsActive = (userUpdateRequest.IsActive != null) ? userUpdateRequest.IsActive : existingUser.IsActive;  
-            if(await userManager.IsInRoleAsync(existingUser, "Customer"))
+
+            existingUser.UserName = (string.IsNullOrEmpty(userUpdateRequest.Username)) ? existingUser.UserName : userUpdateRequest.Username;
+
+            existingUser.FirstName = (string.IsNullOrEmpty(userUpdateRequest.FirstName)) ? existingUser.FirstName : userUpdateRequest.FirstName;
+
+            existingUser.LastName = (string.IsNullOrEmpty(userUpdateRequest.LastName)) ? existingUser.LastName : userUpdateRequest.LastName;
+
+            existingUser.Gender = (userUpdateRequest.Gender != null) ? existingUser.Gender : userUpdateRequest.Gender;
+
+            existingUser.Address = (string.IsNullOrEmpty(userUpdateRequest.Address)) ? existingUser.Address : userUpdateRequest.Address;
+
+            existingUser.Country = (string.IsNullOrEmpty(userUpdateRequest.Country)) ? existingUser.Country : userUpdateRequest.Country;
+
+            existingUser.ImageURL = (string.IsNullOrEmpty(userUpdateRequest.ImageURL)) ? existingUser.ImageURL : userUpdateRequest.ImageURL;
+
+            existingUser.IsActive = (userUpdateRequest.IsActive != null) ? existingUser.IsActive : userUpdateRequest.IsActive;
+
+            existingUser.PhoneNumber = (string.IsNullOrEmpty(userUpdateRequest.PhoneNumber)) ? existingUser.PhoneNumber : userUpdateRequest.PhoneNumber;
+          
+            if(await userManager.IsInRoleAsync(existingUser, UserRole.Customer))
             {
-                Customer customer = existingUser as Customer;
+                Entities.Customer customer = existingUser as Entities.Customer;
                 await userManager.UpdateAsync(customer);
+                result = customer.ToUserDtoFromCustomer();
+                result.Role = UserRole.Customer;
             }
-            else if(await userManager.IsInRoleAsync(existingUser, "Vet"))
+            else if(await userManager.IsInRoleAsync(existingUser, UserRole.Vet))
             {
                 Vet vet = existingUser as Vet;
                 vet.Rating = (userUpdateRequest.Rating != null) ? userUpdateRequest.Rating : vet.Rating;
                 vet.YearsOfExperience = (userUpdateRequest.YearsOfExperience != null) ? userUpdateRequest.YearsOfExperience : vet.YearsOfExperience;
                 await userManager.UpdateAsync(vet);
+                result = vet.ToUserDtoFromVet();
+                result.Role = UserRole.Vet;
             }
-            else
+            else if(await userManager.IsInRoleAsync(existingUser, UserRole.Employee))
             {
                 await userManager.UpdateAsync(existingUser);
+                result = existingUser.ToUserDtoFromUser();
+                result.Role = UserRole.Employee;
             }
-            var result = userUpdateRequest.ToUserDto();
-            result.UserId = existingUser.Id;
             return result;
         }
 
@@ -54,7 +71,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                     var customerList = await userManager.GetUsersInRoleAsync("Customer");
                     foreach(var user in customerList)
                     {
-                        var customer = user as Customer;
+                        var customer = user as Entities.Customer;
                         UserDTO userDTO = new UserDTO()
                         {
                             UserId = customer.Id,

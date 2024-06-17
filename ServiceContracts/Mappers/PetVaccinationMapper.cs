@@ -34,7 +34,9 @@ namespace ServiceContracts.Mappers
             return new PetVaccinationDTO
             {
                 PetId = petVaccination.PetId,
+                PetName = petVaccination.Pet.Name,
                 VaccineId = petVaccination.VaccineId,
+                VaccineName = petVaccination.Vaccine.Name,
                 VaccinationDate = petVaccination.VaccinationDate
             };
         }
