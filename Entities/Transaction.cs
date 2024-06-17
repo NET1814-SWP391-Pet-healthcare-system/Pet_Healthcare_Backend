@@ -8,7 +8,7 @@ namespace Entities
 {
     public class Transaction
     {
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
         public Customer? Customer { get; set; }
         public int AppointmentId { get; set; }
         public Appointment? Appointment { get; set; }

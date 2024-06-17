@@ -24,12 +24,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public IBrainTreeConfig _config;
         public IAppointmentService _appointmentService;
         public UserManager<User> _userService;
+        public ITransactionService _transactionService;
 
-        public PaymentController(IBrainTreeConfig config, IAppointmentService appointmentService, UserManager<User> userService)
+        public PaymentController(IBrainTreeConfig config, IAppointmentService appointmentService, UserManager<User> userService, ITransactionService transactionService)
         {
             _config = config;
             _appointmentService = appointmentService;
             _userService = userService;
+            _transactionService = transactionService;
         }
 
         public static readonly TransactionStatus[] transactionSuccessStatuses =
@@ -103,12 +105,32 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
             };
 
-            Result<Transaction> result = gateway.Transaction.Sale(request);
+            Result<Braintree.Transaction> result = gateway.Transaction.Sale(request);
             if (result.IsSuccess())
             {
                 paymentStatus = "Succeded";
+                var customerName = _userService.GetUserName(this.User);
+                var customer = await _userService.FindByNameAsync(customerName);
+                //Add Transaction to database
+                Entities.Transaction transaction = new Entities.Transaction
+                {
+                    TransactionId = result.Transaction.Id,
+                    AppointmentId = appointmentid,
+                    CustomerId = customer.Id
+                };
 
-                //Do Database Operations Here
+                var trans = await _transactionService.AddAsync(transaction);
+                if(trans == null)
+                {
+                    result = await gateway.Transaction.RefundAsync(transaction.TransactionId);
+                  
+                    businessResult.Status = 404;
+                    businessResult.Data = null;
+                    businessResult.Message = "Transaction Failed";
+                    return BadRequest(businessResult);
+                }
+                var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
+                appointment.PaymentStatus = PaymentStatus.Paid;
 
                 businessResult.Status = 200;
                 businessResult.Data = result;
