@@ -18,6 +18,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
             {
                 return null;
             }
+
             existingUser.UserName = (string.IsNullOrEmpty(userUpdateRequest.Username)) ? existingUser.UserName : userUpdateRequest.Username;
 
             existingUser.FirstName = (string.IsNullOrEmpty(userUpdateRequest.FirstName)) ? existingUser.FirstName : userUpdateRequest.FirstName;
@@ -35,7 +36,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
             existingUser.IsActive = (userUpdateRequest.IsActive != null) ? existingUser.IsActive : userUpdateRequest.IsActive;
 
             existingUser.PhoneNumber = (string.IsNullOrEmpty(userUpdateRequest.PhoneNumber)) ? existingUser.PhoneNumber : userUpdateRequest.PhoneNumber;
-
+          
             if(await userManager.IsInRoleAsync(existingUser, UserRole.Customer))
             {
                 Entities.Customer customer = existingUser as Entities.Customer;
@@ -58,7 +59,6 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                 result = existingUser.ToUserDtoFromUser();
                 result.Role = UserRole.Employee;
             }
-            
             return result;
         }
 

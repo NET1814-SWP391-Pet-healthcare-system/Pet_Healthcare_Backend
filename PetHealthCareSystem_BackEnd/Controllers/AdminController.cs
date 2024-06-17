@@ -81,6 +81,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
+
             var user = await _userManager.FindByIdAsync(userId);
             if(userUpdateRequest.Username != null)
             {   
@@ -255,6 +256,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "AdminPolicy")]
+
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string userId)
         {
