@@ -306,7 +306,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointment.ToAppointmentDto());
 
 
-        }*/
+        }
 
         //[Authorize(Policy = "EmployeePolicy")]
         //[HttpPut("cancel-appointment/{id}")]
