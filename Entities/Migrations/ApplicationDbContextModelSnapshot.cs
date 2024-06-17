@@ -66,6 +66,9 @@ namespace Entities.Migrations
                     b.Property<string>("VetId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool?>("isPaid")
+                        .HasColumnType("bit");
+
                     b.HasKey("AppointmentId");
 
                     b.HasIndex("CustomerId");
