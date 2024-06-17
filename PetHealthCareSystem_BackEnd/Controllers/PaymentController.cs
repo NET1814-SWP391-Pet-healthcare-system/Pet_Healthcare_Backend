@@ -103,7 +103,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
             };
 
-            Result<Transaction> result = gateway.Transaction.Sale(request);
+            Result<Braintree.Transaction> result = gateway.Transaction.Sale(request);
             if (result.IsSuccess())
             {
                 paymentStatus = "Succeded";
