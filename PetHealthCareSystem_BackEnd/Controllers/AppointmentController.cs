@@ -74,7 +74,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var appointmentDate = DateOnly.FromDateTime(date);
             var availableVets = await _userService.GetAvailableVetsAsync(appointmentDate, slotId);
-            return Ok(availableVets);
+            return Ok(availableVets.Select(v => v.ToUserDtoFromVet()));
         }
 
         [HttpGet("customer/{username}")]
@@ -154,7 +154,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if(vetUsername != null)
             {
                 var vet = await _userManager.FindByNameAsync(vetUsername) as Vet;
-                if(vet == null)
+                if(vet == null || vet.IsDeleted)
                 {
                     return BadRequest("Vet does not exist");
                 }

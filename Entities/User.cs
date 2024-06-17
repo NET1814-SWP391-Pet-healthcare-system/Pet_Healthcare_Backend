@@ -21,5 +21,6 @@ namespace Entities
         public bool? IsActive { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryDate { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

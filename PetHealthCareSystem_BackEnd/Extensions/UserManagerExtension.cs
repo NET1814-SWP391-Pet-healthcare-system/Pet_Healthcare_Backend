@@ -36,7 +36,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
             existingUser.IsActive = (userUpdateRequest.IsActive != null) ? existingUser.IsActive : userUpdateRequest.IsActive;
 
             existingUser.PhoneNumber = (string.IsNullOrEmpty(userUpdateRequest.PhoneNumber)) ? existingUser.PhoneNumber : userUpdateRequest.PhoneNumber;
-          
+
             if(await userManager.IsInRoleAsync(existingUser, UserRole.Customer))
             {
                 Entities.Customer customer = existingUser as Entities.Customer;
@@ -62,7 +62,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
             return result;
         }
 
-        public async static Task<IEnumerable<UserDTO>> GetUserDtosInRoleAsync(this UserManager<User> userManager,string role)
+        public async static Task<IEnumerable<UserDTO>> GetUserDtosInRoleAsync(this UserManager<User> userManager, string role)
         {
             List<UserDTO> result = new List<UserDTO>();
             switch(role.ToUpper())
@@ -71,21 +71,24 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                     var customerList = await userManager.GetUsersInRoleAsync("Customer");
                     foreach(var user in customerList)
                     {
-                        var customer = user as Entities.Customer;
-                        UserDTO userDTO = new UserDTO()
+                        if(!user.IsDeleted)
                         {
-                            UserId = customer.Id,
-                            UserName = customer.UserName,
-                            FirstName = customer.FirstName,
-                            LastName = customer.LastName,
-                            Gender = customer.Gender,
-                            Address = customer.Address,
-                            Country = customer.Country,
-                            IsActive = customer.IsActive,
-                            Email = customer.Email,
-                            PhoneNumber = customer.PhoneNumber
-                        };
-                        result.Add(userDTO);
+                            var customer = user as Entities.Customer;
+                            UserDTO userDTO = new UserDTO()
+                            {
+                                UserId = customer.Id,
+                                UserName = customer.UserName,
+                                FirstName = customer.FirstName,
+                                LastName = customer.LastName,
+                                Gender = customer.Gender,
+                                Address = customer.Address,
+                                Country = customer.Country,
+                                IsActive = customer.IsActive,
+                                Email = customer.Email,
+                                PhoneNumber = customer.PhoneNumber
+                            };
+                            result.Add(userDTO);
+                        }
                     }
 
                     break;
@@ -94,23 +97,26 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                     var vetList = await userManager.GetUsersInRoleAsync("Vet");
                     foreach(var user in vetList)
                     {
-                        var vet = user as Vet;
-                        UserDTO userDTO = new UserDTO()
+                        if(!user.IsDeleted)
                         {
-                            UserId = vet.Id,
-                            UserName = vet.UserName,
-                            FirstName = vet.FirstName,
-                            LastName = vet.LastName,
-                            Gender = vet.Gender,
-                            Address = vet.Address,
-                            Country = vet.Country,
-                            IsActive = vet.IsActive,
-                            Email = vet.Email,
-                            PhoneNumber = vet.PhoneNumber,
-                            Rating = vet.Rating,
-                            YearsOfExperience = vet.YearsOfExperience
-                        };
-                        result.Add(userDTO);
+                            var vet = user as Vet;
+                            UserDTO userDTO = new UserDTO()
+                            {
+                                UserId = vet.Id,
+                                UserName = vet.UserName,
+                                FirstName = vet.FirstName,
+                                LastName = vet.LastName,
+                                Gender = vet.Gender,
+                                Address = vet.Address,
+                                Country = vet.Country,
+                                IsActive = vet.IsActive,
+                                Email = vet.Email,
+                                PhoneNumber = vet.PhoneNumber,
+                                Rating = vet.Rating,
+                                YearsOfExperience = vet.YearsOfExperience
+                            };
+                            result.Add(userDTO);
+                        }
                     }
                     break;
 
@@ -118,20 +124,23 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                     var employeeList = await userManager.GetUsersInRoleAsync("Employee");
                     foreach(var user in employeeList)
                     {
-                        UserDTO userDTO = new UserDTO()
+                        if(!user.IsDeleted)
                         {
-                            UserId = user.Id,
-                            UserName = user.UserName,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName,
-                            Gender = user.Gender,
-                            Address = user.Address,
-                            Country = user.Country,
-                            IsActive = user.IsActive,
-                            Email = user.Email,
-                            PhoneNumber = user.PhoneNumber
-                        };
-                        result.Add(userDTO);
+                            UserDTO userDTO = new UserDTO()
+                            {
+                                UserId = user.Id,
+                                UserName = user.UserName,
+                                FirstName = user.FirstName,
+                                LastName = user.LastName,
+                                Gender = user.Gender,
+                                Address = user.Address,
+                                Country = user.Country,
+                                IsActive = user.IsActive,
+                                Email = user.Email,
+                                PhoneNumber = user.PhoneNumber
+                            };
+                            result.Add(userDTO);
+                        }
                     }
                     break;
             }
