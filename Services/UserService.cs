@@ -1,6 +1,8 @@
 ﻿using Entities;
 using RepositoryContracts;
 using ServiceContracts;
+using ServiceContracts.DTO.UserDTO;
+using ServiceContracts.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,11 @@ namespace Services
         }
         public async Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId)
         {
-            return await _userRepository.GetAvailableVetsAsync(date, slotId);
+            var vetList = await _userRepository.GetAvailableVetsAsync(date, slotId);
+            var result = vetList
+                .Where(v => v.IsDeleted == false);
+                
+            return result;
         }
         public async Task<Vet?> GetAvailableVetById(string id)
         {

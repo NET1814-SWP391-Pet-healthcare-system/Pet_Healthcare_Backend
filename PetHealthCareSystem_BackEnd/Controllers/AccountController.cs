@@ -49,7 +49,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
-            if(user == null)
+            if(user == null || user.IsDeleted)
             { return Unauthorized("Username not found or password incorrect"); }
 
             //Check if account is banned

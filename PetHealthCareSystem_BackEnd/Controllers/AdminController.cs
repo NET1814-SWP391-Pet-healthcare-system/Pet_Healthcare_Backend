@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -31,21 +31,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var users = await _userManager.Users.ToListAsync();
             var result = new List<UserDTO>();
-            foreach (var user in users)
+            foreach(var user in users)
             {
-                var role = await _userManager.GetRolesAsync(user);
-                var userDto = user.ToUserDtoFromUser();
-                userDto.Role = role.SingleOrDefault();
-                result.Add(userDto);
+                if(!user.IsDeleted)
+                {
+                    var role = await _userManager.GetRolesAsync(user);
+                    var userDto = user.ToUserDtoFromUser();
+                    userDto.Role = role.SingleOrDefault();
+                    result.Add(userDto);
+                }
             }
-            if (users == null)
+            if(users == null)
             {
                 return NoContent();
             }
@@ -58,14 +61,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             var users = await _userManager.Users.ToListAsync();
             var usersContainsUsername = new List<User>();
-            foreach (var user in users)
+            foreach(var user in users)
             {
-                if (user.UserName.Contains(username))
+                if(user.UserName.Contains(username) && !user.IsDeleted)
                 {
                     usersContainsUsername.Add(user);
                 }
             }
-            if (usersContainsUsername.IsNullOrEmpty())
+            if(usersContainsUsername.IsNullOrEmpty())
             {
                 return NoContent();
             }
@@ -84,7 +87,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             var user = await _userManager.FindByIdAsync(userId);
             if(userUpdateRequest.Username != null)
-            {   
+            {
                 //check if the requested username, if not the same as old username and is used by an another user
                 if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null &&
                     !userUpdateRequest.Username.Equals(user.UserName))
@@ -140,11 +143,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                if(!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
-                switch (userAddDto.Role.ToLower())
+                switch(userAddDto.Role.ToLower())
                 {
                     case "customer":
                         var customer = new Customer
@@ -162,14 +165,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                         var createCustomer = await _userManager.CreateAsync(customer, userAddDto.Password);
 
-                        if (createCustomer.Succeeded)
+                        if(createCustomer.Succeeded)
                         {
                             var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
-                            if (roleResult.Succeeded)
+                            if(roleResult.Succeeded)
                             {
                                 return Ok(_tokenService.CreateToken(customer, "Customer"));
                             }
-                            
+
                             else
                             {
                                 return StatusCode(500, roleResult.Errors);
@@ -197,10 +200,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                         var createVet = await _userManager.CreateAsync(vet, userAddDto.Password);
 
-                        if (createVet.Succeeded)
+                        if(createVet.Succeeded)
                         {
                             var roleResult = await _userManager.AddToRoleAsync(vet, "Vet");
-                            if (roleResult.Succeeded)
+                            if(roleResult.Succeeded)
                             {
                                 return Ok(_tokenService.CreateToken(vet, "Vet"));
                             }
@@ -229,10 +232,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                         var createEmployee = await _userManager.CreateAsync(employee, userAddDto.Password);
 
-                        if (createEmployee.Succeeded)
+                        if(createEmployee.Succeeded)
                         {
                             var roleResult = await _userManager.AddToRoleAsync(employee, "Employee");
-                            if (roleResult.Succeeded)
+                            if(roleResult.Succeeded)
                             {
                                 return Ok(_tokenService.CreateToken(employee, "Employee"));
                             }
@@ -249,7 +252,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         return BadRequest($"{userAddDto.Role} is not a suitable role");
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return StatusCode(500, e);
             }
@@ -260,17 +263,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string userId)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) 
-            { 
+            if(user == null)
+            {
                 return NotFound();
             }
-            var userModel = await _userManager.DeleteAsync(user);
-            return Ok(userModel);
+            user.IsDeleted = true;
+            await _userManager.UpdateAsync(user);
+            return Ok(user.ToUserDtoFromUser());
         }
     }
 }
