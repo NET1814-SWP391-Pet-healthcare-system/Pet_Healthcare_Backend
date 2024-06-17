@@ -10,6 +10,7 @@ using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
+using System.Text.RegularExpressions;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -80,9 +81,26 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if(userUpdateRequest.Username != null)
+            {   
+                //check if the requested username, if not the same as old username and is used by an another user
+                if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null &&
+                    !userUpdateRequest.Username.Equals(user.UserName))
+                {
+                    return Conflict("The requested username is already in use. Please choose a different username.");
+                }
+            }
+            if(!string.IsNullOrEmpty(userUpdateRequest.PhoneNumber))
             {
-                return Conflict("The requested username is already in use. Please choose a different username.");
+                string pattern = @"^(0\d{9,10})$";
+                Regex regex = new Regex(pattern);
+
+                if(!regex.IsMatch(userUpdateRequest.PhoneNumber))
+                {
+                    return BadRequest("Phone number is in wrong format");
+                }
             }
 
             var result = await _userManager.UpdateUserAsync(userId, userUpdateRequest);
@@ -238,14 +256,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [Authorize(Policy = "AdminPolicy")]
-        [HttpDelete("{username}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] string username)
+
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null) 
             { 
                 return NotFound();
