@@ -1,7 +1,9 @@
-﻿using Entities;
+﻿using Azure.Core;
+using Entities;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.ServiceDTO;
+using ServiceContracts.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +20,20 @@ namespace Services
         {
             _serviceRepository = serviceRepository;
         }
-        public async Task<Service> AddService(Service request)
+        public async Task<ServiceDTO> AddService(Service request)
         {
-            return await _serviceRepository.Add(request);
+            await _serviceRepository.Add(request);
+            return request.ToServiceDto();
         }
 
-        public async Task<Service?> GetServiceById(int id)
+        public async Task<Service> GetServiceById(int id)
         {
             var service = await _serviceRepository.GetById(id);
-            return service;
+            if(service == null)
+            {
+                return null;
+            }
+            return service; 
         }
 
         public async Task<IEnumerable<Service>> GetServices()
@@ -34,26 +41,43 @@ namespace Services
             return await _serviceRepository.GetAll();
         }
 
-        public async Task<Service?> RemoveService(int id)
-        {
-            return await _serviceRepository.Remove(id);
-
-        }
-        public async Task<Service?> GetServiceByName(string name)
-        {
-            return await _serviceRepository.GetByName(name);
-        }
-        public async Task<Service?> UpdateService(int id, Service request)
+        public async Task<bool> RemoveService(int id)
         {
             var service = await _serviceRepository.GetById(id);
             if (service == null)
             {
+                return false;
+            }
+            return await _serviceRepository.Remove(id);
+            
+            
+
+        }
+        public async Task<ServiceDTO?> GetServiceByName(string name)
+        {
+            var service =await _serviceRepository.GetByName(name);
+            if(service == null)
+            {
                 return null;
             }
-            service.Name = request.Name;
-            service.Description = request.Description;
-            service.Cost = request.Cost;
-            return await _serviceRepository.Update(id,service);
+            return service.ToServiceDto();
+        }
+        public async Task<ServiceDTO?> UpdateService(Service request)
+        {
+            if (request == null)
+            {
+                return null;
+            }
+            var service = await _serviceRepository.GetById(request.ServiceId);
+            if (service == null)
+            {
+                return null;
+            }
+            service.Name = request.Name == null ? service.Name  : request.Name;
+            service.Description = request.Description == null ? service.Name :request.Description;
+            service.Cost = request.Cost == null ? service.Cost : request.Cost;
+            await _serviceRepository.Update(service);
+            return service.ToServiceDto();      
 
         }
     }
