@@ -154,78 +154,88 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
            
         }
+        [HttpPost, Route("Refund")]
+        public async Task<IActionResult> Refund(int appointmentid)
+        {
+            BusinessResult businessResult = new BusinessResult();
+            string paymentStatus = string.Empty;
+            var gateway = _config.GetGateway();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //public async Task<IActionResult> Refund(int customerid, int appointmentid)
-        //{
-        //    BusinessResult businessResult = new BusinessResult();
-        //    string paymentStatus = string.Empty;
-        //    var gateway = _config.GetGateway();
-        //    if(!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
-        //    if (appointment == null)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = null;
-        //        businessResult.Message = "Appointment Not Found";
-        //        return BadRequest(businessResult);
-        //    }
-        //    if(appointment.Status == AppointmentStatus.Done || appointment.Status == AppointStatus.Cancelled)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = null;
-        //        businessResult.Message = "Appointment Already Paid";
-        //        return BadRequest(businessResult);
-        //    }
-
-
-        //    var customerName =  _userService.GetUserName(this.User);
-        //    var customer = await _userService.FindByNameAsync(customerName);
-        //    if (customer == null)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = null;
-        //        businessResult.Message = "Customer Not Found";
-        //        return BadRequest(businessResult);
-        //    }
-
-        //    if(appointment.Customer!= customer)
-        //    {
-        //        businessResult.Status = 404;
-        //        businessResult.Data = null;
-        //        businessResult.Message = "Customer Not Owner Of This Transaction";
-        //        return BadRequest(businessResult);
-        //    }
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
+            if (appointment == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Appointment Not Found";
+                return BadRequest(businessResult);
+            }
+            if (appointment.Status == AppointmentStatus.Done || appointment.Status == AppointmentStatus.Cancelled)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Appointment Already Paid";
+                return BadRequest(businessResult);
+            }
 
 
-            // var transactionId = _InvoiceService.GetTransactionIdByAppointmentId(appointmentid);
-            // if (transactionId == null)
-            // {
-            //     businessResult.Status = 404;
-            //     businessResult.Data = null;
-            //     businessResult.Message = "Transaction Not Found";
-            //     return BadRequest(businessResult);
-            // }
+            var customerName = _userService.GetUserName(this.User);
+            var customer = await _userService.FindByNameAsync(customerName);
+            if (customer == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Customer Not Found";
+                return BadRequest(businessResult);
+            }
 
-            // Result<Transaction> result = gateway.Transaction.Refund(transactionId);
-            // if (result.IsSuccess())
-            // {
-            //     paymentStatus = "Succeded";
-            //     //Do Database Operations Here
-            //}
-            // else
-            // {
-            //     string errorMessages = "";
-            //     foreach (ValidationError error in result.Errors.DeepAll())
-            //     {
-            //         errorMessages += "Error: " + (int)error.Code + " - " + error.Message + "\n";
-            //     }
-            //     paymentStatus = errorMessages;
-            // }
+            if (appointment.Customer != customer)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Customer Not Owner Of This Transaction";
+                return BadRequest(businessResult);
+            }
 
-        //}
+
+            var transactionList = await _transactionService.GetByUserIdAsync(customer.Id);
+            var transactionId = transactionList.FirstOrDefault(t => t.AppointmentId == appointmentid);
+            
+
+            if (transactionId == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Transaction Not Found";
+                return BadRequest(businessResult);
+            }
+
+            Result<Braintree.Transaction> result = gateway.Transaction.Refund(transactionId.TransactionId);
+            if (result.IsSuccess())
+            {
+                paymentStatus = "Succeded";
+                //Do Database Operations Here
+                appointment.PaymentStatus = PaymentStatus.Refunded;
+                businessResult.Status = 200;
+                businessResult.Data = result;
+                businessResult.Message = "Payment Refunded Successfully";
+            }
+            else
+            {
+                string errorMessages = "";
+                foreach (ValidationError error in result.Errors.DeepAll())
+                {
+                    errorMessages += "Error: " + (int)error.Code + " - " + error.Message + "\n";
+                }
+                paymentStatus = errorMessages;
+            }
+            businessResult.Status = 404;
+            businessResult.Data = null;
+            businessResult.Message = paymentStatus;
+            return BadRequest(businessResult);
+        }
     }
 }
