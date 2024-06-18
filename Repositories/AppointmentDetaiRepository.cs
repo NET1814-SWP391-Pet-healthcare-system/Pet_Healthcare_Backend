@@ -17,11 +17,10 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task<AppointmentDetail> AddAsync(AppointmentDetail appointmentDetail)
+        public async Task<bool> AddAsync(AppointmentDetail appointmentDetail)
         {
             await _context.AppointmentDetails.AddAsync(appointmentDetail);
-            await _context.SaveChangesAsync();
-            return appointmentDetail;
+            return await SaveChangesAsync();
         }
 
         public async Task<IEnumerable<AppointmentDetail>> GetAllAsync()
@@ -42,23 +41,21 @@ namespace Repositories
                 
         }
 
-        public async Task<AppointmentDetail>? RemoveAsync(int id)
+        public async Task<bool>? RemoveAsync(AppointmentDetail appointmentDetail )
         {
-            var appointmentDetail = await GetByIdAsync(id);
-            if (appointmentDetail ==null)
-            {
-                return null;
-            }
-            _context.Remove(appointmentDetail);
-            await _context.SaveChangesAsync();
-            return appointmentDetail;
+            _context.AppointmentDetails.Remove(appointmentDetail);
+            return await SaveChangesAsync();
         }
 
-        public async Task<AppointmentDetail> UpdateAsync(AppointmentDetail appointmentDetail)
+        public async Task<bool> UpdateAsync(AppointmentDetail appointmentDetail)
         {
-            
-            await _context.SaveChangesAsync();
-            return appointmentDetail;
+
+            _context.Entry(appointmentDetail).State = EntityState.Modified;
+            return await SaveChangesAsync();
+        }
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
