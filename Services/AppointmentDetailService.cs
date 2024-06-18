@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.AppointmentDetailDTO;
@@ -16,9 +17,14 @@ namespace Services
             _appointmentDetailRepository = appointmentDetailRepository;
         }
 
-        public async Task<AppointmentDetail> AddAppointmentDetailAsync(AppointmentDetail? request)
+        public async Task<AppointDetailDTO> AddAppointmentDetailAsync(AppointmentDetail? request)
         {
-            return await _appointmentDetailRepository.AddAsync(request);
+            if (request == null)
+            {
+                return null;
+            }
+            await _appointmentDetailRepository.AddAsync(request);
+            return request.ToAppointDetailDto();
         }
 
  
@@ -33,26 +39,31 @@ namespace Services
             return await _appointmentDetailRepository.GetAllAsync();
         }
 
-        public async Task<AppointmentDetail> RemoveAppointmentDetailAsync(int id)
+        public async Task<bool> RemoveAppointmentDetailAsync(int id)
         {
-             return await _appointmentDetailRepository.RemoveAsync(id);
+            var appointDetail = await _appointmentDetailRepository.GetByIdAsync(id);
+            if (appointDetail == null)
+            {
+                return false;
+            }
+            return await _appointmentDetailRepository.RemoveAsync(appointDetail);
         }
 
-        public async Task<AppointmentDetail> UpdateAppointmentDetailAsync(int id ,AppointmentDetail request)
+
+        public async Task<AppointDetailDTO?> UpdateAppointmentDetailAsync(AppointmentDetail request)
         {
-            var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(id);
-            if(request == null || request == null || ExistingAppointmentDetail==null)
+            var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(request.AppointmentDetailId);
+            if (request == null || ExistingAppointmentDetail==null)
             {
                 return null;
             }
-            var AppointmentDetail = request;
-            ExistingAppointmentDetail.AppointmentId = request.AppointmentId;
-            ExistingAppointmentDetail.Treatment = request.Treatment;
-            ExistingAppointmentDetail.Diagnosis = request.Diagnosis;
-            ExistingAppointmentDetail.Record = request.Record;
+            ExistingAppointmentDetail.AppointmentId = ExistingAppointmentDetail.AppointmentId;
+            ExistingAppointmentDetail.Treatment = request.Treatment ==null ? ExistingAppointmentDetail.Treatment : request.Treatment;
+            ExistingAppointmentDetail.Diagnosis = request.Diagnosis == null ? ExistingAppointmentDetail.Diagnosis : request.Diagnosis;
+            ExistingAppointmentDetail.Record = request.Record == null ? ExistingAppointmentDetail.Record : request.Record;
             ExistingAppointmentDetail.Medication = request.Medication;
-            _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
-            return ExistingAppointmentDetail;
+           await _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
+            return ExistingAppointmentDetail.ToAppointDetailDto();
         }
 
  

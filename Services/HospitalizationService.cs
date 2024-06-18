@@ -65,37 +65,37 @@ namespace Services
             return await _hospitalizationRepository.Remove(hospitalization);
         }
 
-        public async Task<HospitalizationDTO?> GetHospitalizationById(int id)
+        public async Task<Hospitalization?> GetHospitalizationById(int id)
         {
             var hospitalization = await _hospitalizationRepository.GetById(id);
             if(hospitalization == null)
             {
                 return null;
             }
-            return hospitalization.ToHospitalizationDto();
+            return hospitalization;
         }
 
         public async Task<IEnumerable<Hospitalization>> GetHospitalizations()
         {
             return await _hospitalizationRepository.GetAll();
         }
-        public async Task<HospitalizationDTO?> GetHospitalizationByPetId(int id)
+        public async Task<Hospitalization?> GetHospitalizationByPetId(int id)
         {
            var hospi =  await _hospitalizationRepository.GetByPetId(id);
             if(hospi==null)
             {
                 return null;
             }
-            return hospi.ToHospitalizationDto();
+            return hospi;
         }
-        public async Task<HospitalizationDTO?> GetHospitalizationByVetId(string id)
+        public async Task<Hospitalization?> GetHospitalizationByVetId(string id)
         {
             var hospi = await _hospitalizationRepository.GetByVetId(id);
             if(hospi == null)
             {
                 return null;
             }
-            return hospi.ToHospitalizationDto();
+            return hospi;
         }
 
         public async Task<IEnumerable<Hospitalization>> GetAllHospitalizationByVetId(string id)

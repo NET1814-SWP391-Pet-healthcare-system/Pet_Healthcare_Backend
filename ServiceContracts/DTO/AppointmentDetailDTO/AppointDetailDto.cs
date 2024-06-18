@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.AppointmentDetailDTO
 {
-    public class AppointDetail
+    public class AppointDetailDTO
     {
         public int AppointmentDetailId { get; set; }
         public int? AppointmentId { get; set; }

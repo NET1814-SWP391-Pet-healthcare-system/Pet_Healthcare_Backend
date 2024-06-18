@@ -11,11 +11,11 @@ namespace ServiceContracts
 {
     public interface IServiceService
     {
-        Task<Service> AddService(Service request);
+        Task<ServiceDTO> AddService(Service request);
         Task<Service?> GetServiceById(int id);
         Task<IEnumerable<Service>> GetServices();
-        Task<Service?> UpdateService(int id,Service request);
-        Task<Service?> RemoveService(int id);
-        Task<Service?> GetServiceByName(string name);
+        Task<ServiceDTO?> UpdateService(Service request);
+        Task<bool> RemoveService(int id);
+        Task<ServiceDTO?> GetServiceByName(string name);
     }
 }
