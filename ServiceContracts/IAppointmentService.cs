@@ -14,6 +14,7 @@ namespace ServiceContracts
         Task<Appointment> AddAppointmentAsync(Appointment appointmentModel);
         Task<Appointment?> GetAppointmentByIdAsync(int id);
         Task<IEnumerable<Appointment>> GetCustomerAppointments(string customerId);
+        Task<IEnumerable<Appointment>> GetVetsAppointments(string vetId);
         Task<IEnumerable<Appointment>> GetAppointmentsAsync();
         Task<IEnumerable<Appointment>> GetAppointmentsByDateAndSlotAsync(DateOnly date, int slotId);
         Task<Appointment?> CheckInAppointmentAsync(int id);

@@ -77,6 +77,23 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(availableVets.Select(v => v.ToUserDtoFromVet()));
         }
 
+        [HttpGet("vet/{vetId}")]
+        public async Task<IActionResult> GetVetsAppointments(string vetId)
+        {
+            var existingVet = await _userManager.FindByIdAsync(vetId);
+            if(existingVet is null)
+            {
+                return NotFound("VetId not found");
+            }
+            var isVet = await _userManager.IsInRoleAsync(existingVet, "Vet");
+            if(!isVet)
+            {
+                return BadRequest("User is not a Vet");
+            }
+            var appointments = await _appointmentService.GetVetsAppointments(vetId);
+            return Ok(appointments.Select(a => a.ToAppointmentDto()));
+        }
+
         [HttpGet("customer/{username}")]
         public async Task<IActionResult> GetCustomerAppointments([FromRoute] string username)
         {
