@@ -31,5 +31,6 @@ namespace ServiceContracts.DTO.UserDTO
         // Vet specific properties
         public int? Rating { get; set; }
         public int? YearsOfExperience { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

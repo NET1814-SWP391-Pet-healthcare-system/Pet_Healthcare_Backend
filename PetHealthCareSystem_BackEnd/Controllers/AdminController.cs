@@ -97,12 +97,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             if(!string.IsNullOrEmpty(userUpdateRequest.PhoneNumber))
             {
-                string pattern = @"^(0\d{9,10})$";
-                Regex regex = new Regex(pattern);
-
-                if(!regex.IsMatch(userUpdateRequest.PhoneNumber))
+                if(!IsValidPhoneNumber(userUpdateRequest.PhoneNumber))
                 {
-                    return BadRequest("Phone number is in wrong format");
+                    return BadRequest("Invalid phone number format");
                 }
             }
 
@@ -143,6 +140,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                if(!string.IsNullOrEmpty(userAddDto.PhoneNumber))
+                {
+                    if(!IsValidPhoneNumber(userAddDto.PhoneNumber))
+                    {
+                        return BadRequest("Invalid phone number format");
+                    }
+                }
                 switch(userAddDto.Role.ToLower())
                 {
                     case "customer":
@@ -156,7 +160,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             Address = userAddDto.Address,
                             Country = userAddDto.Country,
                             ImageURL = userAddDto.ImageURL,
-                            IsActive = userAddDto.IsActice
+                            IsActive = userAddDto.IsActice,
+                            PhoneNumber = userAddDto.PhoneNumber
                         };
 
                         var createCustomer = await _userManager.CreateAsync(customer, userAddDto.Password);
@@ -191,7 +196,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             Address = userAddDto.Address,
                             Country = userAddDto.Country,
                             ImageURL = userAddDto.ImageURL,
-                            IsActive = userAddDto.IsActice
+                            IsActive = userAddDto.IsActice,
+                            PhoneNumber = userAddDto.PhoneNumber
                         };
 
                         var createVet = await _userManager.CreateAsync(vet, userAddDto.Password);
@@ -223,7 +229,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                             Address = userAddDto.Address,
                             Country = userAddDto.Country,
                             ImageURL = userAddDto.ImageURL,
-                            IsActive = userAddDto.IsActice
+                            IsActive = userAddDto.IsActice,
+                            PhoneNumber = userAddDto.PhoneNumber
                         };
 
                         var createEmployee = await _userManager.CreateAsync(employee, userAddDto.Password);
@@ -271,6 +278,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             user.IsDeleted = true;
             await _userManager.UpdateAsync(user);
             return Ok(user.ToUserDtoFromUser());
+        }
+
+        private bool IsValidPhoneNumber(string? phoneNumber)
+        {
+            string pattern = @"^(0\d{9,10})$";
+            Regex regex = new Regex(pattern);
+
+            if(!regex.IsMatch(phoneNumber))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
