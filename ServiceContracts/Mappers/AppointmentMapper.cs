@@ -32,6 +32,7 @@ namespace ServiceContracts.Mappers
                 Rating = appointmentModel.Rating,
                 Comments = appointmentModel.Comments,
                 Status = appointmentModel.Status.ToString(),
+                PaymentStatus = appointmentModel.PaymentStatus
             };
         }
 
