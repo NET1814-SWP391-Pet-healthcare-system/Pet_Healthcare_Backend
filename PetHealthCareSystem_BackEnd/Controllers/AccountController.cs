@@ -42,7 +42,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
-        {
+            {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
