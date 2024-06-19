@@ -170,6 +170,8 @@ builder.Services.AddScoped<IPetHealthTrackRepository, PetHealthTrackRepository>(
 builder.Services.AddScoped<IPetHealthTrackService, PetHealthTrackService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 var app = builder.Build();
 

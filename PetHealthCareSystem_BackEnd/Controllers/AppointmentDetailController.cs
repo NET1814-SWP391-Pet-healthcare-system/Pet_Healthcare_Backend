@@ -12,7 +12,7 @@ using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AppointmentDetailController : ControllerBase
@@ -115,6 +115,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var appointmentDetailModel = await _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
+            if(appointmentDetailModel == null)
+            {                 businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "AppointmentDetail not found";
+                return NotFound(businessResult);
+            }
             var UpdateDiagnosis = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
             appointmentDetailModel.RecordId = UpdateDiagnosis.RecordId;
             appointmentDetailModel.Record = await _recordService.GetRecordByIdAsync(id);
@@ -128,7 +134,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Invalid appointmentDetail";
                 return BadRequest(businessResult);
             }
-            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(id, appointmentDetailModel);
+            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(appointmentDetailModel);
             if (isUpdated == null)
             {
                 businessResult.Status = 404;

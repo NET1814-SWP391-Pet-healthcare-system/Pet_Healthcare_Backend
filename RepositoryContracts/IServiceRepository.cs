@@ -11,9 +11,10 @@ namespace RepositoryContracts
     {
         Task<IEnumerable<Service>> GetAll();
         Task<Service?> GetById(int id);
-        Task<Service> Add(Service service);
-        Task<Service?> Update(int id,Service service);
-        Task<Service?> Remove(int id);
+        Task<bool> Add(Service service);
+        Task<bool> Update(Service service);
+        Task<bool> Remove(int id);
+        Task<bool> SaveChangesAsync();
         Task<Service?> GetByName(string name);
     }
 }

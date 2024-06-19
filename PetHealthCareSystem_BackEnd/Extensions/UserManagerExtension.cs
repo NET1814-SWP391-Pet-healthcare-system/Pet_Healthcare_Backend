@@ -25,7 +25,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
 
             existingUser.LastName = (string.IsNullOrEmpty(userUpdateRequest.LastName)) ? existingUser.LastName : userUpdateRequest.LastName;
 
-            existingUser.Gender = (userUpdateRequest.Gender != null) ? existingUser.Gender : userUpdateRequest.Gender;
+            existingUser.Gender = (userUpdateRequest.Gender == null) ? existingUser.Gender : userUpdateRequest.Gender;
 
             existingUser.Address = (string.IsNullOrEmpty(userUpdateRequest.Address)) ? existingUser.Address : userUpdateRequest.Address;
 
@@ -33,7 +33,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
 
             existingUser.ImageURL = (string.IsNullOrEmpty(userUpdateRequest.ImageURL)) ? existingUser.ImageURL : userUpdateRequest.ImageURL;
 
-            existingUser.IsActive = (userUpdateRequest.IsActive != null) ? existingUser.IsActive : userUpdateRequest.IsActive;
+            existingUser.IsActive = (userUpdateRequest.IsActive == null) ? existingUser.IsActive : userUpdateRequest.IsActive;
 
             existingUser.PhoneNumber = (string.IsNullOrEmpty(userUpdateRequest.PhoneNumber)) ? existingUser.PhoneNumber : userUpdateRequest.PhoneNumber;
 
@@ -85,7 +85,8 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                                 Country = customer.Country,
                                 IsActive = customer.IsActive,
                                 Email = customer.Email,
-                                PhoneNumber = customer.PhoneNumber
+                                PhoneNumber = customer.PhoneNumber,
+                                Role = "Customer"
                             };
                             result.Add(userDTO);
                         }
@@ -113,7 +114,8 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                                 Email = vet.Email,
                                 PhoneNumber = vet.PhoneNumber,
                                 Rating = vet.Rating,
-                                YearsOfExperience = vet.YearsOfExperience
+                                YearsOfExperience = vet.YearsOfExperience,
+                                Role = "Vet"
                             };
                             result.Add(userDTO);
                         }
@@ -137,7 +139,8 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                                 Country = user.Country,
                                 IsActive = user.IsActive,
                                 Email = user.Email,
-                                PhoneNumber = user.PhoneNumber
+                                PhoneNumber = user.PhoneNumber,
+                                Role = "Employee"
                             };
                             result.Add(userDTO);
                         }

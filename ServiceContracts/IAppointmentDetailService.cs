@@ -11,10 +11,10 @@ namespace ServiceContracts
 {
     public interface IAppointmentDetailService
     {
-        Task<AppointmentDetail>? AddAppointmentDetailAsync(AppointmentDetail request);
-        Task<AppointmentDetail>? UpdateAppointmentDetailAsync(int i ,AppointmentDetail request);
+        Task<AppointDetailDTO>? AddAppointmentDetailAsync(AppointmentDetail request);
+        Task<AppointDetailDTO>? UpdateAppointmentDetailAsync(AppointmentDetail request);
         Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync();
-        Task<AppointmentDetail>? RemoveAppointmentDetailAsync(int id);
+        Task<bool> RemoveAppointmentDetailAsync(int id);
         Task<AppointmentDetail>? GetAppointmentDetailByIdAsync(int id);
 
     }

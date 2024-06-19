@@ -47,8 +47,7 @@ namespace Repositories
         public async Task<bool> Update(Hospitalization existhospitalization)
         {
             _context.Entry(existhospitalization).State = EntityState.Modified;
-            await SaveChangesAsync();
-            return true;
+            return await SaveChangesAsync();
         }
         public async Task<Hospitalization?> GetByPetId(int id)
         {

@@ -26,7 +26,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Create
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+     //   [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
         public async Task<IActionResult> AddService([FromBody]ServiceAddRequest serviceAddRequest)
         {
@@ -70,7 +70,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         //Read
-        [Authorize]
+      //  [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetServices()
         {
@@ -82,7 +82,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var serviceDtos = services.Select(x => x.ToServiceDto());
             return Ok(serviceDtos);
         }
-        [Authorize]
+ //       [Authorize]
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetServiceById(int id)
         {
@@ -100,7 +100,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
         //Update
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+       // [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateService(int id, [FromBody]ServiceUpdateRequest serviceUpdateRequest)
         {
@@ -109,25 +109,33 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var isUpdated = await _serviceService.UpdateService(id, serviceUpdateRequest.ToServiceUpdate());
+            var service = serviceUpdateRequest.ToServiceUpdate();
+            service.ServiceId = id;
+            var isUpdated = await _serviceService.UpdateService(service);
             if (isUpdated == null)
             {
                 return BadRequest(ModelState);
             }
-            return Ok("Updated Successfully");
+            return Ok(service);
         }
 
         //Delete
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+  //      [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {
-            var isDeleted = await _serviceService.RemoveService(id);
-            if (!ModelState.IsValid || isDeleted == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
-            return Ok("Nuke Success");
+            var existingService = await _serviceService.GetServiceById(id);
+            if (existingService == null)
+            {
+                return NotFound("Service not found");
+            }
+            var isDeleted = await _serviceService.RemoveService(id);
+            return Ok(existingService);
         }
     }
 }
