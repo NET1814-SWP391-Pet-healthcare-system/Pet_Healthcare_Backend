@@ -12,7 +12,7 @@ namespace Entities
         public Customer? Customer { get; set; }
         public int AppointmentId { get; set; }
         public Appointment? Appointment { get; set; }
-        public required string TransactionId { get; set; }
+        public string? TransactionId { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
 
