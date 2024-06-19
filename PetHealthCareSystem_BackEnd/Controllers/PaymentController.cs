@@ -84,13 +84,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            if(model.Status == AppointmentStatus.Done)
+            /*if(model.Status == AppointmentStatus.Done)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "Appointment Already Paid";
                 return BadRequest(businessResult);
-            }
+            }*/
             
             var PayAmount = model.Service.Cost;
 
@@ -110,11 +110,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 paymentStatus = "Succeded";
                 var customerName = _userService.GetUserName(this.User);
+                if (string.IsNullOrEmpty(customerName))
+                {
+                    // Handle the case when customerName is null or empty
+                    businessResult.Status = 400;
+                    businessResult.Data = null;
+                    businessResult.Message = "Invalid user information";
+                    return BadRequest(businessResult);
+                }
                 var customer = await _userService.FindByNameAsync(customerName);
                 //Add Transaction to database
                 Entities.Transaction transaction = new Entities.Transaction
                 {
-                    TransactionId = result.Transaction.Id,
+                    TransactionId = result.Target.Id,
                     AppointmentId = appointmentid,
                     CustomerId = customer.Id
                 };
