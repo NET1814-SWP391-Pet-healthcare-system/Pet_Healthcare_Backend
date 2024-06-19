@@ -116,7 +116,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     TransactionId = result.Transaction.Id,
                     AppointmentId = appointmentid,
-                    CustomerId = customer.Id
+                    CustomerId = customer.Id,
+                    Amount = (decimal)PayAmount,
+                    Date = DateTime.Now
                 };
 
                 var trans = await _transactionService.AddAsync(transaction);
@@ -236,6 +238,57 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Data = null;
             businessResult.Message = paymentStatus;
             return BadRequest(businessResult);
+        }
+
+        [HttpPost, Route("Revenue")]
+        public async Task<IActionResult> Revenue()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            var transactions = await _transactionService.GetAllAsync();
+            if (transactions == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "No Transactions Found";
+                return BadRequest(businessResult);
+            }
+            decimal totalRevenue = 0;
+            decimal dailyRevenue = 0;
+            decimal weeklyRevenue = 0;
+            decimal monthlyRevenue = 0;
+            decimal yearlyRevenue = 0;
+            foreach (var transaction in transactions)
+            {
+                if(transaction.Date.Date == DateTime.Now.Date)
+                {
+                    dailyRevenue += transaction.Amount;
+                }
+                if(transaction.Date.Date >= DateTime.Now.AddDays(-7).Date)
+                {
+                     weeklyRevenue+= transaction.Amount;
+                }
+                if (transaction.Date.Date >= DateTime.Now.AddMonths(-1).Date)
+                {
+                    monthlyRevenue += transaction.Amount;
+                }
+                if (transaction.Date.Date >= DateTime.Now.AddYears(-1).Date)
+                {
+                    yearlyRevenue += transaction.Amount;
+                }
+                totalRevenue += transaction.Amount;
+            }
+            businessResult.Status = 200;
+            businessResult.Data = new
+            {
+                TotalRevenue = totalRevenue,
+                DailyRevenue = dailyRevenue,
+                WeeklyRevenue = weeklyRevenue,
+                MonthlyRevenue = monthlyRevenue,
+                YearlyRevenue = yearlyRevenue
+            };
+            businessResult.Message = "Revenue Calculated Successfully";
+            return Ok(businessResult);
+
         }
     }
 }
