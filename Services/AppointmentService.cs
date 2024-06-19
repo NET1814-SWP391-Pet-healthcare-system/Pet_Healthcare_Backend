@@ -75,6 +75,12 @@ namespace Services
             return await _appointmentRepository.GetByUserIdAsync(customerId);
         }
 
+        public async Task<IEnumerable<Appointment>> GetVetsAppointments(string vetId)
+        {
+            var appointments = await _appointmentRepository.GetAllAsync();
+            return appointments.Where(a => a.VetId == vetId);
+        }
+
         public async Task<Appointment?> UpdateAppointmentStatus(int id, AppointmentStatus status)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
