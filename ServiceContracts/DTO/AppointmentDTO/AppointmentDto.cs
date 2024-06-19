@@ -26,5 +26,6 @@ namespace ServiceContracts.DTO.AppointmentDTO
         public int? Rating { get; set; }
         public string? Comments { get; set; }
         public string? Status { get; set; }
+        public PaymentStatus? PaymentStatus { get; set; }
     }
 }
