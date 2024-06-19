@@ -57,6 +57,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet("{userId}")]
+
         public async Task<IActionResult> GetUserById([FromRoute] string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
