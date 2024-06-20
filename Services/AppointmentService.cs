@@ -90,6 +90,17 @@ namespace Services
             }
             return await _appointmentRepository.UpdateAppointmentStatusAsync(id, status);
         }
+        public async Task<Appointment?> UpdateAppointmentPaymentStatus(int id, PaymentStatus status)
+        {
+            var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
+            if( existingAppointment != null)
+                existingAppointment.PaymentStatus = status;
+            if (existingAppointment == null)
+            {
+                return null;
+            }
+            return await _appointmentRepository.UpdateAsync(existingAppointment);
+        }
         public async Task<Appointment?> CancelAppointment(int id)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);

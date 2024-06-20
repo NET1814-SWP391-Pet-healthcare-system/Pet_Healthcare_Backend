@@ -84,14 +84,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            /*if(model.Status == AppointmentStatus.Done)
+            if (model.Status == AppointmentStatus.Done || model.PaymentStatus == PaymentStatus.Paid)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "Appointment Already Paid";
                 return BadRequest(businessResult);
-            }*/
-            
+            }
+
             var PayAmount = model.Service.Cost;
 
             var request = new TransactionRequest
@@ -139,9 +139,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     businessResult.Message = "Transaction Failed";
                     return BadRequest(businessResult);
                 }
-                var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
-                appointment.PaymentStatus = PaymentStatus.Paid;
 
+                await
+                _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = result;
                 businessResult.Message = "Payment Successfull";
