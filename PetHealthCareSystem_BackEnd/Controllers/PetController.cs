@@ -1,8 +1,10 @@
-﻿using Entities;
+﻿using CloudinaryDotNet.Actions;
+using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
@@ -141,6 +143,30 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             Pet pet = petUpdateRequest.ToPet();
             pet.PetId = id;
+
+            if(petUpdateRequest.imageFile != null)
+            {
+                ImageUploadResult imageResult = new ImageUploadResult();
+                if(existingPet.ImageURL.IsNullOrEmpty())
+                {
+                    imageResult = await _photoService.AddPhotoAsync(petUpdateRequest.imageFile);
+                }
+                else
+                {
+                    try
+                    {
+                        await _photoService.DeletePhotoAsync(existingPet.ImageURL);
+                    }
+                    catch(Exception ex)
+                    {
+                        return BadRequest($"Could not delete photo, exception: {ex.Message}");
+                    }
+                    imageResult = await _photoService.AddPhotoAsync(petUpdateRequest.imageFile);
+                }
+
+                pet.ImageURL = imageResult.Url.ToString();
+            }
+            
             var result = await _petService.UpdatePet(pet);
             if(result == null)
             {
@@ -172,56 +198,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest("Pet deletion failed");
             }
             return Ok(existingPet.ToPetDto());
-        }
-
-        [Authorize]
-        [HttpPost("upload-pet-image/{petId}")]
-        public async Task<IActionResult> UploadProfileImage(IFormFile imageFile, int petId)
-        {
-            var existingPet = await _petService.GetPetById(petId);
-            if(existingPet is null)
-            {
-                return NotFound("Pet not found");
-            }
-            if(this.User.IsInRole("Customer"))
-            {
-                var customer = await _userManager.GetUserAsync(this.User);
-                if(existingPet.CustomerId != customer.Id)
-                {
-                    return NotFound("You don't have this pet");
-                }
-            }
-
-            if(existingPet.ImageURL.IsNullOrEmpty())
-            {
-                var imageResult = await _photoService.AddPhotoAsync(imageFile);
-                Pet pet = new Pet()
-                {
-                    PetId = petId,
-                    ImageURL = imageResult.Url.ToString()
-                };
-                var result = await _petService.UpdatePet(pet);
-                return Ok(result);
-            }
-            else
-            {
-                try
-                {
-                    await _photoService.DeletePhotoAsync(existingPet.ImageURL);
-                }
-                catch(Exception ex)
-                {
-                    return BadRequest($"Could not delete photo, exception: {ex.Message}");
-                }
-                var imageResult = await _photoService.AddPhotoAsync(imageFile);
-                Pet pet = new Pet
-                {
-                    PetId = petId,
-                    ImageURL = imageResult.Url.ToString()
-                };
-                var result = await _petService.UpdatePet(pet);
-                return Ok(result);
-            }
         }
     }
 }
