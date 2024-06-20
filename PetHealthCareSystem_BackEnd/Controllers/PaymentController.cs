@@ -96,7 +96,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             var request = new TransactionRequest
             {
-                Amount = (decimal)PayAmount,
+                Amount = Convert.ToDecimal(PayAmount),
                 PaymentMethodNonce = Nonce,
 
                 Options = new TransactionOptionsRequest
@@ -125,7 +125,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     TransactionId = result.Target.Id,
                     AppointmentId = appointmentid,
                     CustomerId = customer.Id,
-                    Amount = (decimal)PayAmount,
+                    Amount = (double)PayAmount,
                     Date = DateTime.Now
                 };
 
@@ -140,8 +140,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return BadRequest(businessResult);
                 }
 
-                await
-                _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
+                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = result;
                 businessResult.Message = "Payment Successfull";
@@ -231,12 +230,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 transaction.Amount = 0;
                 await _transactionService.UpdateAsync(transaction);
                 //Do Database Operations Here
-                await  _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
+                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = result;
                 businessResult.Message = "Payment Refunded Successfully";
                 return Ok(result);
-                
             }
             else
             {
@@ -265,11 +263,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "No Transactions Found";
                 return BadRequest(businessResult);
             }
-            decimal totalRevenue = 0;
-            decimal dailyRevenue = 0;
-            decimal weeklyRevenue = 0;
-            decimal monthlyRevenue = 0;
-            decimal yearlyRevenue = 0;
+            double totalRevenue = 0;
+            double dailyRevenue = 0;
+            double weeklyRevenue = 0;
+            double monthlyRevenue = 0;
+            double yearlyRevenue = 0;
             foreach (var transaction in transactions)
             {
                 if(transaction.Date.Date == DateTime.Now.Date)
