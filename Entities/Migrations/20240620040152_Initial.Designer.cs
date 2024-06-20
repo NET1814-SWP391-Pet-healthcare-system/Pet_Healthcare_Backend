@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240619130919_test")]
-    partial class test
+    [Migration("20240620040152_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace Entities.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int>("PaymentStatus")
+                    b.Property<int?>("PaymentStatus")
                         .HasColumnType("int");
 
                     b.Property<int?>("PetId")
@@ -63,7 +63,7 @@ namespace Entities.Migrations
                     b.Property<int?>("SlotId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.Property<double>("TotalCost")
@@ -71,9 +71,6 @@ namespace Entities.Migrations
 
                     b.Property<string>("VetId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool?>("isPaid")
-                        .HasColumnType("bit");
 
                     b.HasKey("AppointmentId");
 
@@ -95,7 +92,6 @@ namespace Entities.Migrations
                             AppointmentId = 1,
                             CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
                             Date = new DateOnly(2023, 6, 15),
-                            PaymentStatus = 0,
                             PetId = 1,
                             ServiceId = 1,
                             SlotId = 1,
@@ -108,7 +104,6 @@ namespace Entities.Migrations
                             AppointmentId = 2,
                             CustomerId = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
                             Date = new DateOnly(2023, 7, 1),
-                            PaymentStatus = 0,
                             PetId = 2,
                             ServiceId = 2,
                             SlotId = 2,
@@ -122,7 +117,6 @@ namespace Entities.Migrations
                             Comments = "Friendly staff, great service.",
                             CustomerId = "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04",
                             Date = new DateOnly(2023, 8, 10),
-                            PaymentStatus = 0,
                             PetId = 3,
                             Rating = 4,
                             ServiceId = 3,
@@ -136,7 +130,6 @@ namespace Entities.Migrations
                             AppointmentId = 4,
                             CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
                             Date = new DateOnly(2023, 9, 1),
-                            PaymentStatus = 0,
                             PetId = 4,
                             ServiceId = 4,
                             SlotId = 4,
@@ -149,7 +142,6 @@ namespace Entities.Migrations
                             AppointmentId = 5,
                             CustomerId = "283e003d-77ce-4e8a-876f-db63127169dc",
                             Date = new DateOnly(2023, 10, 15),
-                            PaymentStatus = 0,
                             PetId = 5,
                             ServiceId = 1,
                             SlotId = 5,
@@ -768,6 +760,9 @@ namespace Entities.Migrations
                     b.Property<string>("TransactionId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
@@ -775,13 +770,16 @@ namespace Entities.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("TransactionId");
 
                     b.HasIndex("AppointmentId");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("Entities.User", b =>
