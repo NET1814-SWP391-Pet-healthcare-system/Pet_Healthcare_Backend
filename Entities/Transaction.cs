@@ -13,8 +13,7 @@ namespace Entities
         public int AppointmentId { get; set; }
         public Appointment? Appointment { get; set; }
         public string? TransactionId { get; set; }
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
         public DateTime Date { get; set; }
-
     }
 }
