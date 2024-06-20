@@ -227,11 +227,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (result.IsSuccess())
             {
                 paymentStatus = "Succeded";
+                var transaction = await _transactionService.GetByIdAsync(transactionId.TransactionId);
+                transaction.Amount = 0;
+                await _transactionService.UpdateAsync(transaction);
                 //Do Database Operations Here
-                appointment.PaymentStatus = PaymentStatus.Refunded;
+                await  _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = result;
                 businessResult.Message = "Payment Refunded Successfully";
+                return Ok(result);
+                
             }
             else
             {
