@@ -39,6 +39,9 @@ namespace Entities.Migrations
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -66,8 +69,8 @@ namespace Entities.Migrations
                     KennelId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Capacity = table.Column<int>(type: "int", nullable: true),
-                    DailyCost = table.Column<double>(type: "float", nullable: true)
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    DailyCost = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -295,13 +298,14 @@ namespace Entities.Migrations
                     VetId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     SlotId = table.Column<int>(type: "int", nullable: true),
                     ServiceId = table.Column<int>(type: "int", nullable: true),
-                    Date = table.Column<DateOnly>(type: "date", nullable: true),
-                    TotalCost = table.Column<double>(type: "float", nullable: true),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    TotalCost = table.Column<double>(type: "float", nullable: false),
                     CancellationDate = table.Column<DateOnly>(type: "date", nullable: true),
                     RefundAmount = table.Column<double>(type: "float", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: true),
                     Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    PaymentStatus = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -414,6 +418,33 @@ namespace Entities.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Transaction",
+                columns: table => new
+                {
+                    TransactionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transaction", x => x.TransactionId);
+                    table.ForeignKey(
+                        name: "FK_Transaction_Appointment_AppointmentId",
+                        column: x => x.AppointmentId,
+                        principalTable: "Appointment",
+                        principalColumn: "AppointmentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transaction_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PetHealthTrack",
                 columns: table => new
                 {
@@ -475,14 +506,14 @@ namespace Entities.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Address", "ConcurrencyStamp", "Country", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageURL", "IsActive", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Address", "ConcurrencyStamp", "Country", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageURL", "IsActive", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryDate", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "25e15040-df59-497a-8f8f-026f1dc4fab4", 0, "789 Elm St, Anytown USA", "82878f4d-de40-4299-a13b-31ef4b055113", "United States", "admin@example.com", false, "Bob", true, "https://example.com/user_images/bjohnson.jpg", true, "Johnson", false, null, "ADMIN@EXAMPLE.COM", "BJOHNSON", "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==", null, false, "6CMO6VX3FO3WWXMC77BFPOFRWCMNYZB7", false, "bjohnson" },
-                    { "283e003d-77ce-4e8a-876f-db63127169dc", 0, "123 Main St, Anytown USA", "80e8da68-df49-4369-9582-72e9aa38ed30", "United States", "customer1@example.com", false, "John", true, "https://example.com/user_images/jdoe.jpg", true, "Doe", false, null, "CUSTOMER1@EXAMPLE.COM", "JDOE", "AQAAAAIAAYagAAAAEBa075/ZkJdl7Ut+by7+jhqVt3TGqvEmhNNplk3mJ7rN0baZuhEjWlRdDhwUMFvj8A==", null, false, "JSVRFDP6WGGEWI5JH42L2ZHKAYOH426U", false, "jdoe" },
-                    { "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04", 0, "456 Oak Rd, Anytown USA", "0a504d88-ab5b-47dd-8575-69d47d267b4f", "United States", "customer2@example.com", false, "Jane", false, "https://example.com/user_images/jsmith.jpg", true, "Smith", false, null, "CUSTOMER2@EXAMPLE.COM", "JSMITH", "AQAAAAIAAYagAAAAEMBeygPd7Wknza3pycDGO/6y1APxstU8TjpDHt6eu5Zem1X2Y95uGTBjZ5cJux8zsA==", null, false, "43S2GHAER56TVFDSZOZAYI2Z7E75KTKI", false, "jsmith" },
-                    { "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d", 0, "789 Maple Ln, Anytown USA", "f550fda2-27ce-4fe5-a611-9d211f2dbf2c", "United States", "vet2@example.com", false, "Michael", true, "https://example.com/user_images/mbrown.jpg", true, "Brown", false, null, "VET2@EXAMPLE.COM", "MBROWN", "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==", null, false, "XUEHTI5VWZNP55F5J57ZWHDNFY4HJ2HF", false, "mbrown" },
-                    { "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a", 0, "456 Pine Ave, Anytown USA", "572bfe5b-9699-4cd2-9b06-e967437496a9", "United States", "vet1@example.com", false, "Emily", false, "https://example.com/user_images/ewilson.jpg", true, "Wilson", false, null, "VET1@EXAMPLE.COM", "EWILSON", "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==", null, false, "4FXXXACBIUMVV3CQNXAFEGWGAYVAK77O", false, "ewilson" }
+                    { "25e15040-df59-497a-8f8f-026f1dc4fab4", 0, "789 Elm St, Anytown USA", "82878f4d-de40-4299-a13b-31ef4b055113", "United States", "admin@example.com", false, "Bob", true, "https://example.com/user_images/bjohnson.jpg", true, false, "Johnson", false, null, "ADMIN@EXAMPLE.COM", "BJOHNSON", "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==", null, false, null, null, "6CMO6VX3FO3WWXMC77BFPOFRWCMNYZB7", false, "bjohnson" },
+                    { "283e003d-77ce-4e8a-876f-db63127169dc", 0, "123 Main St, Anytown USA", "80e8da68-df49-4369-9582-72e9aa38ed30", "United States", "customer1@example.com", false, "John", true, "https://example.com/user_images/jdoe.jpg", true, false, "Doe", false, null, "CUSTOMER1@EXAMPLE.COM", "JDOE", "AQAAAAIAAYagAAAAEBa075/ZkJdl7Ut+by7+jhqVt3TGqvEmhNNplk3mJ7rN0baZuhEjWlRdDhwUMFvj8A==", null, false, null, null, "JSVRFDP6WGGEWI5JH42L2ZHKAYOH426U", false, "jdoe" },
+                    { "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04", 0, "456 Oak Rd, Anytown USA", "0a504d88-ab5b-47dd-8575-69d47d267b4f", "United States", "customer2@example.com", false, "Jane", false, "https://example.com/user_images/jsmith.jpg", true, false, "Smith", false, null, "CUSTOMER2@EXAMPLE.COM", "JSMITH", "AQAAAAIAAYagAAAAEMBeygPd7Wknza3pycDGO/6y1APxstU8TjpDHt6eu5Zem1X2Y95uGTBjZ5cJux8zsA==", null, false, null, null, "43S2GHAER56TVFDSZOZAYI2Z7E75KTKI", false, "jsmith" },
+                    { "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d", 0, "789 Maple Ln, Anytown USA", "f550fda2-27ce-4fe5-a611-9d211f2dbf2c", "United States", "vet2@example.com", false, "Michael", true, "https://example.com/user_images/mbrown.jpg", true, false, "Brown", false, null, "VET2@EXAMPLE.COM", "MBROWN", "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==", null, false, null, null, "XUEHTI5VWZNP55F5J57ZWHDNFY4HJ2HF", false, "mbrown" },
+                    { "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a", 0, "456 Pine Ave, Anytown USA", "572bfe5b-9699-4cd2-9b06-e967437496a9", "United States", "vet1@example.com", false, "Emily", false, "https://example.com/user_images/ewilson.jpg", true, false, "Wilson", false, null, "VET1@EXAMPLE.COM", "EWILSON", "AQAAAAIAAYagAAAAEG7krGqAQBUa5JwXbd9rzFfXZsWNYukCWWgb03qhERwegVVN6laGSAd7vnvEdhlkFw==", null, false, null, null, "4FXXXACBIUMVV3CQNXAFEGWGAYVAK77O", false, "ewilson" }
                 });
 
             migrationBuilder.InsertData(
@@ -566,14 +597,14 @@ namespace Entities.Migrations
 
             migrationBuilder.InsertData(
                 table: "Appointment",
-                columns: new[] { "AppointmentId", "CancellationDate", "Comments", "CustomerId", "Date", "PetId", "Rating", "RefundAmount", "ServiceId", "SlotId", "Status", "TotalCost", "VetId" },
+                columns: new[] { "AppointmentId", "CancellationDate", "Comments", "CustomerId", "Date", "PaymentStatus", "PetId", "Rating", "RefundAmount", "ServiceId", "SlotId", "Status", "TotalCost", "VetId" },
                 values: new object[,]
                 {
-                    { 1, null, null, "283e003d-77ce-4e8a-876f-db63127169dc", new DateOnly(2023, 6, 15), 1, null, null, 1, 1, 0, 50.0, "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a" },
-                    { 2, null, null, "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04", new DateOnly(2023, 7, 1), 2, null, null, 2, 2, 1, 30.0, "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a" },
-                    { 3, null, "Friendly staff, great service.", "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04", new DateOnly(2023, 8, 10), 3, 4, null, 3, 3, 2, 40.0, "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d" },
-                    { 4, null, null, "283e003d-77ce-4e8a-876f-db63127169dc", new DateOnly(2023, 9, 1), 4, null, null, 4, 4, 0, 75.0, "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d" },
-                    { 5, null, null, "283e003d-77ce-4e8a-876f-db63127169dc", new DateOnly(2023, 10, 15), 5, null, null, 1, 5, 0, 500.0, "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a" }
+                    { 1, null, null, "283e003d-77ce-4e8a-876f-db63127169dc", new DateOnly(2023, 6, 15), null, 1, null, null, 1, 1, 0, 50.0, "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a" },
+                    { 2, null, null, "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04", new DateOnly(2023, 7, 1), null, 2, null, null, 2, 2, 1, 30.0, "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a" },
+                    { 3, null, "Friendly staff, great service.", "2a4c598c-4a1b-452a-b2f2-3f0dc81c7a04", new DateOnly(2023, 8, 10), null, 3, 4, null, 3, 3, 2, 40.0, "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d" },
+                    { 4, null, null, "283e003d-77ce-4e8a-876f-db63127169dc", new DateOnly(2023, 9, 1), null, 4, null, null, 4, 4, 0, 75.0, "4f0f8727-ddeb-40b5-92d4-22200c4dbb3d" },
+                    { 5, null, null, "283e003d-77ce-4e8a-876f-db63127169dc", new DateOnly(2023, 10, 15), null, 5, null, null, 1, 5, 0, 50.0, "7e3fcb0f-11cd-4945-8d9a-84b6c717f94a" }
                 });
 
             migrationBuilder.InsertData(
@@ -744,6 +775,16 @@ namespace Entities.Migrations
                 name: "IX_Record_PetId",
                 table: "Record",
                 column: "PetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_AppointmentId",
+                table: "Transaction",
+                column: "AppointmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_CustomerId",
+                table: "Transaction",
+                column: "CustomerId");
         }
 
         /// <inheritdoc />
@@ -774,7 +815,7 @@ namespace Entities.Migrations
                 name: "PetVaccination");
 
             migrationBuilder.DropTable(
-                name: "Appointment");
+                name: "Transaction");
 
             migrationBuilder.DropTable(
                 name: "Record");
@@ -789,16 +830,19 @@ namespace Entities.Migrations
                 name: "Vaccine");
 
             migrationBuilder.DropTable(
-                name: "Service");
-
-            migrationBuilder.DropTable(
-                name: "Slot");
+                name: "Appointment");
 
             migrationBuilder.DropTable(
                 name: "Kennel");
 
             migrationBuilder.DropTable(
                 name: "Pet");
+
+            migrationBuilder.DropTable(
+                name: "Service");
+
+            migrationBuilder.DropTable(
+                name: "Slot");
 
             migrationBuilder.DropTable(
                 name: "Vet");
