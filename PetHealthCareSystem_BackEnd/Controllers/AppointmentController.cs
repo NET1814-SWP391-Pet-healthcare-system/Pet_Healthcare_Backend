@@ -324,39 +324,5 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
         }
-
-        //[Authorize(Policy = "EmployeePolicy")]
-        //[HttpPut("cancel-appointment/{id}")]
-        //public async Task<IActionResult> CancelAppointment([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
-        //    if (appointment == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    if (appointment.Status == AppointmentStatus.Done)
-        //    {
-        //        return BadRequest("Cannot cancel a paid appointment");
-        //    }
-        //    if (appointment.Status == AppointmentStatus.Cancelled)
-        //    {
-        //        return BadRequest("Appointment is already cancelled");
-        //    }
-        //    if (appointment.Status == AppointmentStatus.Processing)
-        //    {
-        //        return BadRequest("Cannot cancel an appointment that is being processed");
-        //    }
-        //    if (appointment.isPaid == false)
-        //    {
-        //        return BadRequest("Cannot cancel a non-paid appointment");
-        //    }
-        //    await _appointmentService.CancelAppointment(id);
-        //    return Ok(appointment.ToAppointmentDto());
-        //}
-
     }
 }

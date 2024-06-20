@@ -84,19 +84,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            /*if(model.Status == AppointmentStatus.Done)
+            if (model.Status == AppointmentStatus.Done || model.PaymentStatus == PaymentStatus.Paid)
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "Appointment Already Paid";
                 return BadRequest(businessResult);
-            }*/
-            
+            }
+
             var PayAmount = model.Service.Cost;
 
             var request = new TransactionRequest
             {
-                Amount = (decimal)PayAmount,
+                Amount = Convert.ToDecimal(PayAmount),
                 PaymentMethodNonce = Nonce,
 
                 Options = new TransactionOptionsRequest
@@ -124,7 +124,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     TransactionId = result.Target.Id,
                     AppointmentId = appointmentid,
-                    CustomerId = customer.Id
+                    CustomerId = customer.Id,
+                    Amount = (double)PayAmount,
+                    Date = DateTime.Now
                 };
 
                 var trans = await _transactionService.AddAsync(transaction);
@@ -137,9 +139,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     businessResult.Message = "Transaction Failed";
                     return BadRequest(businessResult);
                 }
-                var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
-                appointment.PaymentStatus = PaymentStatus.Paid;
 
+                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = result;
                 businessResult.Message = "Payment Successfull";
@@ -225,11 +226,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             if (result.IsSuccess())
             {
                 paymentStatus = "Succeded";
+                var transaction = await _transactionService.GetByIdAsync(transactionId.TransactionId);
+                transaction.Amount = 0;
+                await _transactionService.UpdateAsync(transaction);
                 //Do Database Operations Here
-                appointment.PaymentStatus = PaymentStatus.Refunded;
+                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = result;
                 businessResult.Message = "Payment Refunded Successfully";
+                return Ok(result);
             }
             else
             {
@@ -244,6 +249,57 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Data = null;
             businessResult.Message = paymentStatus;
             return BadRequest(businessResult);
+        }
+
+        [HttpPost, Route("Revenue")]
+        public async Task<IActionResult> Revenue()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            var transactions = await _transactionService.GetAllAsync();
+            if (transactions == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "No Transactions Found";
+                return BadRequest(businessResult);
+            }
+            double totalRevenue = 0;
+            double dailyRevenue = 0;
+            double weeklyRevenue = 0;
+            double monthlyRevenue = 0;
+            double yearlyRevenue = 0;
+            foreach (var transaction in transactions)
+            {
+                if(transaction.Date.Date == DateTime.Now.Date)
+                {
+                    dailyRevenue += transaction.Amount;
+                }
+                if(transaction.Date.Date >= DateTime.Now.AddDays(-7).Date)
+                {
+                     weeklyRevenue+= transaction.Amount;
+                }
+                if (transaction.Date.Date >= DateTime.Now.AddMonths(-1).Date)
+                {
+                    monthlyRevenue += transaction.Amount;
+                }
+                if (transaction.Date.Date >= DateTime.Now.AddYears(-1).Date)
+                {
+                    yearlyRevenue += transaction.Amount;
+                }
+                totalRevenue += transaction.Amount;
+            }
+            businessResult.Status = 200;
+            businessResult.Data = new
+            {
+                TotalRevenue = totalRevenue,
+                DailyRevenue = dailyRevenue,
+                WeeklyRevenue = weeklyRevenue,
+                MonthlyRevenue = monthlyRevenue,
+                YearlyRevenue = yearlyRevenue
+            };
+            businessResult.Message = "Revenue Calculated Successfully";
+            return Ok(businessResult);
+
         }
     }
 }

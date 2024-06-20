@@ -303,7 +303,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             var id = _userManager.GetUserId(this.User);
             var currentUser = await _userManager.FindByIdAsync(id);
-            return Ok(currentUser.ToUserDtoFromUser());
+            var role = await _userManager.GetRolesAsync(currentUser);
+            var result = currentUser.ToUserDtoFromUser();
+            result.Role = role.SingleOrDefault();
+            return Ok(result);
         }
 
         [Authorize]

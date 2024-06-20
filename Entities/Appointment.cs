@@ -35,8 +35,7 @@ namespace Entities
         public double? RefundAmount { get; set; }
         public int? Rating { get; set; }
         public string? Comments { get; set; }
-        public AppointmentStatus Status{ get; set; }
-        public PaymentStatus PaymentStatus { get; set; }
-       
+        public AppointmentStatus? Status{ get; set; }
+        public PaymentStatus? PaymentStatus { get; set; }
     }
 }
