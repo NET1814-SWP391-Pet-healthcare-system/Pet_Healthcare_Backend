@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.KennelDTO;
@@ -22,9 +23,14 @@ namespace Services
             _hospitalizationService = hospitalizationService;
         }
 
-        public async Task<Kennel> AddKennelAsync(Kennel kennelModel)
+        public async Task<KennelDto> AddKennelAsync(Kennel kennelModel)
         {
-            return await _kennelRepository.AddAsync(kennelModel);
+            if (kennelModel == null)
+            {
+                return null;
+            }
+             await _kennelRepository.AddAsync(kennelModel);
+            return kennelModel.ToKennelDto();
         }
 
         public async Task<KennelDto?> GetKennelByIdAsync(int id)
@@ -67,21 +73,33 @@ namespace Services
             return kennelDtos;
         }
 
-        public async Task<Kennel?> RemoveKennelAsync(int id)
+        public async Task<bool> RemoveKennelAsync(int id)
         {
-            return await _kennelRepository.RemoveAsync(id);
+            var kennel = await _kennelRepository.GetByIdAsync(id);
+            if (kennel == null)
+            {
+                return false;
+            }
+            return await _kennelRepository.RemoveAsync(kennel);
         }
 
-        public async Task<Kennel?> UpdateKennelAsync(int id, Kennel kennelModel)
+        public async Task<KennelDto?> UpdateKennelAsync(Kennel kennelModel)
         {
-            var existingKennel = await _kennelRepository.GetByIdAsync(id);
+            if (kennelModel == null)
+            {
+                return null;
+            }
+            var existingKennel = await _kennelRepository.GetByIdAsync(kennelModel.KennelId);
             if (existingKennel == null)
             {   
                 return null;
             }
-            kennelModel.Description = (kennelModel.Description == "") ? existingKennel.Description : kennelModel.Description;
-            kennelModel.DailyCost = (kennelModel.DailyCost == 0) ? existingKennel.DailyCost : kennelModel.DailyCost;
-            return await _kennelRepository.UpdateAsync(id, kennelModel);
+            existingKennel.KennelId = existingKennel.KennelId;
+            existingKennel.Capacity = existingKennel.Capacity;
+            existingKennel.Description = (kennelModel.Description == "") ? existingKennel.Description : kennelModel.Description;
+            existingKennel.DailyCost = (kennelModel.DailyCost == 0) ? existingKennel.DailyCost : kennelModel.DailyCost;
+            await _kennelRepository.UpdateAsync(existingKennel);
+            return existingKennel.ToKennelDto();
         }
     }
 }
