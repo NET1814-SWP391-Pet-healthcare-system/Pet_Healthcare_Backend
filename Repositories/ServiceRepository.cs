@@ -19,7 +19,6 @@ namespace Repositories
         public async Task<bool> Add(Service service)
         {
             await _context.Services.AddAsync(service);
-            await _context.SaveChangesAsync();
             return await SaveChangesAsync();
         }
 
@@ -33,13 +32,8 @@ namespace Repositories
             return await _context.Services.FirstOrDefaultAsync(a => a.ServiceId == id);
         }
 
-        public async Task<bool> Remove(int id)
+        public async Task<bool> Remove(Service service)
         {
-            var service = await GetById(id);
-            if (service == null)
-            {
-                return false;
-            }
             _context.Services.Remove(service);
             return await SaveChangesAsync();
         }

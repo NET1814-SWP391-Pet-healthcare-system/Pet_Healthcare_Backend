@@ -25,7 +25,8 @@ namespace Repositories
 
         public async Task<Kennel?> GetByIdAsync(int id)
         {
-            return await _context.Kennels.FindAsync(id);
+            return await _context.Kennels
+             .FirstOrDefaultAsync(p => p.KennelId == id); ;
         }
 
         public async Task<bool> RemoveAsync(Kennel kennel)

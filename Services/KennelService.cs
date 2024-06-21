@@ -23,14 +23,14 @@ namespace Services
             _hospitalizationService = hospitalizationService;
         }
 
-        public async Task<KennelDto> AddKennelAsync(Kennel kennelModel)
+        public async Task<Kennel?> AddKennelAsync(Kennel kennelModel)
         {
             if (kennelModel == null)
             {
                 return null;
             }
              await _kennelRepository.AddAsync(kennelModel);
-            return kennelModel.ToKennelDto();
+            return kennelModel;
         }
 
         public async Task<KennelDto?> GetKennelByIdAsync(int id)
@@ -66,8 +66,8 @@ namespace Services
             {
                 KennelId = k.KennelId,
                 Description = k.Description,
-                Capacity = k.Capacity,
-                DailyCost = k.DailyCost,
+                Capacity = (int) k.Capacity,
+                DailyCost =(double) k.DailyCost,
                 IsAvailable = !hospitalizedKennelIds.Contains(k.KennelId)
             });
             return kennelDtos;
@@ -83,23 +83,19 @@ namespace Services
             return await _kennelRepository.RemoveAsync(kennel);
         }
 
-        public async Task<KennelDto?> UpdateKennelAsync(Kennel kennelModel)
+        public async Task<Kennel?> UpdateKennelAsync(Kennel kennelModel)
         {
             if (kennelModel == null)
             {
                 return null;
             }
             var existingKennel = await _kennelRepository.GetByIdAsync(kennelModel.KennelId);
-            if (existingKennel == null)
-            {   
-                return null;
-            }
             //existingKennel.KennelId = existingKennel.KennelId;
             //existingKennel.Capacity = existingKennel.Capacity;
             existingKennel.Description = (string.IsNullOrEmpty(kennelModel.Description)) ? existingKennel.Description : kennelModel.Description;
             existingKennel.DailyCost = (kennelModel.DailyCost == null) ? existingKennel.DailyCost : kennelModel.DailyCost;
             await _kennelRepository.UpdateAsync(existingKennel);
-            return existingKennel.ToKennelDto();
+            return existingKennel;
         }
     }
 }

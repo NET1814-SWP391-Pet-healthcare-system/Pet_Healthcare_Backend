@@ -28,11 +28,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         //Create
      //   [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPost]
-        public async Task<IActionResult> AddService([FromBody]ServiceAddRequest serviceAddRequest)
+        public async Task<IActionResult> AddService([FromBody]ServiceAddRequest? serviceAddRequest)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (serviceAddRequest == null)
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+
+            if (serviceAddRequest == null)
                 {
                     return BadRequest("Service data is required");
                 }
@@ -57,16 +61,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return Conflict("Service with the same name already exists");
                 }
+                var service = serviceAddRequest.ToServiceFromAdd();
+                var result = await _serviceService.AddService(service);
 
-                var newService = await _serviceService.AddService(serviceAddRequest.ToServiceFromAdd());
-
-                return CreatedAtAction(nameof(GetServiceById), new { id = newService.ServiceId }, newService);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                return StatusCode(500, "An error occurred while processing your request");
-            }
+                return Ok(result.ToServiceDto());
+            
         }
 
         //Read
@@ -74,10 +73,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetServices()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var services = await _serviceService.GetServices();
             var serviceDtos = services.Select(x => x.ToServiceDto());
             return Ok(serviceDtos);
@@ -87,15 +82,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetServiceById(int id)
         {
             var service = await _serviceService.GetServiceById(id);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             if (service == null)
             {
                 return NotFound();
             }
-            return Ok(service);
+            return Ok(service.ToServiceDto());
         }
 
 
@@ -105,9 +96,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> UpdateService(int id, [FromBody]ServiceUpdateRequest serviceUpdateRequest)
         {
             var serviceData = await _serviceService.GetServiceById(id);
-            if (serviceUpdateRequest == null || !ModelState.IsValid || serviceData == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+            if (serviceData == null)
+            {
+                return NotFound("Service not found");
             }
             var service = serviceUpdateRequest.ToServiceUpdate();
             service.ServiceId = id;
@@ -116,7 +112,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            return Ok(service);
+            return Ok(service.ToServiceDto());
         }
 
         //Delete
@@ -124,18 +120,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
             var existingService = await _serviceService.GetServiceById(id);
             if (existingService == null)
             {
                 return NotFound("Service not found");
             }
             var isDeleted = await _serviceService.RemoveService(id);
-            return Ok(existingService);
+            if (!isDeleted)
+            {
+                return BadRequest("Delete Failed");
+            }
+            return Ok(existingService.ToServiceDto());
         }
     }
 }
