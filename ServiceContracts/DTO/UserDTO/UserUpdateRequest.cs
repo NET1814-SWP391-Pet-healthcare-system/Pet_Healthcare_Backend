@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +19,7 @@ namespace ServiceContracts.DTO.UserDTO
         public string? Address { get; set; }
         public string? Country { get; set; }
         public string? PhoneNumber { get; set; }
+        public IFormFile? imageFile { get; set; }
         public string? ImageURL { get; set; }
         public bool? IsActive { get; set; }
         public int? Rating { get; set; }
