@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using CloudinaryDotNet.Actions;
+using Entities;
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +14,11 @@ using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
 using RepositoryContracts;
 using ServiceContracts;
+using ServiceContracts.DTO.PetDTO;
 using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -229,13 +232,38 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
+            if(userUpdateRequest.Username != null)
             {
-                return Conflict("The requested username is already in use. Please choose a different username.");
+                if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
+                {
+                    return Conflict("The requested username is already in use. Please choose a different username.");
+                }
             }
 
-            var currentUserId = _userManager.GetUserId(this.User);
-            var result = await _userManager.UpdateUserAsync(currentUserId, userUpdateRequest);
+            var currentUser = await _userManager.GetUserAsync(this.User);
+            if(userUpdateRequest.imageFile != null)
+            {
+                ImageUploadResult imageResult = new ImageUploadResult();
+                if(currentUser.ImageURL.IsNullOrEmpty())
+                {
+                    imageResult = await _photoService.AddPhotoAsync(userUpdateRequest.imageFile);
+                }
+                else
+                {
+                    try
+                    {
+                        await _photoService.DeletePhotoAsync(currentUser.ImageURL);
+                    }
+                    catch(Exception ex)
+                    {
+                        return BadRequest($"Could not delete photo, exception: {ex.Message}");
+                    }
+                    imageResult = await _photoService.AddPhotoAsync(userUpdateRequest.imageFile);
+                }
+
+                userUpdateRequest.ImageURL = imageResult.Url.ToString();
+            }
+            var result = await _userManager.UpdateUserAsync(currentUser.Id, userUpdateRequest);
             if(result == null)
             {
                 return NotFound("UserId not found");
@@ -309,36 +337,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpPost("upload-profile-image")]
-        public async Task<IActionResult> UploadProfileImage(IFormFile imageFile)
-        {
-            var id = _userManager.GetUserId(this.User);
-            var currentUser = await _userManager.FindByIdAsync(id);
-            if (currentUser.ImageURL.IsNullOrEmpty())
-            {
-                var imageResult = await _photoService.AddPhotoAsync(imageFile);
-                currentUser.ImageURL = imageResult.Url.ToString();
-                _userManager.UpdateAsync(currentUser);
-                return Ok(currentUser.ToUserDtoFromUser());
-            }
-            else
-            {
-                try
-                {
-                    await _photoService.DeletePhotoAsync(currentUser.ImageURL);
-                }
-                catch(Exception ex)
-                {
-                    return BadRequest($"Could not delete photo, exception: {ex.Message}");
-                }
-                var imageResult = await _photoService.AddPhotoAsync(imageFile);
-                currentUser.ImageURL = imageResult.Url.ToString();
-                _userManager.UpdateAsync(currentUser);
-                return Ok(currentUser.ToUserDtoFromUser());
-            }
-
-        }
+        
 
 
         [HttpGet("run-seed-data-only-run-once")]
