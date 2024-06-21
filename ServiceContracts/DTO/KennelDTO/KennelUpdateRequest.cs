@@ -10,7 +10,7 @@ namespace ServiceContracts.DTO.KennelDTO
 {
     public class KennelUpdateRequest
     {
-        public string Description { get; set; } = string.Empty;
-        public double DailyCost { get; set; } = 0;
+        public string? Description { get; set; } = string.Empty;
+        public double? DailyCost { get; set; } = 0;
     }
 }

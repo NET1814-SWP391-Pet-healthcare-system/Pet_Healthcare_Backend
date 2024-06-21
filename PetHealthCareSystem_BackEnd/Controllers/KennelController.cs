@@ -73,7 +73,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             var kennelModel = kennelUpdateRequest.ToKennelFromUpdate();
             kennelModel.KennelId = kennelId;
-            var isUpdated = _kennelService.UpdateKennelAsync(kennelModel);
+            var isUpdated = await _kennelService.UpdateKennelAsync(kennelModel);
             if(isUpdated == null)
             {
                 return BadRequest(ModelState);

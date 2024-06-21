@@ -14,9 +14,8 @@ namespace Entities
         [Key]
         public int KennelId { get; set;}
         public string? Description { get; set; }
-        public int Capacity { get; set; }
-        public double DailyCost { get; set; }
-        [JsonIgnore]
+        public int? Capacity { get; set; }
+        public double? DailyCost { get; set; }
         public ICollection<Hospitalization>? Hospitalizations { get; set; }
     }
 }
