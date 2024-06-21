@@ -233,6 +233,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
+            
             var currentUser = await _userManager.GetUserAsync(this.User);
 
             if(userUpdateRequest.Username != null)
