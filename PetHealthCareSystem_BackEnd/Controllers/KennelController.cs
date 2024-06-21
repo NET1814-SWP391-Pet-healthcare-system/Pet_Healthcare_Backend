@@ -7,7 +7,7 @@ using ServiceContracts.Mappers;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    [Authorize(Policy = "AdminEmployeePolicy")]
+  //  [Authorize(Policy = "AdminEmployeePolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class KennelController : Controller
@@ -65,16 +65,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             { 
                 return BadRequest(ModelState); 
             }
-            var kennelModel = await _kennelService.UpdateKennelAsync(kennelId, kennelUpdateRequest.ToKennelFromUpdate());
-            if (kennelModel == null)
-            {
-                return NotFound("Kennel does not exist");
+            var existingkennel = await _kennelService.GetKennelByIdAsync(kennelId); 
+            if (existingkennel == null) 
+            { 
+                return NotFound("Kennel does not exist"); 
             }
-            var kennel = await _kennelService.GetKennelByIdAsync(kennelId);
-            var isAvailable = kennel.IsAvailable;
-            var result = kennelModel.ToKennelDto();
-            result.IsAvailable = isAvailable;
-            return Ok(result);
+
+            var kennelModel = kennelUpdateRequest.ToKennelFromUpdate();
+            kennelModel.KennelId = kennelId;
+            var isUpdated = _kennelService.UpdateKennelAsync(kennelModel);
+            if(isUpdated == null)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(isUpdated);
         }
 
         [HttpDelete("{kennelId:int}")]

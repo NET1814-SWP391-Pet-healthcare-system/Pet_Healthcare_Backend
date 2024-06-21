@@ -11,8 +11,9 @@ namespace RepositoryContracts
     {
         Task<IEnumerable<Kennel>> GetAllAsync();
         Task<Kennel?> GetByIdAsync(int id);
-        Task<Kennel> AddAsync(Kennel kennelModel);
-        Task<Kennel?> UpdateAsync(int id, Kennel kennelModel);
-        Task<Kennel?> RemoveAsync(int id);
+        Task<bool> AddAsync(Kennel kennelModel);
+        Task<bool> UpdateAsync(Kennel kennelModel);
+        Task<bool> RemoveAsync(Kennel kennel);
+        Task<bool> SaveChangesAsync();
     }
 }

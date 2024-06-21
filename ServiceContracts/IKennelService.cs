@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface IKennelService
     {
-        Task<Kennel> AddKennelAsync(Kennel kennelModel);
+        Task<KennelDto> AddKennelAsync(Kennel kennelModel);
         Task<KennelDto?> GetKennelByIdAsync(int id);
         Task<IEnumerable<KennelDto>> GetKennelsAsync();
-        Task<Kennel?> UpdateKennelAsync(int id, Kennel kennelModel);
-        Task<Kennel?> RemoveKennelAsync(int id);
+        Task<KennelDto?> UpdateKennelAsync(Kennel kennelModel);
+        Task<bool> RemoveKennelAsync(int id);
     }
 }
