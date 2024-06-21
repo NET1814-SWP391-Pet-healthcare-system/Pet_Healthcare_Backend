@@ -88,7 +88,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVaccine(int id, VaccineUpdateRequest vaccineUpdateRequest)
+        public async Task<IActionResult> UpdateVaccine(int id, [FromBody] VaccineUpdateRequest vaccineUpdateRequest)
         {
             if(!ModelState.IsValid)
             {

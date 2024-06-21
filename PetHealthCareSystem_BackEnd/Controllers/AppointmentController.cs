@@ -272,7 +272,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPut("update-appointment-status")]
-        public async Task<IActionResult> UpdateAppointmentStatus(AppointmentStatusUpdateRequest appointmentStatusUpdateRequest)
+        public async Task<IActionResult> UpdateAppointmentStatus([FromBody] AppointmentStatusUpdateRequest appointmentStatusUpdateRequest)
         {
             if(!ModelState.IsValid)
             {

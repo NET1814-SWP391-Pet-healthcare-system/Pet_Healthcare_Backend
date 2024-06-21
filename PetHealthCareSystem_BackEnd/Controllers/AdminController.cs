@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
+using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
@@ -73,7 +74,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPut("update-profile/{userId}")]
-        public async Task<IActionResult> UpdateProfile(string userId, UserUpdateRequest userUpdateRequest)
+        public async Task<IActionResult> UpdateProfile(string userId, [FromBody]UserUpdateRequest userUpdateRequest)
         {
             if(!ModelState.IsValid)
             {
@@ -97,7 +98,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             if(!string.IsNullOrEmpty(userUpdateRequest.PhoneNumber))
             {
-                if(!IsValidPhoneNumber(userUpdateRequest.PhoneNumber))
+                if(!UserValidation.IsValidPhoneNumber(userUpdateRequest.PhoneNumber))
                 {
                     return BadRequest("Invalid phone number format");
                 }
@@ -142,7 +143,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
                 if(!string.IsNullOrEmpty(userAddDto.PhoneNumber))
                 {
-                    if(!IsValidPhoneNumber(userAddDto.PhoneNumber))
+                    if(!UserValidation.IsValidPhoneNumber(userAddDto.PhoneNumber))
                     {
                         return BadRequest("Invalid phone number format");
                     }
@@ -278,18 +279,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             user.IsDeleted = true;
             await _userManager.UpdateAsync(user);
             return Ok(user.ToUserDtoFromUser());
-        }
-
-        private bool IsValidPhoneNumber(string? phoneNumber)
-        {
-            string pattern = @"^(0\d{9,10})$";
-            Regex regex = new Regex(pattern);
-
-            if(!regex.IsMatch(phoneNumber))
-            {
-                return false;
-            }
-            return true;
         }
     }
 }

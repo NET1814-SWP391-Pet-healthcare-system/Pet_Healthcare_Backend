@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using PetHealthCareSystem_BackEnd.Extensions;
+using PetHealthCareSystem_BackEnd.Validations;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
@@ -225,22 +226,33 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize]
         [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile(UserUpdateRequest userUpdateRequest)
+        public async Task<IActionResult> UpdateProfile([FromBody]UserUpdateRequest userUpdateRequest)
         {
             if(!ModelState.IsValid)
             {
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
+            
+            var currentUser = await _userManager.GetUserAsync(this.User);
+
             if(userUpdateRequest.Username != null)
             {
-                if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null)
+                if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null &&
+                    !userUpdateRequest.Username.Equals(currentUser.UserName))
                 {
                     return Conflict("The requested username is already in use. Please choose a different username.");
                 }
             }
 
-            var currentUser = await _userManager.GetUserAsync(this.User);
+            if(!string.IsNullOrEmpty(userUpdateRequest.PhoneNumber))
+            {
+                if(!UserValidation.IsValidPhoneNumber(userUpdateRequest.PhoneNumber))
+                {
+                    return BadRequest("Invalid phone number format");
+                }
+            }
+
             if(userUpdateRequest.imageFile != null)
             {
                 ImageUploadResult imageResult = new ImageUploadResult();
