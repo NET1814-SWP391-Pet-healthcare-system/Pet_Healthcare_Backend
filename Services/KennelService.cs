@@ -94,10 +94,10 @@ namespace Services
             {   
                 return null;
             }
-            existingKennel.KennelId = existingKennel.KennelId;
-            existingKennel.Capacity = existingKennel.Capacity;
-            existingKennel.Description = (kennelModel.Description == "") ? existingKennel.Description : kennelModel.Description;
-            existingKennel.DailyCost = (kennelModel.DailyCost == 0) ? existingKennel.DailyCost : kennelModel.DailyCost;
+            //existingKennel.KennelId = existingKennel.KennelId;
+            //existingKennel.Capacity = existingKennel.Capacity;
+            existingKennel.Description = (string.IsNullOrEmpty(kennelModel.Description)) ? existingKennel.Description : kennelModel.Description;
+            existingKennel.DailyCost = (kennelModel.DailyCost == null) ? existingKennel.DailyCost : kennelModel.DailyCost;
             await _kennelRepository.UpdateAsync(existingKennel);
             return existingKennel.ToKennelDto();
         }

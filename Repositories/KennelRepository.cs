@@ -36,7 +36,7 @@ namespace Repositories
 
         public async Task<bool> UpdateAsync(Kennel kennelModel)
         {
-            //_context.Entry(kennelModel).State = EntityState.Modified;
+            _context.Entry(kennelModel).State = EntityState.Modified;
             return await SaveChangesAsync();
         }
         public async Task<bool> SaveChangesAsync()
