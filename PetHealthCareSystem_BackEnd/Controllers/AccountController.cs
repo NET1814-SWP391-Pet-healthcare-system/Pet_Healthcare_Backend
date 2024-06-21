@@ -226,7 +226,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize]
         [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromBody]UserUpdateRequest userUpdateRequest)
+        public async Task<IActionResult> UpdateProfile([FromForm] UserUpdateRequest userUpdateRequest)
         {
             if(!ModelState.IsValid)
             {

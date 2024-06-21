@@ -119,7 +119,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePet(int id, [FromBody] PetUpdateRequest? petUpdateRequest)
+        public async Task<IActionResult> UpdatePet(int id, [FromForm] PetUpdateRequest? petUpdateRequest)
         {
             if(!ModelState.IsValid)
             {
