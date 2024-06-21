@@ -62,7 +62,7 @@ namespace Services
             ExistingAppointmentDetail.Diagnosis = request.Diagnosis == null ? ExistingAppointmentDetail.Diagnosis : request.Diagnosis;
             ExistingAppointmentDetail.Record = request.Record == null ? ExistingAppointmentDetail.Record : request.Record;
             ExistingAppointmentDetail.Medication = request.Medication;
-           await _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
+            await _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
             return ExistingAppointmentDetail.ToAppointDetailDto();
         }
 

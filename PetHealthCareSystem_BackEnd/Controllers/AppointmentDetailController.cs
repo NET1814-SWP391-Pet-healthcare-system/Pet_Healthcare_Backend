@@ -116,18 +116,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             var appointmentDetailModel = await _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
             if(appointmentDetailModel == null)
-            {                 businessResult.Status = 404;
+            {   
+                businessResult.Status = 404;
                 businessResult.Data = null;
                 businessResult.Message = "AppointmentDetail not found";
                 return NotFound(businessResult);
             }
             var UpdateDiagnosis = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
             appointmentDetailModel.RecordId = UpdateDiagnosis.RecordId;
-            appointmentDetailModel.Record = await _recordService.GetRecordByIdAsync(id);
+            appointmentDetailModel.Record = await _recordService.GetRecordByIdAsync((int)UpdateDiagnosis.RecordId);
             appointmentDetailModel.Diagnosis = UpdateDiagnosis.Diagnosis;
             appointmentDetailModel.Medication = UpdateDiagnosis.Medication;
             appointmentDetailModel.Treatment = UpdateDiagnosis.Treatment;
-            if (AppointmentDetailValidation.IsAppointmentDetailValid(appointmentDetailModel,_appointmentService,_recordService) ==false)
+            if (await _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId) ==null
+                || await _recordService.GetRecordByIdAsync((int)appointmentDetail.RecordId)==null )
             {
                 businessResult.Status = 400;
                 businessResult.Data = null;
