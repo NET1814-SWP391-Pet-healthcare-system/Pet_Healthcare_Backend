@@ -55,10 +55,18 @@ namespace Services
             emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
+
+            var bodyBuidler = new BodyBuilder
             {
-                Text = message.Content
+                HtmlBody = message.Content
             };
+
+
+            emailMessage.Body = bodyBuidler.ToMessageBody();
+            //emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
+            //{
+            //    Text = message.Content
+            //};
             return emailMessage;
         }
         public async Task ScheduleOneTimeEmail( Message emailMessage, DateTime SendTime)
