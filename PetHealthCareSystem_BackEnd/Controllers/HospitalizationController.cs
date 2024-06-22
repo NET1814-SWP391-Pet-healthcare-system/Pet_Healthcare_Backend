@@ -43,12 +43,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddHospitalization([FromBody] HospitalizationAddRequest hospitalizationAddRequest)
         {
-            try
-            {
-                //var username = User.GetUsername();
-                //var username = _userManager.GetUserName(this.User);
-                //var userModel = await _userManager.FindByNameAsync(username);
-
                 if (!ModelState.IsValid)
                 {
                     string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
@@ -69,12 +63,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return BadRequest(error);
                 }
-                return Ok(await _hospitalizationService.AddHospitalization(hospi));
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, "An error occurred while processing your request");
-            }
+            var result = await _hospitalizationService.AddHospitalization(hospi);
+                return Ok(result.ToHospitalizationDto());
+            
 
         }
 
@@ -91,15 +82,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetHospitalizationById(int id)
         {
             var hospitalization = await _hospitalizationService.GetHospitalizationById(id);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             if (hospitalization == null)
             {
                 return NotFound();
             }
-            return Ok(hospitalization);
+            return Ok(hospitalization.ToHospitalizationDto());
         }
 
 
@@ -127,43 +114,41 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            return Ok(isUpdated);
+            return Ok(isUpdated.ToHospitalizationDto());
         }
 
         //Delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHospitalizationByHospitalizationByID(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
             var existingHospitalization = await _hospitalizationService.GetHospitalizationById(id);
             if (existingHospitalization == null)
             {
                 return NotFound("Hospitalization not found");
             }
             var isDeleted = await _hospitalizationService.RemoveHospitalization(id);
-            return Ok(existingHospitalization);
+            if (!isDeleted)
+            {
+                return BadRequest("Delete Fail");
+            }
+            return Ok(existingHospitalization.ToHospitalizationDto());
         }
 
         [HttpGet("VetName{id}")]
         public async Task<IActionResult> GetAllHospitalizationByVetID(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
             var vet = await _userManager.FindByNameAsync(id);
             id = vet.Id;
-            var hospitalization = await _hospitalizationService.GetAllHospitalizationByVetId(id);
-            if (hospitalization == null)
-            {
-                return NotFound();
-            }
-            return Ok(hospitalization);
+            var hospitalizations = await _hospitalizationService.GetAllHospitalizationByVetId(id);
+            var hospitalizationDtos = hospitalizations.Select(x => x.ToHospitalizationDto());
+            return Ok(hospitalizationDtos);
+        }
+        [HttpGet("PetId/{id}")]
+        public async Task<IActionResult> GetAllHospitalizationByPetId(int id)
+        {
+            var hospitalizations = await _hospitalizationService.GetAllHospitalizationByPetId(id);
+            var hospitalizationDtos = hospitalizations.Select(x => x.ToHospitalizationDto());
+            return Ok(hospitalizationDtos);
         }
 
     }

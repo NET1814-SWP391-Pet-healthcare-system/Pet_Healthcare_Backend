@@ -429,7 +429,6 @@ namespace Entities.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.TransactionId);
                     table.ForeignKey(
                         name: "FK_Transaction_Appointment_AppointmentId",
                         column: x => x.AppointmentId,

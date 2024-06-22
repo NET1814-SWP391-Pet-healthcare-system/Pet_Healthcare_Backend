@@ -13,7 +13,7 @@ namespace RepositoryContracts
         Task<Service?> GetById(int id);
         Task<bool> Add(Service service);
         Task<bool> Update(Service service);
-        Task<bool> Remove(int id);
+        Task<bool> Remove(Service service);
         Task<bool> SaveChangesAsync();
         Task<Service?> GetByName(string name);
     }
