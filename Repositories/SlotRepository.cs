@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Entities;
 using Entities.Enum;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Repositories
 {
