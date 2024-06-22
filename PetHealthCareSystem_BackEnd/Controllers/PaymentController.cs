@@ -301,5 +301,23 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
 
         }
+
+        [HttpGet, Route("GetTransactions")]
+        public async Task<IActionResult> GetTransactions()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            var transactions = await _transactionService.GetAllAsync();
+            if (transactions == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "No Transactions Found";
+                return BadRequest(businessResult);
+            }
+            businessResult.Status = 200;
+            businessResult.Data = transactions;
+            businessResult.Message = "Transactions Found Successfully";
+            return Ok(businessResult);
+        }
     }
 }
