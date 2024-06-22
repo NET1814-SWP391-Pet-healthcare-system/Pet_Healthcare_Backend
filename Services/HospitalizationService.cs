@@ -22,36 +22,27 @@ namespace Services
         {
             _hospitalizationRepository = hospitalizationRepository;
         }
-        public async Task<HospitalizationDTO?> AddHospitalization(Hospitalization request)
+        public async Task<Hospitalization?> AddHospitalization(Hospitalization request)
         {
             if(request==null)
             {
                 return null;
             }
             await _hospitalizationRepository.Add(request);
-            return request.ToHospitalizationDto();
+            return request;
         }
 
-        public async Task<HospitalizationDTO?> UpdateHospitalization(Hospitalization request)
+        public async Task<Hospitalization?> UpdateHospitalization(Hospitalization request)
         {
             if(request==null)
             {
                 return null;
             }
             var hospitalization = await _hospitalizationRepository.GetById(request.HospitalizationId);
-            if(hospitalization==null)
-            {
-                return null;
-            }
-            hospitalization.VetId = hospitalization.VetId;
-            hospitalization.PetId = hospitalization.PetId;
-            hospitalization.KennelId =hospitalization.KennelId;
-            hospitalization.AdmissionDate = hospitalization.AdmissionDate;
             hospitalization.DischargeDate = request.DischargeDate == null ? hospitalization.DischargeDate:request.DischargeDate;
-            hospitalization.TotalCost = hospitalization.TotalCost;
 
             await _hospitalizationRepository.Update(hospitalization);
-            return hospitalization.ToHospitalizationDto();
+            return hospitalization;
 
         }
 

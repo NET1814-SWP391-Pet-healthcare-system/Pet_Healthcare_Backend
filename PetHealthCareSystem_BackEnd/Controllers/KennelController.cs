@@ -23,21 +23,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetKennels()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            return Ok(await _kennelService.GetKennelsAsync());
+            var kennel = await _kennelService.GetKennelsAsync();
+            return Ok(kennel);
         }
 
         [HttpGet("{kennelId:int}")]
         public async Task<IActionResult> GetKennelById([FromRoute] int kennelId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _kennelService.GetKennelByIdAsync(kennelId);
             if (result == null)
             {
@@ -49,21 +42,23 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddKennel([FromBody] KennelAddRequest KennelAddRequest)
         {
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            if (!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
             var kennelModel = KennelAddRequest.ToKennelFromAdd();
-            await _kennelService.AddKennelAsync(kennelModel);
-            return CreatedAtAction(nameof(GetKennelById), new { kennelId = kennelModel.KennelId }, kennelModel.ToKennelDto());
+            var result = await _kennelService.AddKennelAsync(kennelModel);
+            return Ok(result.ToKennelDto());
         }
 
         [HttpPut("{kennelId:int}")]
         public async Task<IActionResult> UpdateKennel([FromRoute] int kennelId, [FromBody] KennelUpdateRequest kennelUpdateRequest)
         {
             if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            {
+                string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
             var existingkennel = await _kennelService.GetKennelByIdAsync(kennelId); 
             if (existingkennel == null) 
@@ -78,28 +73,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            return Ok(isUpdated);
+            return Ok(isUpdated.ToKennelDto());
         }
 
         [HttpDelete("{kennelId:int}")]
         public async Task<IActionResult> DeleteKennel(int kennelId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var kennel = await _kennelService.GetKennelByIdAsync(kennelId);
             //kennel is occupied
-            if(kennel.IsAvailable == false)
+            if(kennel.IsAvailable == false || kennel == null)
             {
-                return BadRequest("Kennel is currently occupied");
+                return BadRequest("Kennel is currently occupied or missing");
             }
             var kennelModel = await _kennelService.RemoveKennelAsync(kennelId);
             if (kennelModel == null)
             {
-                return NotFound("Kennel does not exist");
+                return NotFound("Delete Failed");
             }
-            return Ok(kennelModel);
+            return Ok(kennel);
         }
     }
 }

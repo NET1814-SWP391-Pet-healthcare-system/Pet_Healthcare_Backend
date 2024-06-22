@@ -17,21 +17,27 @@ namespace Services
             _appointmentDetailRepository = appointmentDetailRepository;
         }
 
-        public async Task<AppointDetailDTO> AddAppointmentDetailAsync(AppointmentDetail? request)
+        public async Task<AppointmentDetail> AddAppointmentDetailAsync(AppointmentDetail? request)
         {
             if (request == null)
             {
                 return null;
             }
             await _appointmentDetailRepository.AddAsync(request);
-            return request.ToAppointDetailDto();
+            return request;
         }
 
  
 
         public async Task<AppointmentDetail?> GetAppointmentDetailByIdAsync(int id)
         {
-            return await _appointmentDetailRepository.GetByIdAsync(id);
+            
+            var appoint = await _appointmentDetailRepository.GetByIdAsync(id);
+            if (appoint == null)
+            {
+                return null;
+            }
+            return appoint;
         }
 
         public async Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync()
@@ -50,20 +56,19 @@ namespace Services
         }
 
 
-        public async Task<AppointDetailDTO?> UpdateAppointmentDetailAsync(AppointmentDetail request)
+        public async Task<AppointmentDetail?> UpdateAppointmentDetailAsync(AppointmentDetail request)
         {
             var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(request.AppointmentDetailId);
             if (request == null || ExistingAppointmentDetail==null)
             {
                 return null;
             }
-            ExistingAppointmentDetail.AppointmentId = ExistingAppointmentDetail.AppointmentId;
             ExistingAppointmentDetail.Treatment = request.Treatment ==null ? ExistingAppointmentDetail.Treatment : request.Treatment;
             ExistingAppointmentDetail.Diagnosis = request.Diagnosis == null ? ExistingAppointmentDetail.Diagnosis : request.Diagnosis;
             ExistingAppointmentDetail.Record = request.Record == null ? ExistingAppointmentDetail.Record : request.Record;
             ExistingAppointmentDetail.Medication = request.Medication;
             await _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
-            return ExistingAppointmentDetail.ToAppointDetailDto();
+            return ExistingAppointmentDetail;
         }
 
  

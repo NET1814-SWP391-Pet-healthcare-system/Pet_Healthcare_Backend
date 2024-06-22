@@ -11,8 +11,8 @@ namespace ServiceContracts
 {
     public interface IAppointmentDetailService
     {
-        Task<AppointDetailDTO> AddAppointmentDetailAsync(AppointmentDetail request);
-        Task<AppointDetailDTO?> UpdateAppointmentDetailAsync(AppointmentDetail request);
+        Task<AppointmentDetail?> AddAppointmentDetailAsync(AppointmentDetail request);
+        Task<AppointmentDetail?> UpdateAppointmentDetailAsync(AppointmentDetail request);
         Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync();
         Task<bool> RemoveAppointmentDetailAsync(int id);
         Task<AppointmentDetail?> GetAppointmentDetailByIdAsync(int id);

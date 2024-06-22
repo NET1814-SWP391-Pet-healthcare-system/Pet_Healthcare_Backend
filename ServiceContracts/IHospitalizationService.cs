@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface IHospitalizationService
     {
-        Task<HospitalizationDTO?> AddHospitalization(Hospitalization request);
+        Task<Hospitalization?> AddHospitalization(Hospitalization request);
         Task<Hospitalization?> GetHospitalizationById(int id);
         Task <IEnumerable<Hospitalization>> GetHospitalizations();
-        Task<HospitalizationDTO?> UpdateHospitalization(Hospitalization request);
+        Task<Hospitalization?> UpdateHospitalization(Hospitalization request);
         Task<bool> RemoveHospitalization(int id);
         Task<Hospitalization?> GetHospitalizationByPetId(int id);
         Task<IEnumerable<Hospitalization>> GetAllHospitalizationByVetId(string id);

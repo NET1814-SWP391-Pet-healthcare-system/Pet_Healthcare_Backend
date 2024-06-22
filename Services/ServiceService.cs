@@ -20,10 +20,14 @@ namespace Services
         {
             _serviceRepository = serviceRepository;
         }
-        public async Task<ServiceDTO> AddService(Service request)
+        public async Task<Service?> AddService(Service request)
         {
+            if (request == null)
+            {
+                return null;
+            }
             await _serviceRepository.Add(request);
-            return request.ToServiceDto();
+            return request;
         }
 
         public async Task<Service> GetServiceById(int id)
@@ -53,31 +57,27 @@ namespace Services
             
 
         }
-        public async Task<ServiceDTO?> GetServiceByName(string name)
+        public async Task<Service?> GetServiceByName(string name)
         {
             var service =await _serviceRepository.GetByName(name);
             if(service == null)
             {
                 return null;
             }
-            return service.ToServiceDto();
+            return service;
         }
-        public async Task<ServiceDTO?> UpdateService(Service request)
+        public async Task<Service?> UpdateService(Service request)
         {
             if (request == null)
             {
                 return null;
             }
             var service = await _serviceRepository.GetById(request.ServiceId);
-            if (service == null)
-            {
-                return null;
-            }
             service.Name = request.Name == null ? service.Name  : request.Name;
             service.Description = request.Description == null ? service.Name :request.Description;
             service.Cost = request.Cost == null ? service.Cost : request.Cost;
             await _serviceRepository.Update(service);
-            return service.ToServiceDto();      
+            return service;      
 
         }
     }
