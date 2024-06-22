@@ -140,9 +140,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return BadRequest(businessResult);
                 }
 
-                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
+                var appointment = await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
-                businessResult.Data = result;
+                businessResult.Data = appointment;
                 businessResult.Message = "Payment Successfull";
                 return Ok(businessResult);
             }
@@ -232,7 +232,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 //Do Database Operations Here
                 await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
-                businessResult.Data = result;
+                businessResult.Data = appointment;
                 businessResult.Message = "Payment Refunded Successfully";
                 return Ok(result);
             }
