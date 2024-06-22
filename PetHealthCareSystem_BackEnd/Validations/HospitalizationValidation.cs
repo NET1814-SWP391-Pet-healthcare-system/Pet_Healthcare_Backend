@@ -48,12 +48,6 @@ namespace PetHealthCareSystem_BackEnd.Validations
             {
                 return "This kennel does not exist";
             }
-
-            var vet = _userManager.FindByIdAsync(hospitalization.VetId);
-            if (vet == null || _userService.GetAvailableVetById(hospitalization.VetId) == null)
-            {
-                return "This vet does not exist";
-            }
             return null;
         }
     }

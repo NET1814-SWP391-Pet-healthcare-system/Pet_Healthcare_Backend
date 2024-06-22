@@ -27,11 +27,11 @@ namespace Services
             return request;
         }
 
- 
+
 
         public async Task<AppointmentDetail?> GetAppointmentDetailByIdAsync(int id)
         {
-            
+
             var appoint = await _appointmentDetailRepository.GetByIdAsync(id);
             if (appoint == null)
             {
@@ -59,19 +59,19 @@ namespace Services
         public async Task<AppointmentDetail?> UpdateAppointmentDetailAsync(AppointmentDetail request)
         {
             var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(request.AppointmentDetailId);
-            if (request == null || ExistingAppointmentDetail==null)
+            if (request == null || ExistingAppointmentDetail == null)
             {
                 return null;
             }
-            ExistingAppointmentDetail.Treatment = request.Treatment ==null ? ExistingAppointmentDetail.Treatment : request.Treatment;
+            ExistingAppointmentDetail.Treatment = request.Treatment == null ? ExistingAppointmentDetail.Treatment : request.Treatment;
             ExistingAppointmentDetail.Diagnosis = request.Diagnosis == null ? ExistingAppointmentDetail.Diagnosis : request.Diagnosis;
+            ExistingAppointmentDetail.RecordId = request.RecordId == null ? ExistingAppointmentDetail.RecordId : request.RecordId;
             ExistingAppointmentDetail.Record = request.Record == null ? ExistingAppointmentDetail.Record : request.Record;
             ExistingAppointmentDetail.Medication = request.Medication;
             await _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
-
             return ExistingAppointmentDetail;
         }
 
- 
+
     }
 }

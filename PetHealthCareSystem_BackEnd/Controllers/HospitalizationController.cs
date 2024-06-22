@@ -50,19 +50,27 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
                 DateOnly adDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate);
                 DateOnly disDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate); 
-                var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
-                hospitalizationAddRequest.VetId = vet.Id;
+
+
                 bool isVetFree = await _hospitalizationService.IsVetFree(hospitalizationAddRequest.VetId, adDate, disDate);
                 if (isVetFree)
                 {
                     return BadRequest("Vet is busy");
                 }
-                var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
-                string error =  HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest,_kennelService,_petService,_userManager,_userService);
-                if (error != null)
-                {
-                    return BadRequest(error);
-                }
+
+
+            var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+            if (vet== null || await _userService.GetAvailableVetById(vet.Id) == null)
+            {
+                return NotFound("This vet does not exist");
+            }
+            hospitalizationAddRequest.VetId = vet.Id;
+            string error = HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest, _kennelService, _petService, _userManager, _userService);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
             var result = await _hospitalizationService.AddHospitalization(hospi);
                 return Ok(result.ToHospitalizationDto());
             
