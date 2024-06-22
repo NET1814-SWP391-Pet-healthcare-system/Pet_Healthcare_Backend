@@ -140,9 +140,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return BadRequest(businessResult);
                 }
 
-                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
+                var appointment = await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
-                businessResult.Data = result;
+                businessResult.Data = appointment;
                 businessResult.Message = "Payment Successfull";
                 return Ok(businessResult);
             }
@@ -232,7 +232,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 //Do Database Operations Here
                 await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
                 businessResult.Status = 200;
-                businessResult.Data = result;
+                businessResult.Data = appointment;
                 businessResult.Message = "Payment Refunded Successfully";
                 return Ok(result);
             }
@@ -300,6 +300,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Message = "Revenue Calculated Successfully";
             return Ok(businessResult);
 
+        }
+
+        [HttpGet, Route("GetTransactions")]
+        public async Task<IActionResult> GetTransactions()
+        {
+            BusinessResult businessResult = new BusinessResult();
+            var transactions = await _transactionService.GetAllAsync();
+            if (transactions == null)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "No Transactions Found";
+                return BadRequest(businessResult);
+            }
+            businessResult.Status = 200;
+            businessResult.Data = transactions;
+            businessResult.Message = "Transactions Found Successfully";
+            return Ok(businessResult);
         }
     }
 }
