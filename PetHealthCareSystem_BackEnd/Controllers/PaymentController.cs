@@ -230,7 +230,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 transaction.Amount = 0;
                 await _transactionService.UpdateAsync(transaction);
                 //Do Database Operations Here
-                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
+                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Refunded);
+                await _appointmentService.UpdateAppointmentStatus(appointmentid, AppointmentStatus.Cancelled);
                 businessResult.Status = 200;
                 businessResult.Data = appointment;
                 businessResult.Message = "Payment Refunded Successfully";
