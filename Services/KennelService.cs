@@ -29,7 +29,8 @@ namespace Services
             {
                 return null;
             }
-             await _kennelRepository.AddAsync(kennelModel);
+            await _kennelRepository.AddAsync(kennelModel);
+
             return kennelModel;
         }
 
@@ -95,6 +96,7 @@ namespace Services
             existingKennel.Description = (string.IsNullOrEmpty(kennelModel.Description)) ? existingKennel.Description : kennelModel.Description;
             existingKennel.DailyCost = (kennelModel.DailyCost == null) ? existingKennel.DailyCost : kennelModel.DailyCost;
             await _kennelRepository.UpdateAsync(existingKennel);
+
             return existingKennel;
         }
     }
