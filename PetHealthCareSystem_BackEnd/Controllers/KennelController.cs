@@ -66,13 +66,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound("Kennel does not exist"); 
             }
 
-            var existingkennel = await _kennelService.GetKennelByIdAsync(kennelId); 
-            if (existingkennel == null) 
-            { 
-                return NotFound("Kennel does not exist"); 
-            }
-
-
             var kennelModel = kennelUpdateRequest.ToKennelFromUpdate();
             kennelModel.KennelId = kennelId;
             var isUpdated = await _kennelService.UpdateKennelAsync(kennelModel);

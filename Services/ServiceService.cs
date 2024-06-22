@@ -52,7 +52,7 @@ namespace Services
             {
                 return false;
             }
-            return await _serviceRepository.Remove(id);
+            return await _serviceRepository.Remove(service);
             
             
 

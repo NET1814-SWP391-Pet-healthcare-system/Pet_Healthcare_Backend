@@ -13,7 +13,7 @@ using Services;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-   // [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AppointmentDetailController : ControllerBase
@@ -32,7 +32,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAppointmentDetail([FromBody] AppointmentDetailAddRequest? appointmentDetail)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
@@ -47,7 +47,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var result = await _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetailModel);
             return Ok(result.ToAppointDetailDto());
 
-            
+
 
         }
 
@@ -75,7 +75,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("update-diagnose/{id}")]
-        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id ,[FromBody]  AppointmentDetailUpdateDiagnosis? appointmentDetail)
+        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id, [FromBody] AppointmentDetailUpdateDiagnosis? appointmentDetail)
         {
             if (!ModelState.IsValid)
             {
@@ -84,20 +84,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var appointmentDetailModel = await _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
-            if(appointmentDetailModel == null)
-            {   
-
+            if (appointmentDetailModel == null)
+            {
                 return NotFound("AppointmentDetail not found");
             }
             var UpdateDiagnosis = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
             UpdateDiagnosis.AppointmentDetailId = id;
-
-            if (await _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId) ==null
-                || await _recordService.GetRecordByIdAsync((int)appointmentDetail.RecordId)==null )
+            if (await _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId) == null
+                || await _recordService.GetRecordByIdAsync((int)appointmentDetail.RecordId) == null)
             {
                 return NotFound("Appointment or Record not found");
             }
-            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(appointmentDetailModel);
+            var isUpdated = await _appointmentDetailService.UpdateAppointmentDetailAsync(UpdateDiagnosis);
             if (isUpdated == null)
             {
                 return BadRequest(ModelState);
@@ -107,15 +105,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Delete
         [HttpDelete("{appointmentDetailId}")]
-        public async Task<IActionResult>DeleteAppointmentDetailById([FromRoute] int appointmentDetailId)
+        public async Task<IActionResult> DeleteAppointmentDetailById([FromRoute] int appointmentDetailId)
         {
-            var existingappoint= await _appointmentDetailService.GetAppointmentDetailByIdAsync(appointmentDetailId);
+            var existingappoint = await _appointmentDetailService.GetAppointmentDetailByIdAsync(appointmentDetailId);
             if (existingappoint == null)
             {
                 return NotFound("AppointmentDetail not found");
             }
             var isDeleted = await _appointmentDetailService.RemoveAppointmentDetailAsync(appointmentDetailId);
-            if (isDeleted != null)
+            if (!isDeleted)
             {
                 return BadRequest("Delete fail");
             }
