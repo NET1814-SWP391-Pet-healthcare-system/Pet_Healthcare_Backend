@@ -88,6 +88,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var pets = await _petService.GetAllPets();
             var id = _userManager.GetUserId(this.User);
             var user = await _userManager.FindByIdAsync(id);
+
             pets = pets.Where(x => x.CustomerId == user.Id).ToList();
 
             var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
