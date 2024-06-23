@@ -21,7 +21,7 @@ namespace Repositories
 
         public async Task<IEnumerable<PetHealthTrack>> GetAllAsync()
         {
-            return await _context.PetHealthTracks.ToListAsync();
+            return await _context.PetHealthTracks.Include(x => x.Hospitalization).ToListAsync();
         }
 
         public async Task<PetHealthTrack>? GetByIdAsync(int id)

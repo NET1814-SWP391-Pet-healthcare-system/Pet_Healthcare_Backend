@@ -6,6 +6,9 @@ using ServiceContracts.DTO.Result;
 using ServiceContracts.Mappers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Drawing.Printing;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -15,10 +18,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class PetHealthTrackController : ControllerBase
     {
         private readonly IPetHealthTrackService _petHealthTrackService;
+        private readonly IPetService _petService;
+        private readonly UserManager<User> _userManager;
 
-        public PetHealthTrackController(IPetHealthTrackService petHealthTrackService)
+        public PetHealthTrackController(IPetHealthTrackService petHealthTrackService, IPetService petService, UserManager<User> userManager)
         {
             _petHealthTrackService = petHealthTrackService;
+            _petService = petService;
+            _userManager = userManager;
         }
 
         [HttpPost]
@@ -71,9 +78,25 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(petHealthTracksForPetId);
         }
 
+        [HttpGet("user")]
+        public async Task<IActionResult> GetPetHealthTrackByUser()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var pets = await _petService.GetAllPets();
+            var id = _userManager.GetUserId(this.User);
+            var user = await _userManager.FindByIdAsync(id);
+            pets = pets.Where(x => x.CustomerId == user.Id);
 
-
-
+            var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
+            if (petHealthTracks == null)
+            {
+                return BadRequest("No pet health tracks");
+            }
+            return Ok(petHealthTracks.Select(x => x.ToPetHealthTrackDTO()));
+        }
 
         [HttpPut]
         public async Task<IActionResult> UpdatePetHealthTrack(PetHealthTrackUpdateRequest request)
