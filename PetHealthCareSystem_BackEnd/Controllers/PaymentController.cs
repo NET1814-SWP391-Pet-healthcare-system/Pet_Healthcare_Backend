@@ -14,6 +14,7 @@ using Entities.Enum;
 using Services;
 using Braintree.Test;
 using Braintree;
+using ServiceContracts.DTO.PaymentDTO;
 
 
 namespace PetHealthCareSystem_BackEnd.Controllers
@@ -68,14 +69,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
 
         }
-        [HttpPost, Route("Checkout")]
-        public async Task<IActionResult> Checkout([FromBody]int appointmentid, string Nonce)
+        [HttpPost("Checkout")]
+        public async Task<IActionResult> Checkout(CheckoutRequest checkoutRequest)
         {
             BusinessResult businessResult = new BusinessResult();
             string paymentStatus = string.Empty;
             var gateway = _config.GetGateway();
 
-            var model = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
+            var model = await _appointmentService.GetAppointmentByIdAsync(checkoutRequest.AppointmentId);
 
             if(model == null)
             {
@@ -98,7 +99,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var request = new TransactionRequest
             {
                 Amount = Convert.ToDecimal(PayAmount),
-                PaymentMethodNonce = Nonce,
+                PaymentMethodNonce = checkoutRequest.Nonce,
 
                 Options = new TransactionOptionsRequest
                 {
@@ -125,7 +126,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 Entities.Transaction transaction = new Entities.Transaction
                 {
                     TransactionId = result.Target.Id,
-                    AppointmentId = appointmentid,
+                    AppointmentId = checkoutRequest.AppointmentId,
                     CustomerId = customer.Id,
                     Amount = (double)PayAmount,
                     Date = DateTime.Now
@@ -142,7 +143,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return BadRequest(businessResult);
                 }
 
-                var appointment = await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Paid);
+                var appointment = await _appointmentService.UpdateAppointmentPaymentStatus(checkoutRequest.AppointmentId, PaymentStatus.Paid);
                 businessResult.Status = 200;
                 businessResult.Data = appointment;
                 businessResult.Message = "Payment Successfull";
@@ -166,7 +167,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
            
         }
         [HttpPost, Route("Refund")]
-        public async Task<IActionResult> Refund([FromBody]int appointmentid)
+        public async Task<IActionResult> Refund(RefundRequest refundRequest)
         {
             BusinessResult businessResult = new BusinessResult();
             string paymentStatus = string.Empty;
@@ -176,7 +177,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentid);
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(refundRequest.AppointmentId);
             if (appointment == null)
             {
                 businessResult.Status = 404;
@@ -213,7 +214,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
             var transactionList = await _transactionService.GetByUserIdAsync(customer.Id);
-            var transactionId = transactionList.FirstOrDefault(t => t.AppointmentId == appointmentid);
+            var transactionId = transactionList.FirstOrDefault(t => t.AppointmentId == refundRequest.AppointmentId);
             
 
             if (transactionId == null)
@@ -232,8 +233,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 transaction.Amount = 0;
                 await _transactionService.UpdateAsync(transaction);
                 //Do Database Operations Here
-                await _appointmentService.UpdateAppointmentPaymentStatus(appointmentid, PaymentStatus.Refunded);
-                await _appointmentService.UpdateAppointmentStatus(appointmentid, AppointmentStatus.Cancelled);
+                await _appointmentService.UpdateAppointmentPaymentStatus(refundRequest.AppointmentId, PaymentStatus.Refunded);
+                await _appointmentService.UpdateAppointmentStatus(refundRequest.AppointmentId, AppointmentStatus.Cancelled);
                 businessResult.Status = 200;
                 businessResult.Data = appointment;
                 businessResult.Message = "Payment Refunded Successfully";

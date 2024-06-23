@@ -188,6 +188,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
                 appointmentModel.TotalCost = (double)appointmentModel.Service.Cost!;
+                appointmentModel.PaymentStatus = PaymentStatus.Pending;
 
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
                 return CreatedAtAction(nameof(GetAppointmentById), new { appointmentId = appointmentModel.AppointmentId }, appointmentModel.ToAppointmentDto());
