@@ -12,6 +12,7 @@ using RepositoryContracts;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Entities.Enum;
 using Services;
+using Braintree.Test;
 using Braintree;
 
 
@@ -68,7 +69,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         }
         [HttpPost, Route("Checkout")]
-        public async Task<IActionResult> Checkout(int appointmentid, string Nonce)
+        public async Task<IActionResult> Checkout([FromBody]int appointmentid, string Nonce)
         {
             BusinessResult businessResult = new BusinessResult();
             string paymentStatus = string.Empty;
@@ -101,7 +102,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                 Options = new TransactionOptionsRequest
                 {
-                    SubmitForSettlement = true
+                    SubmitForSettlement = true,
+                    
                 }
             };
 
@@ -128,7 +130,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     Amount = (double)PayAmount,
                     Date = DateTime.Now
                 };
-
+                
                 var trans = await _transactionService.AddAsync(transaction);
                 if(trans == null)
                 {
@@ -164,7 +166,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
            
         }
         [HttpPost, Route("Refund")]
-        public async Task<IActionResult> Refund(int appointmentid)
+        public async Task<IActionResult> Refund([FromBody]int appointmentid)
         {
             BusinessResult businessResult = new BusinessResult();
             string paymentStatus = string.Empty;
