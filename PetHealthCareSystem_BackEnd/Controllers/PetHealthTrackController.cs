@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    [Authorize(Policy = "VetEmployeeAdminPolicy")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PetHealthTrackController : ControllerBase
