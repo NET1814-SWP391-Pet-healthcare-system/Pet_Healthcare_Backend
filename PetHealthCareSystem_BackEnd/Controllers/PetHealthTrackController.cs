@@ -88,14 +88,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var pets = await _petService.GetAllPets();
             var id = _userManager.GetUserId(this.User);
             var user = await _userManager.FindByIdAsync(id);
-            pets = pets.Where(x => x.CustomerId == user.Id);
+            pets = pets.Where(x => x.CustomerId == user.Id).ToList();
 
             var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
             if (petHealthTracks == null)
             {
                 return BadRequest("No pet health tracks");
             }
-            return Ok(petHealthTracks.Select(x => x.ToPetHealthTrackDTO()));
+            var userPetHealthTracks = petHealthTracks.Where(healthTrack => pets.Any(pet => pet.PetId == healthTrack.Hospitalization.PetId)).ToList();
+
+            return Ok(userPetHealthTracks.Select(x => x.ToPetHealthTrackDTO()));
         }
 
         [HttpPut]
