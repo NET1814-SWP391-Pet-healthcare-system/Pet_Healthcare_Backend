@@ -14,6 +14,7 @@ namespace ServiceContracts.Mappers
                 Description = request.Description,
                 Status = request.Status,
                 HospitalizationId = request.HospitalizationId,
+                PetName = request.Hospitalization.Pet.Name
             };
         }
 
