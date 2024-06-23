@@ -108,7 +108,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result);
         }
 
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet("users/role/{role}")]
         public async Task<IActionResult> GetUsersByRole(string role)
         {
