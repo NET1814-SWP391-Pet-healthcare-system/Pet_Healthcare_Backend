@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class HospitalizationController : ControllerBase
@@ -50,7 +51,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
                 DateOnly adDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate);
                 DateOnly disDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate); 
-
+                
 
                 bool isVetFree = await _hospitalizationService.IsVetFree(hospitalizationAddRequest.VetId, adDate, disDate);
                 if (isVetFree)
@@ -70,6 +71,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(error);
             }
+
             var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
             var result = await _hospitalizationService.AddHospitalization(hospi);
                 return Ok(result.ToHospitalizationDto());
@@ -116,6 +118,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return NotFound("Hospitalization not found");
                 }
                 var hospi = hospitalizationUpdateRequest.ToHospitalizationUpdate();
+            hospi.Pet= await _petService.GetPetById((int)existingHospitalization.PetId);
             hospi.HospitalizationId = id;
             var isUpdated = await _hospitalizationService.UpdateHospitalization(hospi);
             if (isUpdated == null)

@@ -6,28 +6,16 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
 {
     public class PetHealthTrackUpdateRequest
     {
-        [Required(ErrorMessage = "Must acquire a valid ID")]
-        public int PetHealthTrackId { get; set; }
         [Required]
         public int? HospitalizationId { get; set; } 
         public string? Description { get; set; }
 
         [Required]
-        public DateOnly? DateOnly { get; set; }
+        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
+        public string? Date { get; set; }
 
         [Required]
         public PetStatus? Status { get; set; }
 
-        public PetHealthTrack ToPetHealthTrack()
-        {
-            return new PetHealthTrack
-            {
-               PetHealthTrackId = PetHealthTrackId,
-                HospitalizationId = HospitalizationId,
-                Description = Description,
-                Date = DateOnly,
-                Status = Status
-            };
-        }
     }
 }

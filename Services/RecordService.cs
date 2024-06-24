@@ -22,8 +22,12 @@ namespace Services
 
         public async Task<Record?> AddRecordAsync(Record? request)
         {
-
-            return await _recordRepository.AddAsync(request);
+            if (request == null)
+            {
+                return null;
+            }
+            await _recordRepository.AddAsync(request);
+            return request;
         }
 
         public async Task<IEnumerable<AppointmentDetail>?> GetAppointmentDetailsAsync()
@@ -33,7 +37,13 @@ namespace Services
 
         public async Task<Record?> GetRecordByIdAsync(int id)
         {
-            return await _recordRepository.GetByIdAsync(id);
+
+            var result = await _recordRepository.GetByIdAsync(id);
+            if (result == null)
+            {
+                return null;
+            }   
+            return result;  
         }
 
         public async Task<IEnumerable<Record>?> GetRecordsAsync()
@@ -41,29 +51,32 @@ namespace Services
             return await _recordRepository.GetAllAsync();
         }
 
-        public async Task<Record> RemoveRecordAsync(int id)
+        public async Task<bool> RemoveRecordAsync(int id)
         {
-            return await  _recordRepository.RemoveAsync(id);
+            var rec = await _recordRepository.GetByIdAsync(id);
+            if (rec == null)
+            {
+                return false;
+            }
+            return await  _recordRepository.RemoveAsync(rec);
         }
 
-        public async Task<Record?> UpdateRecordAsync(int id ,Record? request)
+        public async Task<Record?> UpdateRecordAsync(Record request)
         {
             if(request == null)
             {
                 return null;
             }
-            var existingRecord = _recordRepository.GetByIdAsync(id).Result;
+            var existingRecord = await _recordRepository.GetByIdAsync(request.RecordId);
             if(existingRecord == null)
             {
                 return null;
             }
-
-            existingRecord.RecordId = request.RecordId;
-            existingRecord.PetId = request.PetId;
-            existingRecord.NumberOfVisits = request.NumberOfVisits;
-            existingRecord.AppointmentDetails = request.AppointmentDetails;
+            existingRecord.PetId = request.PetId == null ? existingRecord.PetId : request.PetId;
+            existingRecord.NumberOfVisits = request.NumberOfVisits == null ? existingRecord.NumberOfVisits : request.NumberOfVisits;
             existingRecord.Pet = request.Pet;
-            return await _recordRepository.UpdateAsync(existingRecord);
+            await _recordRepository.UpdateAsync(existingRecord);
+            return request;
         }
     }
 }

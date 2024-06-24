@@ -10,7 +10,7 @@ namespace ServiceContracts.Mappers
             return new PetHealthTrackDTO
             {
                 PetHealthTrackId = request.PetHealthTrackId,
-                DateOnly = request.Date,
+                Date = request.Date,
                 Description = request.Description,
                 Status = request.Status,
                 HospitalizationId = request.HospitalizationId,
@@ -18,44 +18,24 @@ namespace ServiceContracts.Mappers
                 PetImage = request.Hospitalization.Pet.ImageURL
             };
         }
-
-        public static PetHealthTrackDTO ToPetHealthTrackFromAddDTO(this PetHealthTrackAddRequest request)
-        {
-            return new PetHealthTrackDTO
-            {
-                DateOnly = request.DateOnly,
-                Description = request.Description,
-                Status = request.Status,
-                HospitalizationId = request.HospitalizationId,
-                
-            };
-        }
         public static PetHealthTrack ToPetHealthTrackFromAdd(this PetHealthTrackAddRequest request)
         {
             return new PetHealthTrack
             {
-                Date = request.DateOnly,
+                Date = DateOnly.Parse(request.Date),
                 Description = request.Description,
                 Status = request.Status,
                 HospitalizationId = request.HospitalizationId
             };
         }
-        public static PetHealthTrackDTO ToPetHealthTrackFromUpdate(this PetHealthTrackUpdateRequest request)
+        public static PetHealthTrack ToPetHealthTrackFromUpdate(this PetHealthTrackUpdateRequest request)
         {
-            return new PetHealthTrackDTO
+            return new PetHealthTrack
             {
-                DateOnly = request.DateOnly,
+                Date = DateOnly.Parse(request.Date),
                 Description = request.Description,
                 Status = request.Status,
                 HospitalizationId = request.HospitalizationId,
-            };
-        }
-
-        public static PetHealthTrackDTO ToPetHealthTrackFromRemove(this PetHealthTrackRemoveRequest request)
-        {
-            return new PetHealthTrackDTO
-            {
-                PetHealthTrackId = request.PetHealthTrackId
             };
         }
     }

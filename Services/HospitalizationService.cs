@@ -40,7 +40,6 @@ namespace Services
             }
             var hospitalization = await _hospitalizationRepository.GetById(request.HospitalizationId);
             hospitalization.DischargeDate = request.DischargeDate == null ? hospitalization.DischargeDate:request.DischargeDate;
-
             await _hospitalizationRepository.Update(hospitalization);
             return hospitalization;
 
