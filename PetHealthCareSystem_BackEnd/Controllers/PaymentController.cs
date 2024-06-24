@@ -225,7 +225,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
 
-            Result<Braintree.Transaction> result = gateway.Transaction.Refund(transactionId.TransactionId);
+           
+
+            Result<Braintree.Transaction> result = gateway.Transaction.Refund(transactionId.TransactionId,(decimal)transactionId.Amount*CalculateRefundPercentage(appointment.Date));
             if (result.IsSuccess())
             {
                 paymentStatus = "Succeded";
@@ -253,6 +255,25 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Data = null;
             businessResult.Message = paymentStatus;
             return BadRequest(businessResult);
+        }
+
+        private decimal CalculateRefundPercentage(DateOnly appointmentDate)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var daysDifference = appointmentDate.DayNumber - today.DayNumber;
+
+            if (daysDifference >= 7)
+            {
+                return 1.0m; // 100% refund
+            }
+            else if (daysDifference >= 3 && daysDifference <= 6)
+            {
+                return 0.75m; // 75% refund
+            }
+            else
+            {
+                return 0.0m; // No refund 
+            }
         }
 
         [HttpPost, Route("Revenue")]
