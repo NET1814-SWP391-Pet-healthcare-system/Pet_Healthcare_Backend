@@ -20,12 +20,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly IPetHealthTrackService _petHealthTrackService;
         private readonly IPetService _petService;
         private readonly UserManager<User> _userManager;
+        private readonly IHospitalizationService _hospitalizationService;
 
-        public PetHealthTrackController(IPetHealthTrackService petHealthTrackService, IPetService petService, UserManager<User> userManager)
+        public PetHealthTrackController(IPetHealthTrackService petHealthTrackService, IPetService petService, UserManager<User> userManager, IHospitalizationService hospitalizationService)
         {
             _petHealthTrackService = petHealthTrackService;
             _petService = petService;
             _userManager = userManager;
+            _hospitalizationService = hospitalizationService;
         }
 
         [HttpPost]
@@ -36,6 +38,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest("petHealthTrackRequest is null");
             }
             var peth = petHealthTrack.ToPetHealthTrackFromAdd();
+            var hospi = await _hospitalizationService.GetHospitalizationById((int)peth.HospitalizationId);
+            if(hospi == null)
+            {
+                return BadRequest("Hospitalization not found");
+            }
+            peth.Hospitalization = hospi;
             var result = await _petHealthTrackService.AddPetHealthTrackAsync(peth);
 
             return Ok(result.ToPetHealthTrackDTO());
@@ -52,15 +60,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(petHealthTrack.ToPetHealthTrackDTO());
         }
         [HttpGet]
-        public async Task<ActionResult<PetHealthTrack>> GetAllPetHealthTrack()
+        public async Task<IActionResult> GetAllPetHealthTrack()
         {
             var healtht = await _petHealthTrackService.GetPetHealthTracksAsync();
-            var healthtDtos = healtht.Select(x => x.ToPetHealthTrackDTO());
+            var healthtDtos = 
+                healtht.Select(x => x.ToPetHealthTrackDTO());
             return Ok(healthtDtos);
         }
 
         [HttpGet("hospitalization/{id}")]
-        public async Task<ActionResult<List<PetHealthTrack>>> GetPetHealthTracksByHospitalizationId(int id)
+        public async Task<IActionResult> GetPetHealthTracksByHospitalizationId(int id)
         {
             var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
             var healthtDtos = petHealthTracks.Select(x => x.ToPetHealthTrackDTO());
@@ -85,17 +94,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var pets = await _petService.GetAllPets();
             var id = _userManager.GetUserId(this.User);
             var user = await _userManager.FindByIdAsync(id);
-
-            pets = pets.Where(x => x.CustomerId == user.Id).ToList();
+            pets = pets.Where(x => x.CustomerId == user.Id);
 
             var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
             if (petHealthTracks == null)
             {
                 return BadRequest("No pet health tracks");
             }
-            var userPetHealthTracks = petHealthTracks.Where(healthTrack => pets.Any(pet => pet.PetId == healthTrack.Hospitalization.PetId)).ToList();
-
-            return Ok(userPetHealthTracks.Select(x => x.ToPetHealthTrackDTO()));
+            return Ok(petHealthTracks.Select(x => x.ToPetHealthTrackDTO()));
         }
 
         [HttpPut]

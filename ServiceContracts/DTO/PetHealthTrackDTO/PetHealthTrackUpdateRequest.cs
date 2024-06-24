@@ -11,7 +11,8 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
         public string? Description { get; set; }
 
         [Required]
-        public DateOnly? DateOnly { get; set; }
+        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The date must be in the format YYYY-MM-DD.")]
+        public string? Date { get; set; }
 
         [Required]
         public PetStatus? Status { get; set; }
