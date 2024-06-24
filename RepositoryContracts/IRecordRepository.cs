@@ -12,8 +12,9 @@ namespace RepositoryContracts
         Task<IEnumerable<Record>?> GetAllAsync();
         Task<IEnumerable<AppointmentDetail>> GetAllAppointmentDetailAsync();
         Task<Record?> GetByIdAsync(int id);
-        Task<Record?> AddAsync(Record record);
-        Task<Record?> UpdateAsync(Record record);
-        Task<Record?> RemoveAsync(int id);
+        Task<bool> AddAsync(Record record);
+        Task<bool> UpdateAsync(Record record);
+        Task<bool> RemoveAsync(Record record);
+        Task<bool> SaveChangesAsync();
     }
 }

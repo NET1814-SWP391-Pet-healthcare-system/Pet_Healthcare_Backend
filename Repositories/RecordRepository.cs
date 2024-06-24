@@ -18,11 +18,10 @@ namespace Repositories
             _context = context;
         }
 
-        public async Task<Record> AddAsync(Record record)
+        public async Task<bool> AddAsync(Record record)
         {
             await _context.Records.AddAsync(record);
-            await _context.SaveChangesAsync();
-            return record;
+            return await SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Record>> GetAllAsync()
@@ -30,38 +29,32 @@ namespace Repositories
             return await _context.Records.ToListAsync();
         }
 
-        public async Task<IEnumerable<AppointmentDetail>?> GetAllAppointmentDetailAsync()
+        public async Task<IEnumerable<AppointmentDetail>> GetAllAppointmentDetailAsync()
         {
             return await _context.AppointmentDetails.ToListAsync();
         }
 
         public async Task<Record?> GetByIdAsync(int id)
         {
-            
-            var record = await _context.Records.FirstOrDefaultAsync(x => x.RecordId == id);
-            await _context.SaveChangesAsync();
-            return record;
+
+            return await _context.Records.FirstOrDefaultAsync(x => x.RecordId == id);
+
         }
 
-        public async Task<Record?> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(Record record)
         {
-            var record = await GetByIdAsync(id);
-            if(record ==null)
-            {
-                return null;
-            }
-
              _context.Records.Remove(record);
-            await _context.SaveChangesAsync();
-            return record;
+            return await SaveChangesAsync();
         }
 
-     
-
-        public async Task<Record?> UpdateAsync(Record record)
+        public async Task<bool> UpdateAsync(Record record)
         {
-            await _context.SaveChangesAsync();
-            return record;
+            _context.Entry(record).State = EntityState.Modified;
+            return await SaveChangesAsync();
+        }
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

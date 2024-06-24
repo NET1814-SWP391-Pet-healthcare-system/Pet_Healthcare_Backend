@@ -11,8 +11,9 @@ namespace RepositoryContracts
     {
         Task<IEnumerable<PetHealthTrack>> GetAllAsync();
         Task<PetHealthTrack?> GetByIdAsync(int id);
-        Task<PetHealthTrack?> AddAsync(PetHealthTrack? petHealthTrack);
-        Task<PetHealthTrack?> UpdateAsync(PetHealthTrack? petHealthTrack);
-        Task<PetHealthTrack>? RemoveAsync(int id);
+        Task<bool> AddAsync(PetHealthTrack? petHealthTrack);
+        Task<bool> UpdateAsync(PetHealthTrack? petHealthTrack);
+        Task<bool> RemoveAsync(PetHealthTrack petHealthTrack);
+        Task<bool> SaveChangesAsync();
     }
 }
