@@ -12,6 +12,7 @@ namespace ServiceContracts.DTO.PetHealthTrackDTO
         public int PetHealthTrackId { get; set; }
         public int? HospitalizationId { get; set; }
         public string? PetName { get; set; }
+        public string? PetImage { get; set; }
         public string? Description { get; set; }
         public DateOnly? DateOnly { get; set; }
         public PetStatus? Status { get; set; }
