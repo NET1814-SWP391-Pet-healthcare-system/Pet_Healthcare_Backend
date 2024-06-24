@@ -19,7 +19,10 @@ namespace ServiceContracts.Mappers
                 RecordId = request.RecordId,
                 Diagnosis = request.Diagnosis,
                 Treatment = request.Treatment,
-                Medication = request.Medication
+                Medication = request.Medication,
+                VetName = request.Appointment?.Vet?.UserName,
+                Service = request.Appointment?.Service?.Name,
+                Date = request.Appointment?.Date
             };
         }
         public static AppointmentDetail ToAppointmentDetailFromAdd(this AppointmentDetailAddRequest? appointmentDetail)

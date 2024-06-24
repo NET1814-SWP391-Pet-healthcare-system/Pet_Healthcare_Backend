@@ -119,5 +119,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             return Ok(existingappoint.ToAppointDetailDto());
         }
+        [HttpGet("{petId}")]
+        public async Task<IActionResult> GetAppoinmentDetailOfPet([FromBody] int petId)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            var listOfAppointDetail = await _appointmentDetailService.GetAppointmentDetailsAsync();
+            var appointDetail = listOfAppointDetail.Where(x => x.Record.PetId == petId).Select(x => x.ToAppointDetailDto());
+            return Ok(appointDetail);
+
+        }
     }
 }

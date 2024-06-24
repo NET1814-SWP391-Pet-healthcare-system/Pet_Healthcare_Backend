@@ -14,5 +14,8 @@ namespace ServiceContracts.DTO.AppointmentDetailDTO
         public string? Diagnosis { get; set; }
         public string? Treatment { get; set; }
         public string? Medication { get; set; }
+        public string? VetName { get; set; }
+        public string? Service { get; set; }
+        public DateOnly? Date { get; set; }
     }
 }
