@@ -13,9 +13,9 @@ namespace ServiceContracts
     {
         Task<Record?> AddRecordAsync(Record? request);
         Task<Record?> GetRecordByIdAsync(int id);
-        Task<IEnumerable<AppointmentDetail>?> GetAppointmentDetailsAsync();
-        Task<IEnumerable<Record>?> GetRecordsAsync();
-        Task<Record?> UpdateRecordAsync(int id,Record? request);
-        Task<Record?> RemoveRecordAsync(int id);
+        Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync();
+        Task<IEnumerable<Record>> GetRecordsAsync();
+        Task<Record?> UpdateRecordAsync(Record request);
+        Task<bool> RemoveRecordAsync(int id);
     }
 }

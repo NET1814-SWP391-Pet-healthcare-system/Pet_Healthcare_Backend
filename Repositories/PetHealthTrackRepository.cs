@@ -12,11 +12,10 @@ namespace Repositories
             _context = context;
         }
 
-        public async Task<PetHealthTrack> AddAsync(PetHealthTrack? petHealthTrack)
+        public async Task<bool> AddAsync(PetHealthTrack? petHealthTrack)
         {
             await _context.PetHealthTracks.AddAsync(petHealthTrack);
-            await _context.SaveChangesAsync();
-            return petHealthTrack;
+            return await SaveChangesAsync();
         }
 
         public async Task<IEnumerable<PetHealthTrack>> GetAllAsync()
@@ -24,37 +23,26 @@ namespace Repositories
             return await _context.PetHealthTracks.Include(x => x.Hospitalization).ToListAsync();
         }
 
-        public async Task<PetHealthTrack>? GetByIdAsync(int id)
+        public async Task<PetHealthTrack?> GetByIdAsync(int id)
         {
-            return _context.PetHealthTracks.FirstOrDefault(x => x.PetHealthTrackId == id);
+            return await _context.PetHealthTracks.FirstOrDefaultAsync(x => x.PetHealthTrackId == id);
         }
 
-        public async Task<PetHealthTrack>? RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(PetHealthTrack pht)
         {
-            var pht = await GetByIdAsync(id);
-            if (pht == null)
-            {
-                return null;
-            }
             _context.Remove(pht);
-            await _context.SaveChangesAsync();
-            return pht;
+            return await SaveChangesAsync();
         }
 
-        public async Task<PetHealthTrack> UpdateAsync(PetHealthTrack? petHealthTrack)
+        public async Task<bool> UpdateAsync(PetHealthTrack petHealthTrack)
         {
-            if (petHealthTrack == null)
-            {
-                return null;
-            }
-            var existingpetHealthTrack = await GetByIdAsync(petHealthTrack.PetHealthTrackId);
-            if (existingpetHealthTrack == null)
-            {
-                return null;
-            }
-            _context.Update(petHealthTrack);
-            await _context.SaveChangesAsync();
-            return existingpetHealthTrack;
+            _context.Entry(petHealthTrack).State = EntityState.Modified;
+            return await SaveChangesAsync();
+
+        }
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

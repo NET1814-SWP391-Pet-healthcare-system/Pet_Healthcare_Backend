@@ -10,8 +10,6 @@ namespace ServiceContracts.DTO.RecordDTO
     public class RecordUpdateRequest
     {
         [Required]
-        public int RecordId { get; set; }
-        [Required]
         public int PetId { get; set; }
         [Required]
         public int NumberOfVisits { get; set; }

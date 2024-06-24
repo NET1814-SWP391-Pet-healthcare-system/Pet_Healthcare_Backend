@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class HospitalizationController : ControllerBase

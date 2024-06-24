@@ -29,7 +29,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRecordAsync(RecordAddRequest? record)
         {
-            BusinessResult businessResult = new BusinessResult();
             if(ModelState.IsValid == false)
             {
                 return BadRequest(ModelState);
@@ -38,39 +37,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             //var IsPetHasRecord = _petService.GetPetById((int)recordModel.PetId).Result.RecordId;
             //if(IsPetHasRecord != null)
             //{
-            //    businessResult.Status = 400;
-            //    businessResult.Data = null;
-            //    businessResult.Message = "Pet already has a record";
             //    return BadRequest(businessResult);
             //}
-            if (recordModel == null)
-            {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Record request is null";
-                return BadRequest(businessResult);
-            }
-
             if(RecordValidation.IsRecordValid(recordModel, _recordService, _petService) == false)
             {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Record is not valid";
-                return BadRequest(businessResult);
+                return BadRequest("Record not valid");
             }   
 
             var data = await _recordService.AddRecordAsync(recordModel);
-            if(data == null)
-            {
-                businessResult.Status = 500;
-                businessResult.Data = null;
-                businessResult.Message = "Failed to retrived data";
-                return StatusCode(StatusCodes.Status500InternalServerError, businessResult);
-            }
-            businessResult.Data = data;
-            businessResult.Message = "Successful";
-            businessResult.Status = 200;
-            return Ok(businessResult);
+            return Ok(data.ToRecordDto());
         }
 
         //Read
@@ -78,102 +53,63 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpGet("records")]
         public async Task<IActionResult> GetRecords()
         {
-            var list = await _recordService.GetRecordsAsync();
-            BusinessResult businessResult = new BusinessResult();
-            if(list == null)
-            {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "No Record found";
-                return NotFound(businessResult);
-            }
-            businessResult.Data = list;
-            businessResult.Message = "Successful";
-            businessResult.Status = 200;
-            return  Ok(businessResult);
+            var recs = await _recordService.GetRecordsAsync();
+            var recDtos = recs.Select(x => x.ToRecordDto());
+            return Ok(recDtos);
         }
 
         [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRecordById(int id)
         {
-            if(!ModelState.IsValid)
+            var rec = await _recordService.GetRecordByIdAsync(id);
+            if (rec == null)
             {
-                return BadRequest(ModelState);
+                return NotFound("Record not found");
             }
-            BusinessResult businessResult = new BusinessResult();
-            var user = await _recordService.GetRecordByIdAsync(id);
-            if (user == null)
-            {
-                businessResult.Status = 404;
-                businessResult.Data = null;
-                businessResult.Message = "No Record found";
-                return NotFound(businessResult);
-            }
-            businessResult.Status = 200;
-            businessResult.Data = user;
-            businessResult.Message = "Record found";
-            return Ok(businessResult);
+            return Ok(rec.ToRecordDto());
         }
 
         [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveRecord(int id)
         {
-            if(!ModelState.IsValid)
+            var record = await _recordService.GetRecordByIdAsync(id);
+            if (record==null)
             {
-                return BadRequest(ModelState);
+                return NotFound ("Record not found");
             }
-            BusinessResult businessResult = new BusinessResult();
-            var record = await _recordService.RemoveRecordAsync(id);
-            if (record!=null)
+            var isDeleted = await _recordService.RemoveRecordAsync(id);
+            if (!isDeleted)
             {
-                businessResult.Status = 200;
-                businessResult.Data = record;
-                businessResult.Message = "Record removed";
-                return Ok(businessResult);
+                return BadRequest("Delete Fail");
             }
-            businessResult.Status = 404;
-            businessResult.Data = null;
-            businessResult.Message = "No Record found";
-            return NotFound(businessResult);
+            return Ok(record.ToRecordDto());
         }
 
         //Update
         [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpPut("update-record/{id}")]
-        public async Task<IActionResult> UpdateRecord([FromRoute]int id, RecordUpdateRequest? record)
+        public async Task<IActionResult> UpdateRecord([FromRoute]int id, RecordUpdateRequest record)
         {
-            BusinessResult businessResult = new BusinessResult();
 
             if (!ModelState.IsValid)
             {
+                return BadRequest("Invalid request");
+            }
+            var existingRec = await _recordService.GetRecordByIdAsync(id);
+            if (existingRec == null)
+            {
+                return NotFound("Record not found");
+            }
+            var recordModel = record.ToRecordFromUpdate();
+            recordModel.RecordId = id;
+            var recordUpdated = await _recordService.UpdateRecordAsync(recordModel);
+            if (recordUpdated ==null)
+            {
                 return BadRequest(ModelState);
             }
-
-            if (record == null)
-            {
-                businessResult.Status = 400;
-                businessResult.Data = null;
-                businessResult.Message = "Request is null";
-                return BadRequest(businessResult);
-            }
-
-            var recordModel = record.ToRecordFromUpdate();
-
-            var recordUpdated = await _recordService.UpdateRecordAsync(id, recordModel);
-
-            if (recordUpdated !=null)
-            {
-                businessResult.Status = 200;
-                businessResult.Data = null;
-                businessResult.Message = "Record updated";
-                return Ok(businessResult);
-            }
-            businessResult.Status = 404;
-            businessResult.Data = null;
-            businessResult.Message = "No Record found";
-            return NotFound(businessResult);
+            return Ok(recordUpdated.ToRecordDto());
         }
 
     }

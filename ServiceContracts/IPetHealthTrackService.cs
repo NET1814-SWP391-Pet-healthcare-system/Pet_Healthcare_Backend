@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface IPetHealthTrackService
     {
-        Task<PetHealthTrackDTO>? AddPetHealthTrackAsync(PetHealthTrackAddRequest request);
-        Task<PetHealthTrackDTO>? GetPetHealthTrackByIdAsync(int id);
+        Task<PetHealthTrack?> AddPetHealthTrackAsync(PetHealthTrack request);
+        Task<PetHealthTrack?> GetPetHealthTrackByIdAsync(int id);
         Task<IEnumerable<PetHealthTrack>> GetPetHealthTracksAsync();
-        Task<PetHealthTrackDTO>? UpdatePetHealthTrackAsync(PetHealthTrackUpdateRequest request);
-        Task<PetHealthTrackDTO>? RemovePetHealthTrackAsync(int id);
+        Task<PetHealthTrack?> UpdatePetHealthTrackAsync(PetHealthTrack request);
+        Task<bool> RemovePetHealthTrackAsync(int id);
     }
 }

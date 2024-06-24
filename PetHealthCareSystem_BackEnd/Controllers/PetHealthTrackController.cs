@@ -12,7 +12,7 @@ using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
-    [Authorize]
+ //   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PetHealthTrackController : ControllerBase
@@ -31,15 +31,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPetHealthTrack(PetHealthTrackAddRequest? petHealthTrack)
         {
-            BusinessResult businessResult = new BusinessResult();
             if (!ModelState.IsValid)
             {
                 return BadRequest("petHealthTrackRequest is null");
             }
+            var peth = petHealthTrack.ToPetHealthTrackFromAdd();
+            var result = await _petHealthTrackService.AddPetHealthTrackAsync(peth);
 
-            await _petHealthTrackService.AddPetHealthTrackAsync(petHealthTrack);
-
-            return Ok("Created successfully");
+            return Ok(result.ToPetHealthTrackDTO());
         }
 
         [HttpGet("{id}")]
@@ -50,30 +49,28 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("PetHealthTrack not found");
             }
-            return Ok(petHealthTrack);
+            return Ok(petHealthTrack.ToPetHealthTrackDTO());
         }
         [HttpGet]
         public async Task<ActionResult<PetHealthTrack>> GetAllPetHealthTrack()
         {
-            var petHealthTrack = await _petHealthTrackService.GetPetHealthTracksAsync() ;
-            if (petHealthTrack == null)
-            {
-                return BadRequest("PetHealthTrack not found");
-            }
-            petHealthTrack.ToList();
-            return Ok(petHealthTrack);
+            var healtht = await _petHealthTrackService.GetPetHealthTracksAsync();
+            var healthtDtos = healtht.Select(x => x.ToPetHealthTrackDTO());
+            return Ok(healthtDtos);
         }
+
         [HttpGet("hospitalization/{id}")]
         public async Task<ActionResult<List<PetHealthTrack>>> GetPetHealthTracksByHospitalizationId(int id)
         {
             var petHealthTracks = await _petHealthTrackService.GetPetHealthTracksAsync();
-            if (petHealthTracks == null)
+            var healthtDtos = petHealthTracks.Select(x => x.ToPetHealthTrackDTO());
+            if (healthtDtos == null)
             {
                 return BadRequest("No pet health tracks found for the provided Hospitalization ID");
             }
 
             // Filter pet health tracks by pet ID
-            var petHealthTracksForPetId = petHealthTracks.Where(track => track.HospitalizationId == id).ToList();
+            var petHealthTracksForPetId = healthtDtos.Where(track => track.HospitalizationId == id);
 
             return Ok(petHealthTracksForPetId);
         }
@@ -102,33 +99,43 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdatePetHealthTrack(PetHealthTrackUpdateRequest request)
+        public async Task<IActionResult> UpdatePetHealthTrack(int id, PetHealthTrackUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid request");
             }
-
-            var updatedPetHealthTrack = await _petHealthTrackService.UpdatePetHealthTrackAsync(request);
-            if (updatedPetHealthTrack == null)
+            var existingPetHealthTrack = await _petHealthTrackService.GetPetHealthTrackByIdAsync(id);
+            if (existingPetHealthTrack == null)
             {
                 return NotFound("PetHealthTrack not found");
             }
+            var petHealthTrack = request.ToPetHealthTrackFromUpdate();
+            petHealthTrack.PetHealthTrackId = id;
+            var updatedPetHealthTrack = await _petHealthTrackService.UpdatePetHealthTrackAsync(petHealthTrack);
+            if (updatedPetHealthTrack == null)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok(updatedPetHealthTrack);
+            return Ok(updatedPetHealthTrack.ToPetHealthTrackDTO());
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemovePetHealthTrack(int id)
         {
-            var removedPetHealthTrack = await _petHealthTrackService.RemovePetHealthTrackAsync(id);
+            var removedPetHealthTrack = await _petHealthTrackService.GetPetHealthTrackByIdAsync(id);
             if (removedPetHealthTrack == null)
             {
                 return NotFound("PetHealthTrack not found");
             }
-
-            return Ok("Deleted successfully");
+            var isDeleted = await _petHealthTrackService.RemovePetHealthTrackAsync(id);
+            if (!isDeleted)
+            {
+                return BadRequest("Delete Fail");
+            }
+            return Ok(removedPetHealthTrack.ToPetHealthTrackDTO());
         }
-
     }
-}
+
+   }
