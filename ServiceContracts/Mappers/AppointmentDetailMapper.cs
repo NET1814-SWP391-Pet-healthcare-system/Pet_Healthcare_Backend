@@ -17,6 +17,7 @@ namespace ServiceContracts.Mappers
                 AppointmentDetailId = request.AppointmentDetailId,
                 AppointmentId = request.AppointmentId,
                 RecordId = request.RecordId,
+                PetId = request.Appointment?.PetId,
                 Diagnosis = request.Diagnosis,
                 Treatment = request.Treatment,
                 Medication = request.Medication,

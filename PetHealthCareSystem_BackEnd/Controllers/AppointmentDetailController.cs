@@ -120,7 +120,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(existingappoint.ToAppointDetailDto());
         }
         [HttpGet("{petId}")]
-        public async Task<IActionResult> GetAppoinmentDetailOfPet([FromBody] int petId)
+        public async Task<IActionResult> GetAppoinmentDetailOfPet([FromRoute] int petId)
         {
             if(!ModelState.IsValid)
             {
