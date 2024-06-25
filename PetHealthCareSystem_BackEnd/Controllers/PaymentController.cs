@@ -344,5 +344,33 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Message = "Transactions Found Successfully";
             return Ok(businessResult);
         }
+
+        [HttpGet,Route("CashOut")]
+        public async Task<IActionResult> CashOut([FromBody] string customerId, int ammount)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _userService.GetUserName(this.User);
+            var customer = await _userService.FindByIdAsync(customerId);
+            if(customer == null)
+            {
+                return NotFound("Customer not found");
+            }
+            var transaction = new Entities.Transaction
+            {
+                CustomerId = customer.Id,
+                Amount = ammount,
+                Date = DateTime.Now
+            };
+            var result = await _transactionService.AddAsync(transaction);
+            if(result == null)
+            {
+                return BadRequest("Transaction failed");
+            }
+            return Ok(result);
+
+        }
     }
 }
