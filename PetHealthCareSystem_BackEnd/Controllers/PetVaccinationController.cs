@@ -30,7 +30,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetPetVaccinations() 
         {
