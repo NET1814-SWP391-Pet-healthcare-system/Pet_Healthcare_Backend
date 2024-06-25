@@ -11,6 +11,7 @@ namespace ServiceContracts.DTO.AppointmentDetailDTO
         public int AppointmentDetailId { get; set; }
         public int? AppointmentId { get; set; }
         public int? RecordId { get; set; }
+        public int? PetId { get; set; }
         public string? Diagnosis { get; set; }
         public string? Treatment { get; set; }
         public string? Medication { get; set; }
