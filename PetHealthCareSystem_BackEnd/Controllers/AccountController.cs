@@ -154,7 +154,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                var reactUrl = "http://localhost:5173/reset-password";
+                var reactUrl = "https://pet88.site/reset-password";
                 //var forgotPasswordLink = Url.ActionLink(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
                 var queryString = $"?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email!)}";
                 var forgotPasswordLink = $"{reactUrl}{queryString}";
