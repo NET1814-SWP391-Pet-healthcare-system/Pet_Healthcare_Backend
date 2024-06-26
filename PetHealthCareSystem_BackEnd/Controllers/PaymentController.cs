@@ -354,8 +354,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var customerName =  _userService.GetUserName(cashRequest.customerId);
-            var customer = await _userService.FindByIdAsync(customerName);
+            _userService.GetUserName(this.User);
+            var customer = await _userService.FindByIdAsync(cashRequest.customerId);
             if (customer == null)
             {
                 return NotFound("Customer not found");
@@ -368,7 +368,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var transaction = new Entities.Transaction
             {
                 CustomerId = customer.Id,
-                Amount = (int)hospitalization.TotalCost,
+                Amount = (int) hospitalization.TotalCost,
                 Date = DateTime.Now
             };
             var result = await _transactionService.AddAsync(transaction);
