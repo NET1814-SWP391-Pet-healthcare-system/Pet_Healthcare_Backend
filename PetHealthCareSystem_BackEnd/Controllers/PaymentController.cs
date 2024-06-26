@@ -345,16 +345,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
-        [HttpGet,Route("CashOut")]
+        [HttpGet, Route("CashOut")]
         public async Task<IActionResult> CashOut(CashRequest cashRequest)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             _userService.GetUserName(this.User);
             var customer = await _userService.FindByIdAsync(cashRequest.customerId);
-            if(customer == null)
+            if (customer == null)
             {
                 return NotFound("Customer not found");
             }
@@ -365,7 +365,40 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 Date = DateTime.Now
             };
             var result = await _transactionService.AddAsync(transaction);
-            if(result == null)
+            if (result == null)
+            {
+                return BadRequest("Transaction failed");
+            }
+            return Ok(result);
+
+        }
+
+        [HttpGet, Route("CashOutForAppointment")]
+        public async Task<IActionResult> CashoutForAppointment(CashoutAppointRequest cashRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var customer = await _userService.FindByIdAsync(cashRequest.customerId);
+            if (customer == null)
+            {
+                return NotFound("Customer not found");
+            }
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(cashRequest.appointmentId);
+            if (appointment != null && appointment.PaymentStatus == PaymentStatus.Pending)
+            {
+                appointment.PaymentStatus = PaymentStatus.Paid;
+                await _appointmentService.UpdateAppointmentPaymentStatus(cashRequest.appointmentId, PaymentStatus.Paid);
+            }
+            var transaction = new Entities.Transaction
+            {
+                CustomerId = customer.Id,
+                Amount = cashRequest.ammount,
+                Date = DateTime.Now
+            };
+            var result = await _transactionService.AddAsync(transaction);
+            if (result == null)
             {
                 return BadRequest("Transaction failed");
             }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ServiceContracts.DTO.PaymentDTO
 {
-    public class CashRequest
+    public class CashoutAppointRequest
     {
         public string customerId  { get; set; }
+        public int appointmentId { get; set; }
         public int ammount { get; set; }
     }
 }
