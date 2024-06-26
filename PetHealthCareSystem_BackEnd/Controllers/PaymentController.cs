@@ -354,7 +354,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _userService.GetUserName(this.User);
             var customer = await _userService.FindByIdAsync(cashRequest.customerId);
             if (customer == null)
             {
