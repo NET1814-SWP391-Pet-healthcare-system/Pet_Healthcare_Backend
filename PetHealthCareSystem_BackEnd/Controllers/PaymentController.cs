@@ -346,14 +346,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         }
 
         [HttpGet,Route("CashOut")]
-        public async Task<IActionResult> CashOut([FromBody] string customerId, int ammount)
+        public async Task<IActionResult> CashOut(CashRequest cashRequest)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             _userService.GetUserName(this.User);
-            var customer = await _userService.FindByIdAsync(customerId);
+            var customer = await _userService.FindByIdAsync(cashRequest.customerId);
             if(customer == null)
             {
                 return NotFound("Customer not found");
@@ -361,7 +361,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var transaction = new Entities.Transaction
             {
                 CustomerId = customer.Id,
-                Amount = ammount,
+                Amount = cashRequest.ammount,
                 Date = DateTime.Now
             };
             var result = await _transactionService.AddAsync(transaction);
