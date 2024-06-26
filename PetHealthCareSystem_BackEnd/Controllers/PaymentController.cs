@@ -27,13 +27,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public IAppointmentService _appointmentService;
         public UserManager<User> _userService;
         public ITransactionService _transactionService;
+        public IHospitalizationService _hospitalizationService;
 
-        public PaymentController(IBrainTreeConfig config, IAppointmentService appointmentService, UserManager<User> userService, ITransactionService transactionService)
+        public PaymentController(IBrainTreeConfig config, IAppointmentService appointmentService, UserManager<User> userService, ITransactionService transactionService, IHospitalizationService hospitalizationService)
         {
             _config = config;
             _appointmentService = appointmentService;
             _userService = userService;
             _transactionService = transactionService;
+            _hospitalizationService = hospitalizationService;
         }
 
         public static readonly TransactionStatus[] transactionSuccessStatuses =
@@ -276,7 +278,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
         }
 
-        [HttpPost, Route("Revenue")]
+        [HttpGet, Route("Revenue")]
         public async Task<IActionResult> Revenue()
         {
             BusinessResult businessResult = new BusinessResult();
@@ -345,7 +347,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
         }
 
-        [HttpGet, Route("CashOut")]
+        [HttpPost, Route("CashOut")]
         public async Task<IActionResult> CashOut(CashRequest cashRequest)
         {
             if (!ModelState.IsValid)
@@ -358,10 +360,15 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Customer not found");
             }
+            var hospitalization = await _hospitalizationService.GetHospitalizationById(cashRequest.hospitalizationId);
+            if(hospitalization == null)
+            {
+                return NotFound("Hospitalization not found");
+            }
             var transaction = new Entities.Transaction
             {
                 CustomerId = customer.Id,
-                Amount = cashRequest.ammount,
+                Amount = (int) hospitalization.TotalCost,
                 Date = DateTime.Now
             };
             var result = await _transactionService.AddAsync(transaction);
@@ -373,7 +380,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         }
 
-        [HttpGet, Route("CashOutForAppointment")]
+        [HttpPost, Route("CashOutForAppointment")]
         public async Task<IActionResult> CashoutForAppointment(CashoutAppointRequest cashRequest)
         {
             if (!ModelState.IsValid)

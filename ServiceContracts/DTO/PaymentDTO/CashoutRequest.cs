@@ -9,6 +9,6 @@ namespace ServiceContracts.DTO.PaymentDTO
     public class CashRequest
     {
         public string customerId  { get; set; }
-        public int ammount { get; set; }
+        public int hospitalizationId { get; set; }
     }
 }
