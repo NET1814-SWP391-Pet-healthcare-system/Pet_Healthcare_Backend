@@ -21,7 +21,8 @@ namespace ServiceContracts.Mappers
                 VetId = hospitalizationModel.VetId,
                 AdmissionDate = hospitalizationModel.AdmissionDate,
                 DischargeDate = hospitalizationModel.DischargeDate,
-                TotalCost = hospitalizationModel.TotalCost
+                TotalCost = hospitalizationModel.TotalCost,
+                PaymentStatus = hospitalizationModel.PaymentStatus
             };
         }
 
@@ -34,7 +35,7 @@ namespace ServiceContracts.Mappers
                 VetId = hospitalizationAddRequest.VetId,
                 AdmissionDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate),
                 DischargeDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate),
-                TotalCost = hospitalizationAddRequest.TotalCost,
+                TotalCost = hospitalizationAddRequest.TotalCost
             };
         }
 
