@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240627004122_AddHospitalizationId")]
+    partial class AddHospitalizationId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +242,6 @@ namespace Entities.Migrations
                         .HasColumnType("date");
 
                     b.Property<int?>("KennelId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PaymentStatus")
                         .HasColumnType("int");
 
                     b.Property<int?>("PetId")
@@ -768,6 +768,7 @@ namespace Entities.Migrations
                         .HasColumnType("float");
 
                     b.Property<int?>("AppointmentId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerId")
@@ -1378,7 +1379,8 @@ namespace Entities.Migrations
                     b.HasOne("Entities.Appointment", "Appointment")
                         .WithMany()
                         .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Entities.Customer", "Customer")
                         .WithMany()
