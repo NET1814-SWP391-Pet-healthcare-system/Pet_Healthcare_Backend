@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Entities.Enum;
 
 namespace ServiceContracts.DTO.HospitalizationDTO
 {
@@ -17,5 +18,6 @@ namespace ServiceContracts.DTO.HospitalizationDTO
         public DateOnly? AdmissionDate { get; set; }
         public DateOnly? DischargeDate { get; set; }
         public double? TotalCost { get; set; }
+        public PaymentStatus? PaymentStatus { get; set; }
     }
 }
