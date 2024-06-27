@@ -86,6 +86,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                                 IsActive = customer.IsActive,
                                 Email = customer.Email,
                                 PhoneNumber = customer.PhoneNumber,
+                                ImageUrl = customer.ImageURL,
                                 Role = "Customer"
                             };
                             result.Add(userDTO);
@@ -115,6 +116,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                                 PhoneNumber = vet.PhoneNumber,
                                 Rating = vet.Rating,
                                 YearsOfExperience = vet.YearsOfExperience,
+                                ImageUrl = vet.ImageURL,
                                 Role = "Vet"
                             };
                             result.Add(userDTO);
@@ -140,6 +142,7 @@ namespace PetHealthCareSystem_BackEnd.Extensions
                                 IsActive = user.IsActive,
                                 Email = user.Email,
                                 PhoneNumber = user.PhoneNumber,
+                                ImageUrl = user.ImageURL,
                                 Role = "Employee"
                             };
                             result.Add(userDTO);
