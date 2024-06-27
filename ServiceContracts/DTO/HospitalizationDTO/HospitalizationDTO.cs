@@ -19,5 +19,8 @@ namespace ServiceContracts.DTO.HospitalizationDTO
         public DateOnly? DischargeDate { get; set; }
         public double? TotalCost { get; set; }
         public PaymentStatus? PaymentStatus { get; set; }
+        public string? PetName { get; set; }
+        public string? KennelDescription { get; set; }
+        public string? VetName { get; set; }
     }
 }

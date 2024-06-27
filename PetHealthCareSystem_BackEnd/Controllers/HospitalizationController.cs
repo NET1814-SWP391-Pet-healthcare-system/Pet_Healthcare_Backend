@@ -130,7 +130,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Delete
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHospitalizationByHospitalizationByID(int id)
+        public async Task<IActionResult> DeleteHospitalizationByHospitalizationID(int id)
         {
             var existingHospitalization = await _hospitalizationService.GetHospitalizationById(id);
             if (existingHospitalization == null)
