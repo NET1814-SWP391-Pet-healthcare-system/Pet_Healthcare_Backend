@@ -342,7 +342,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(businessResult);
             }
             businessResult.Status = 200;
-            businessResult.Data = transactions;
+            businessResult.Data = transactions.Select(t => t.ToCashOutDto());
             businessResult.Message = "Transactions Found Successfully";
             return Ok(businessResult);
         }
@@ -368,14 +368,16 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 CustomerId = customer.Id,
                 Amount = (int) hospitalization.TotalCost,
+                HospitalizationId = cashRequest.hospitalizationId,
                 Date = DateTime.Now
+
             };
             var result = await _transactionService.AddAsync(transaction);
             if (result == null)
             {
                 return BadRequest("Transaction failed");
             }
-            return Ok(result);
+            return Ok(result.ToCashOutDto());
 
         }
 
@@ -408,7 +410,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("Transaction failed");
             }
-            return Ok(result);
+            return Ok(result.ToCashOutDto());
 
         }
     }

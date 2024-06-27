@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Entities.Enum;
 
 namespace Entities
 {
@@ -25,5 +26,6 @@ namespace Entities
         public DateOnly? DischargeDate { get; set; }
         public double? TotalCost { get; set; }
         public ICollection<PetHealthTrack>? PetHealthTracks { get; set; }
+        public PaymentStatus? PaymentStatus { get; set; }
     }
 }

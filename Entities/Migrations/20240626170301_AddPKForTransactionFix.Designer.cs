@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626170301_AddPKForTransactionFix")]
+    partial class AddPKForTransactionFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +242,6 @@ namespace Entities.Migrations
                         .HasColumnType("date");
 
                     b.Property<int?>("KennelId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PaymentStatus")
                         .HasColumnType("int");
 
                     b.Property<int?>("PetId")
@@ -759,15 +759,14 @@ namespace Entities.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("AppointmentId")
+                    b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerId")
@@ -777,9 +776,6 @@ namespace Entities.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("HospitalizationId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TransactionId")
                         .HasColumnType("nvarchar(max)");
 
@@ -788,8 +784,6 @@ namespace Entities.Migrations
                     b.HasIndex("AppointmentId");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("HospitalizationId");
 
                     b.ToTable("Transaction");
                 });
@@ -1378,7 +1372,8 @@ namespace Entities.Migrations
                     b.HasOne("Entities.Appointment", "Appointment")
                         .WithMany()
                         .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Entities.Customer", "Customer")
                         .WithMany()
@@ -1386,16 +1381,9 @@ namespace Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Hospitalization", "Hospitalization")
-                        .WithMany()
-                        .HasForeignKey("HospitalizationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Appointment");
 
                     b.Navigation("Customer");
-
-                    b.Navigation("Hospitalization");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

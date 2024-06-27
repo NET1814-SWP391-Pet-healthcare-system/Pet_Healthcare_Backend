@@ -82,6 +82,36 @@ namespace Entities
                 .WithMany(v => v.PetVaccinations)
                 .HasForeignKey(pv => pv.VaccineId);
 
+            modelBuilder.Entity("Entities.Transaction", b =>
+            {
+                b.HasOne("Entities.Appointment", "Appointment")
+                    .WithMany()
+                    .HasForeignKey("AppointmentId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne("Entities.Hospitalization", "Hospitalization")
+                    .WithMany()
+                    .HasForeignKey("HospitalizationId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne("Entities.Customer", "Customer")
+                    .WithMany()
+                    .HasForeignKey("CustomerId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+
+                b.Navigation("Appointment");
+                b.Navigation("Hospitalization");
+                b.Navigation("Customer");
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd().HasColumnOrder(0);
+                entity.Property(e => e.CustomerId).IsRequired();
+            });
+
             // Define roles for AspNetRoles
             List<IdentityRole> identityRoles = new List<IdentityRole>()
             {
