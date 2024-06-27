@@ -364,6 +364,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Hospitalization not found");
             }
+            if(hospitalization.PaymentStatus==PaymentStatus.Paid)
+            {
+                return BadRequest("Hospitalization already paid");
+            }
             var transaction = new Entities.Transaction
             {
                 CustomerId = customer.Id,
@@ -377,6 +381,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("Transaction failed");
             }
+            hospitalization.PaymentStatus = PaymentStatus.Paid;
+            await _hospitalizationService.UpdateHospitalization(hospitalization);
             return Ok(result.ToCashOutDto());
 
         }
