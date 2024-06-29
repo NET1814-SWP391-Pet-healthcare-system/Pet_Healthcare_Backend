@@ -21,6 +21,10 @@ namespace Services
         public async Task<IEnumerable<Vet>?> GetAvailableVetsAsync(DateOnly date, int slotId)
         {
             var vetList = await _userRepository.GetAvailableVetsAsync(date, slotId);
+            if (vetList == null)
+            {
+                return vetList;
+            }
             var result = vetList
                 .Where(v => v.IsDeleted == false);
                 

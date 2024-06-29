@@ -255,7 +255,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(appointmentModel.ToAppointmentDto());
         }
 
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> DeleteAppointment([FromRoute] int appointmentId)
         {

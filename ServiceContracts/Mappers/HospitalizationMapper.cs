@@ -22,7 +22,10 @@ namespace ServiceContracts.Mappers
                 AdmissionDate = hospitalizationModel.AdmissionDate,
                 DischargeDate = hospitalizationModel.DischargeDate,
                 TotalCost = hospitalizationModel.TotalCost,
-                PaymentStatus = hospitalizationModel.PaymentStatus
+                PaymentStatus = hospitalizationModel.PaymentStatus,
+                VetName = hospitalizationModel?.Vet.UserName,
+                PetName = hospitalizationModel?.Pet.Name,
+                KennelDescription = hospitalizationModel?.Kennel.Description
             };
         }
 
