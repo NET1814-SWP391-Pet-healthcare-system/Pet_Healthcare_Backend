@@ -405,6 +405,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 appointment.PaymentStatus = PaymentStatus.Paid;
                 await _appointmentService.UpdateAppointmentPaymentStatus(cashRequest.appointmentId, PaymentStatus.Paid);
+            }   
+            else
+            {
+                return BadRequest("Appointment already paid");
             }
             var transaction = new Entities.Transaction
             {
