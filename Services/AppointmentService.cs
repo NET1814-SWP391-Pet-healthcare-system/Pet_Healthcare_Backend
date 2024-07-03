@@ -44,7 +44,7 @@ namespace Services
         public async Task<Appointment?> RateAppointmentAsync(int id, Appointment appointmentModel)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Done  || existingAppointment.Status != AppointmentStatus.Processing)
+            if (existingAppointment == null || existingAppointment.Status != AppointmentStatus.Done && existingAppointment.Status != AppointmentStatus.Processing)
             {
                 return null;
             }

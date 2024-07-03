@@ -250,7 +250,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             var appointmentModel = await _appointmentService.RateAppointmentAsync(appointmentId, AppointmentRatingRequest.ToAppointmentFromRating());
             if(appointmentModel == null)
             {
-                return BadRequest("Appointment is not eligable for rating (needs to be processing state)");
+                return BadRequest("Appointment is not eligable for rating (needs to be processing or done state)");
             }
             return Ok(appointmentModel.ToAppointmentDto());
         }
