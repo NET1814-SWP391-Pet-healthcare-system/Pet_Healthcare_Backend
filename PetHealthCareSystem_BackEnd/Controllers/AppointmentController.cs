@@ -231,7 +231,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var appointmentModel = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
+            var appointmentModel = await _appointmentService.CheckInAppointmentAsync(appointmentId);
             if(appointmentModel == null)
             {
                 return BadRequest("Appointment is not eligable for check-in (needs to be booked state)");
