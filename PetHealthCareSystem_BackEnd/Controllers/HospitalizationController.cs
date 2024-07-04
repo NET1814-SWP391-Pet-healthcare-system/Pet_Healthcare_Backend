@@ -61,6 +61,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
 
             var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+            var kennel = await _kennelService.GetKennelById(hospitalizationAddRequest.KennelId);
             if (vet== null || await _userService.GetAvailableVetById(vet.Id) == null)
             {
                 return NotFound("This vet does not exist");
@@ -73,8 +74,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
+            hospi.Kennel = kennel;
+            hospi.TotalCost = (disDate.DayNumber - adDate.DayNumber) * kennel.DailyCost;
             var result = await _hospitalizationService.AddHospitalization(hospi);
-                return Ok(result.ToHospitalizationDto());
+           return Ok(result.ToHospitalizationDto());
             
 
         }

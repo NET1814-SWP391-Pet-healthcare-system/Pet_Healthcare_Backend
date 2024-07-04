@@ -15,5 +15,6 @@ namespace ServiceContracts
         Task<IEnumerable<KennelDto>> GetKennelsAsync();
         Task<Kennel?> UpdateKennelAsync(Kennel kennelModel);
         Task<bool> RemoveKennelAsync(int id);
+        Task<Kennel?> GetKennelById(int id);
     }
 }
