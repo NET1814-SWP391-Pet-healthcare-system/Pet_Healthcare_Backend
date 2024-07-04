@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace ServiceContracts.DTO.PetDTO
 {
@@ -19,5 +20,6 @@ namespace ServiceContracts.DTO.PetDTO
         public bool? Gender { get; set; }
         public double? Weight { get; set; }
         public string? ImageURL { get; set; }
+        public IFormFile? imageFile { get; set; }
     }
 }

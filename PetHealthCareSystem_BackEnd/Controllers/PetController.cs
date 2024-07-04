@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Tls;
 using PetHealthCareSystem_BackEnd.Extensions;
 using ServiceContracts;
 using ServiceContracts.DTO.PetDTO;
@@ -72,7 +73,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [Authorize(Policy = "CustomerOrEmployeePolicy")]
         [HttpPost]
-        public async Task<IActionResult> AddPet(PetAddRequest? petAddRequest)
+        public async Task<IActionResult> AddPet([FromForm] PetAddRequest? petAddRequest)
         {
             if(!ModelState.IsValid)
             {
@@ -92,6 +93,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             Pet pet = petAddRequest.ToPet();
             pet.CustomerId = existingUser.Id;
+
+            if (petAddRequest.imageFile != null)
+            {
+                ImageUploadResult imageResult = new ImageUploadResult();
+                imageResult = await _photoService.AddPhotoAsync(petAddRequest.imageFile);
+                pet.ImageURL = imageResult.Url.ToString();
+            }
+
             var result = await _petService.AddPet(pet);
             return Ok(result.ToPetDto());
         }
