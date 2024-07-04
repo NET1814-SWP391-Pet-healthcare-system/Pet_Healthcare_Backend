@@ -67,12 +67,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound("This vet does not exist");
             }
             hospitalizationAddRequest.VetId = vet.Id;
-            string error = HospitalizationValidation.HospitalizationVerification(hospitalizationAddRequest, _kennelService, _petService, _userManager, _userService);
-            if (error != null)
+            if (adDate > disDate)
             {
-                return BadRequest(error);
+                return BadRequest("Start date cannot be greater than end date");
             }
 
+            var pet = _petService.GetPetById(hospitalizationAddRequest.PetId);
+            if (pet == null)
+            {
+                return BadRequest("This pet does not exist");
+            }
+
+            if (kennel == null)
+            {
+                return BadRequest("This kennel does not exist");
+            }
             var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
             hospi.Kennel = kennel;
             hospi.TotalCost = (disDate.DayNumber - adDate.DayNumber) * kennel.DailyCost;
