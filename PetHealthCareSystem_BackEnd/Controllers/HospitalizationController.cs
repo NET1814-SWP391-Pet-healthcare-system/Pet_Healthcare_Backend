@@ -72,7 +72,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest("Start date cannot be greater than end date");
             }
 
-            var pet = _petService.GetPetById(hospitalizationAddRequest.PetId);
+            var pet = await _petService.GetPetById(hospitalizationAddRequest.PetId);
             if (pet == null)
             {
                 return BadRequest("This pet does not exist");
