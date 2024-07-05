@@ -32,18 +32,13 @@ namespace PetHealthCareSystem_BackEnd.Validations
                 return "Start date cannot be greater than end date";
             }
 
-            if (hospitalization.TotalCost < 0)
-            {
-                return "Total cost cannot be negative";
-            }
-
             var pet = _petService.GetPetById(hospitalization.PetId);
             if (pet == null)
             {
                 return "This pet does not exist";
             }
 
-            var kennel = _kennelService.GetKennelByIdAsync(hospitalization.KennelId);
+            var kennel = _kennelService.GetKennelById(hospitalization.KennelId);
             if (kennel == null)
             {
                 return "This kennel does not exist";

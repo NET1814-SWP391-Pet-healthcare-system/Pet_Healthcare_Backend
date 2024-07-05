@@ -55,6 +55,15 @@ namespace Services
             return result;
         }
 
+        public async Task<Kennel?> GetKennelById(int id)
+        {
+            var existingKennel = await _kennelRepository.GetByIdAsync(id);
+            if (existingKennel == null)
+            {
+                return null;
+            }
+            return existingKennel;
+        }
         public async Task<IEnumerable<KennelDto>> GetKennelsAsync()
         {
             var hospitalizations = await _hospitalizationService.GetHospitalizations();

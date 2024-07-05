@@ -38,7 +38,7 @@ namespace ServiceContracts.Mappers
                 VetId = hospitalizationAddRequest.VetId,
                 AdmissionDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate),
                 DischargeDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate),
-                TotalCost = hospitalizationAddRequest.TotalCost
+                //TotalCost = hospitalizationAddRequest.TotalCost
             };
         }
 
