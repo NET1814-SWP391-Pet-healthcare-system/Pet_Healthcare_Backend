@@ -37,7 +37,7 @@ namespace Repositories
             return await _context.AppointmentDetails
                 .Include (a => a.Appointment)
                 .Include(a => a.Record)
-                .FirstOrDefaultAsync(a => a.AppointmentDetailId == id);
+                .FirstOrDefaultAsync(a => a.AppointmentId == id);
                 
         }
 

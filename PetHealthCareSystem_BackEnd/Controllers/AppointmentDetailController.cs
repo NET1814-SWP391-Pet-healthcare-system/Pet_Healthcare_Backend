@@ -94,7 +94,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return NotFound("AppointmentDetail not found");
             }
             var UpdateDiagnosis = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
-            UpdateDiagnosis.AppointmentDetailId = id;
+            UpdateDiagnosis.AppointmentId = id;
             if (await _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId) == null
                 || await _recordService.GetRecordByIdAsync((int)appointmentDetail.RecordId) == null)
             {

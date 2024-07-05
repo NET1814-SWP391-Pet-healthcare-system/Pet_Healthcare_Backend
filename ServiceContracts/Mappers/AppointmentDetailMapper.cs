@@ -14,7 +14,6 @@ namespace ServiceContracts.Mappers
         {
             return new AppointDetailDTO()
             {
-                AppointmentDetailId = request.AppointmentDetailId,
                 AppointmentId = request.AppointmentId,
                 RecordId = request.RecordId,
                 PetId = request.Appointment?.PetId,

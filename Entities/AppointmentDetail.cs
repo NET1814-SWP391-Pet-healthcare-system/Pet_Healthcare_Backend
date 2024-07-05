@@ -11,9 +11,8 @@ namespace Entities
     public class AppointmentDetail
     {
         [Key]
-        public int AppointmentDetailId { get; set; }
-        public int? AppointmentId { get; set; }
-        [ForeignKey("AppointmentId")]
+        [ForeignKey("Appointment")]
+        public int AppointmentId { get; set; }
         public Appointment? Appointment { get; set; }
         public int? RecordId { get; set; }
         [ForeignKey("RecordId")]

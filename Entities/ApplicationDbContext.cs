@@ -68,6 +68,12 @@ namespace Entities
                 .HasForeignKey(ad => ad.RecordId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<AppointmentDetail>()
+                .HasOne(ad => ad.Appointment)
+                .WithOne(a => a.AppointmentDetail)
+                .HasForeignKey<AppointmentDetail>(ad => ad.AppointmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Define composite keys
             modelBuilder.Entity<PetVaccination>()
                 .HasKey(pv => new { pv.PetId, pv.VaccineId });
@@ -153,11 +159,11 @@ namespace Entities
             );
 
             modelBuilder.Entity<AppointmentDetail>().HasData(
-                new AppointmentDetail { AppointmentDetailId = 1, AppointmentId = 1, RecordId = 1, Diagnosis = "Healthy", Treatment = null, Medication = null },
-                new AppointmentDetail { AppointmentDetailId = 2, AppointmentId = 2, RecordId = 2, Diagnosis = "Ear Infection", Treatment = "Antibiotic Ear Drops", Medication = "Otomax Otic Solution" },
-                new AppointmentDetail { AppointmentDetailId = 3, AppointmentId = 3, RecordId = 3, Diagnosis = "Feather Plucking", Treatment = "Environmental Enrichment", Medication = null },
-                new AppointmentDetail { AppointmentDetailId = 4, AppointmentId = 4, RecordId = 4, Diagnosis = "Swim Bladder Disorder", Treatment = "Medication and Diet Change", Medication = "Antibiotics and Anti-inflammatory" },
-                new AppointmentDetail { AppointmentDetailId = 5, AppointmentId = 5, RecordId = 5, Diagnosis = "Gastrointestinal Stasis", Treatment = "Motility Medication and Massage", Medication = "CisaprIde and Simethicone" }
+                new AppointmentDetail { AppointmentId = 1, RecordId = 1, Diagnosis = "Healthy", Treatment = null, Medication = null },
+                new AppointmentDetail { AppointmentId = 2, RecordId = 2, Diagnosis = "Ear Infection", Treatment = "Antibiotic Ear Drops", Medication = "Otomax Otic Solution" },
+                new AppointmentDetail { AppointmentId = 3, RecordId = 3, Diagnosis = "Feather Plucking", Treatment = "Environmental Enrichment", Medication = null },
+                new AppointmentDetail { AppointmentId = 4, RecordId = 4, Diagnosis = "Swim Bladder Disorder", Treatment = "Medication and Diet Change", Medication = "Antibiotics and Anti-inflammatory" }
+                //new AppointmentDetail { AppointmentId = 5, RecordId = 5, Diagnosis = "Gastrointestinal Stasis", Treatment = "Motility Medication and Massage", Medication = "CisaprIde and Simethicone" }
             );
 
             modelBuilder.Entity<Hospitalization>().HasData(
