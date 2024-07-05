@@ -26,7 +26,9 @@ namespace Repositories
 
         public async Task<IEnumerable<Record>> GetAllAsync()
         {
-            return await _context.Records.ToListAsync();
+            return await _context.Records
+                .Include(a => a.Pet)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<AppointmentDetail>> GetAllAppointmentDetailAsync()
@@ -37,7 +39,9 @@ namespace Repositories
         public async Task<Record?> GetByIdAsync(int id)
         {
 
-            return await _context.Records.FirstOrDefaultAsync(x => x.RecordId == id);
+            return await _context.Records
+                .Include(a => a.Pet)
+                .FirstOrDefaultAsync(x => x.RecordId == id);
 
         }
 
