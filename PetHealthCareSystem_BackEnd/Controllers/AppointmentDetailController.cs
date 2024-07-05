@@ -39,6 +39,11 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             AppointmentDetail appointmentDetailModel = appointmentDetail.ToAppointmentDetailFromAdd();
             //appointmentDetailModel.RecordId = _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId).Result.Pet.RecordID;
+            var appointment = await _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId);
+            if (appointment == null)
+            {
+                return NotFound("Appointment not found");
+            }
             if (appointmentDetailModel == null)
             {
                 return NotFound("Please input data");

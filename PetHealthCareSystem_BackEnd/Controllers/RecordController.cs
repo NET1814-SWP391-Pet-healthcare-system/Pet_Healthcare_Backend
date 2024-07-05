@@ -34,11 +34,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return BadRequest(ModelState);
             }
             var recordModel = record.ToRecordFromAdd();
+            recordModel.Pet = await _petService.GetPetById((int)recordModel.PetId);
             //var IsPetHasRecord = _petService.GetPetById((int)recordModel.PetId).Result.RecordId;
             //if(IsPetHasRecord != null)
             //{
             //    return BadRequest(businessResult);
             //}
+
             if(RecordValidation.IsRecordValid(recordModel, _recordService, _petService) == false)
             {
                 return BadRequest("Record not valid");
