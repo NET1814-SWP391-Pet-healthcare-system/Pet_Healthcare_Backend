@@ -37,5 +37,6 @@ namespace Entities
         public string? Comments { get; set; }
         public AppointmentStatus? Status{ get; set; }
         public PaymentStatus? PaymentStatus { get; set; }
+        public AppointmentDetail? AppointmentDetail { get; set; }
     }
 }

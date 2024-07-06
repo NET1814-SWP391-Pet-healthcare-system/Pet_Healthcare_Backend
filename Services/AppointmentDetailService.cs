@@ -58,7 +58,7 @@ namespace Services
 
         public async Task<AppointmentDetail?> UpdateAppointmentDetailAsync(AppointmentDetail request)
         {
-            var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(request.AppointmentDetailId);
+            var ExistingAppointmentDetail = await _appointmentDetailRepository.GetByIdAsync(request.AppointmentId);
             if (request == null || ExistingAppointmentDetail == null)
             {
                 return null;
