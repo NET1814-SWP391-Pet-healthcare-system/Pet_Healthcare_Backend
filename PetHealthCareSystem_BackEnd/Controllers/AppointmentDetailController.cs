@@ -80,21 +80,20 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         //Update
         [HttpPut("update-diagnose/{id}")]
-        public async Task<IActionResult> UpdateDiagnosis([FromRoute] int id, [FromBody] AppointmentDetailUpdateDiagnosis? appointmentDetail)
+        public async Task<IActionResult> UpdateDiagnosis([FromBody] AppointmentDetailUpdateDiagnosis? appointmentDetail)
         {
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-
-            var appointmentDetailModel = await _appointmentDetailService.GetAppointmentDetailByIdAsync(id);
+           
+            var appointmentDetailModel = await _appointmentDetailService.GetAppointmentDetailByIdAsync((int)appointmentDetail.AppointmentId);
             if (appointmentDetailModel == null)
             {
                 return NotFound("AppointmentDetail not found");
             }
             var UpdateDiagnosis = appointmentDetail.ToAppointmentDetailUpdateDiagnosis();
-            UpdateDiagnosis.AppointmentId = id;
             if (await _appointmentService.GetAppointmentByIdAsync((int)appointmentDetailModel.AppointmentId) == null
                 || await _recordService.GetRecordByIdAsync((int)appointmentDetail.RecordId) == null)
             {
