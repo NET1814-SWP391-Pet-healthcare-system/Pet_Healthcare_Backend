@@ -8,7 +8,6 @@ namespace ServiceContracts.DTO.AppointmentDetailDTO
 {
     public class AppointDetailDTO
     {
-        public int AppointmentDetailId { get; set; }
         public int? AppointmentId { get; set; }
         public int? RecordId { get; set; }
         public int? PetId { get; set; }

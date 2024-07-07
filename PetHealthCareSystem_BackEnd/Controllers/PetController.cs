@@ -24,17 +24,19 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     public class PetController : ControllerBase
     {
         private readonly IPetService _petService;
+        private readonly IRecordService _recordService;
         private readonly UserManager<User> _userManager;
         private readonly IPhotoService _photoService;
 
-        public PetController(IPetService petService, UserManager<User> userManager, IPhotoService photoService)
+        public PetController(IPetService petService, IRecordService recordService, UserManager<User> userManager, IPhotoService photoService)
         {
             _petService = petService;
+            _recordService = recordService;
             _userManager = userManager;
             _photoService = photoService;
         }
 
-        [Authorize(Policy = "AdminEmployeePolicy")]
+        [Authorize(Policy = "VetEmployeeAdminPolicy")]
         [HttpGet]
         public async Task<IActionResult> GetPets()
         {
@@ -102,6 +104,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var result = await _petService.AddPet(pet);
+            var record = new Record()
+            {
+                NumberOfVisits = 0,
+                PetId = pet.PetId
+            };
+            await _recordService.AddRecordAsync(record);
             return Ok(result.ToPetDto());
         }
 
