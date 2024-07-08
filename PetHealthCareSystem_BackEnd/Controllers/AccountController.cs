@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet.Actions;
+﻿using Braintree;
+using CloudinaryDotNet.Actions;
 using Entities;
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +23,7 @@ using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
 using System.Drawing;
 using System.Security.Claims;
+using Customer = Entities.Customer;
 
 namespace PetHealthCareSystem_BackEnd.Controllers
 {
@@ -47,7 +49,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
-            {
+        {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -88,6 +90,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                var existingAccount = _userManager.FindByEmailAsync(registerDto.Email);
+                if(existingAccount is not null)
+                {
+                    return BadRequest("Email is already registered");
+                }
+
                 var customer = new Customer
                 {
                     FirstName = registerDto.FirstName,
@@ -100,6 +109,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     Email = registerDto.Email,
                     IsActive = true
                 };
+
 
                 var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password!);
 
@@ -116,14 +126,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                         var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
 
                         await _emailService.SendEmailAsync(message);
-                        
+
                         return Ok(new NewUserDto
                         {
                             UserName = customer.UserName,
                             Email = customer.Email,
                             Role = role
                         });
-;
+                        ;
                     }
                     else
                     {
@@ -150,7 +160,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email!);
-            if (user != null)
+            if(user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -341,7 +351,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            
+
             var currentUser = await _userManager.GetUserAsync(this.User);
 
             if(userUpdateRequest.Username != null)
@@ -457,7 +467,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result);
         }
 
-        
+
 
 
         [HttpGet("run-seed-data-only-run-once")]
