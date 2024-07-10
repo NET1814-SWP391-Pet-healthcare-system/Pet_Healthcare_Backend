@@ -1,27 +1,15 @@
-﻿using Braintree;
-using CloudinaryDotNet.Actions;
+﻿using CloudinaryDotNet.Actions;
 using Entities;
-using Humanizer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
-using MimeKit;
 using PetHealthCareSystem_BackEnd.Extensions;
 using PetHealthCareSystem_BackEnd.Validations;
-using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.DTO.PetDTO;
-using ServiceContracts.DTO.Result;
 using ServiceContracts.DTO.UserDTO;
 using ServiceContracts.Mappers;
-using System.Drawing;
 using System.Security.Claims;
 using Customer = Entities.Customer;
 
@@ -50,24 +38,24 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
-            if(user == null || user.IsDeleted)
+            if (user == null || user.IsDeleted)
             { return Unauthorized("Username not found or password incorrect"); }
 
             //Check if account is banned
-            if(!user.IsActive ?? true)
+            if (!user.IsActive ?? true)
             {
                 return Forbid("Account is banned");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             { return Unauthorized("Username not found or password incorrect"); }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -86,13 +74,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
                 var existingAccount = _userManager.FindByEmailAsync(registerDto.Email);
-                if(existingAccount is not null)
+                if (existingAccount is not null)
                 {
                     return BadRequest("Email is already registered");
                 }
@@ -113,17 +101,63 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                 var createCustomer = await _userManager.CreateAsync(customer, registerDto.Password!);
 
-                if(createCustomer.Succeeded)
+                if (createCustomer.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(customer, "Customer");
-                    if(roleResult.Succeeded)
+                    if (roleResult.Succeeded)
                     {
                         var roles = await _userManager.GetRolesAsync(customer);
                         var role = roles.FirstOrDefault();
 
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
                         var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
-                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
+                        string htmlContent = $@"
+                                    <!DOCTYPE html>
+                                        <html lang='en'>
+                                        <head>
+                                            <meta charset='UTF-8'>
+                                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                                            <title>Password Reset Request</title>
+                                            <style>
+                                                .overlay {{
+                                                    background-color: rgba(255, 255, 255, 0.7);
+                                                    position: absolute;
+                                                    top: 0;
+                                                    left: 0;
+                                                    right: 0;
+                                                    bottom: 0;
+                                                    z-index: 1;
+                                                }}
+                                                .content-container {{
+                                                    position: relative;
+                                                    z-index: 2;
+                                                }}
+                                            </style>
+                                        </head>
+                                        <body style='margin: 0; font-family: Arial, sans-serif; background-color: #f9f9f9;'>
+                                            <div style='max-width: 800px; margin: auto; background-color: white; padding: 20px'>
+                                                <div style='text-align: center; padding: 20px; background-color: white;'>
+                                                    <div style='display: flex; justify-content: center; align-items: center; text-align: center; height: 80px;'>
+                                                        <img src='https://res.cloudinary.com/dp34so8og/image/upload/v1719054992/hhvkqe55tvkcbf8zkkmj.png' alt='Paw' style='width: 80px; height: auto; margin-right: 16px;'>
+                                                        <span style='font-size: 3.5rem; font-weight: 600; color: #DB2777;'>Pet88</span>
+                                                    </div>
+                                                </div>
+                                                <div class='overlay'></div>
+                                                <div style='content-container padding: 20px;'>
+                                                    <h2 style='font-size: 2rem; font-weight: bold;'>Email Confirmation Request</h2>
+                                                    <p style='font-size: 1rem;'>Dear User,</p>
+                                                    <p style='font-size: 1rem;'>Thanks for register to out website. Please click the button below to confirm your email:</p>
+                                                    <div style='text-align: center; margin: 20px 0;'>
+                                                        <a href='{confirmationLink}' style='display: inline-block; background-color: #DB2777; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;'>Confirm Email</a>
+                                                    </div>
+                                                    <p style='font-size: 1rem;'>Thank you for using our services. We value your security and are here to help if you need any assistance.</p>
+                                                    <p style='font-size: 1rem;'>Best regards,<br>Your Company Support Team</p>
+                                                </div>
+                                            </div>
+                                        </body>
+                                        </html>
+                                        ";
+                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", htmlContent);
 
                         await _emailService.SendEmailAsync(message);
 
@@ -145,7 +179,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return StatusCode(500, createCustomer.Errors);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode(500, e);
             }
@@ -154,13 +188,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest forgotPasswordRequest)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email!);
-            if(user != null)
+            if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -241,18 +275,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email!);
-            if(user != null)
+            if (user != null)
             {
                 var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordRequest.Token!, resetPasswordRequest.Password!);
-                if(!resetPasswordResult.Succeeded)
+                if (!resetPasswordResult.Succeeded)
                 {
-                    foreach(var error in resetPasswordResult.Errors)
+                    foreach (var error in resetPasswordResult.Errors)
                     {
                         ModelState.AddModelError(error.Code, error.Description);
                     }
@@ -331,10 +365,10 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if(user != null)
+            if (user != null)
             {
                 var result = await _userManager.ConfirmEmailAsync(user, token);
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     return Ok("Email verified successfully");
                 }
@@ -346,7 +380,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UserUpdateRequest userUpdateRequest)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
@@ -354,27 +388,27 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             var currentUser = await _userManager.GetUserAsync(this.User);
 
-            if(userUpdateRequest.Username != null)
+            if (userUpdateRequest.Username != null)
             {
-                if(await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null &&
+                if (await _userManager.FindByNameAsync(userUpdateRequest?.Username) != null &&
                     !userUpdateRequest.Username.Equals(currentUser.UserName))
                 {
                     return Conflict("The requested username is already in use. Please choose a different username.");
                 }
             }
 
-            if(!string.IsNullOrEmpty(userUpdateRequest.PhoneNumber))
+            if (!string.IsNullOrEmpty(userUpdateRequest.PhoneNumber))
             {
-                if(!UserValidation.IsValidPhoneNumber(userUpdateRequest.PhoneNumber))
+                if (!UserValidation.IsValidPhoneNumber(userUpdateRequest.PhoneNumber))
                 {
                     return BadRequest("Invalid phone number format");
                 }
             }
 
-            if(userUpdateRequest.imageFile != null)
+            if (userUpdateRequest.imageFile != null)
             {
                 ImageUploadResult imageResult = new ImageUploadResult();
-                if(currentUser.ImageURL.IsNullOrEmpty())
+                if (currentUser.ImageURL.IsNullOrEmpty())
                 {
                     imageResult = await _photoService.AddPhotoAsync(userUpdateRequest.imageFile);
                 }
@@ -384,7 +418,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     {
                         await _photoService.DeletePhotoAsync(currentUser.ImageURL);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         return BadRequest($"Could not delete photo, exception: {ex.Message}");
                     }
@@ -394,7 +428,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 userUpdateRequest.ImageURL = imageResult.Url.ToString();
             }
             var result = await _userManager.UpdateUserAsync(currentUser.Id, userUpdateRequest);
-            if(result == null)
+            if (result == null)
             {
                 return NotFound("UserId not found");
             }
@@ -404,14 +438,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpPost("generate-new-jwt-token")]
         public async Task<IActionResult> GenerateNewAccessToken(TokenModel tokenModel)
         {
-            if(tokenModel == null)
+            if (tokenModel == null)
             {
                 return BadRequest("Invalid client request");
             }
 
             ClaimsPrincipal? principal = _tokenService.GetPrincipalFromJwtToken(tokenModel.Token);
 
-            if(principal == null)
+            if (principal == null)
             {
                 return BadRequest("Invalid JWT access token");
             }
@@ -419,7 +453,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             string? email = principal.FindFirstValue(ClaimTypes.Email);
             string? role = principal.FindFirstValue(ClaimTypes.Role);
             User user = await _userManager.FindByEmailAsync(email);
-            if(user == null || user.RefreshToken != tokenModel.RefreshToken || user.RefreshTokenExpiryDate <= DateTime.Now)
+            if (user == null || user.RefreshToken != tokenModel.RefreshToken || user.RefreshTokenExpiryDate <= DateTime.Now)
             {
                 return BadRequest("Invalid refresh token");
             }
@@ -436,14 +470,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             var username = _userManager.GetUserName(this.User);
 
-            if(username is null)
+            if (username is null)
             {
                 return Unauthorized("Unauthorized user");
             }
 
             var user = await _userManager.FindByNameAsync(username);
 
-            if(user is null)
+            if (user is null)
             {
                 return Unauthorized("Unauthorized user");
             }
@@ -475,7 +509,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
@@ -492,7 +526,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 await _userManager.AddToRoleAsync(vet2!, "Vet");
                 return Ok("Role seeded");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode(500, e);
             }
