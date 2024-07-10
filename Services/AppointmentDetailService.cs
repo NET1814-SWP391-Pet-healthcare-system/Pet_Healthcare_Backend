@@ -71,7 +71,20 @@ namespace Services
             await _appointmentDetailRepository.UpdateAsync(ExistingAppointmentDetail);
             return ExistingAppointmentDetail;
         }
+        public async Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsByPetIdAsync(int petId)
+        {
+            var list = await _appointmentDetailRepository.GetAllAsync();
+            var listToReturn = new List<AppointmentDetail>();   
+            foreach(AppointmentDetail appointmentDetail in list)
+            {
+                if(appointmentDetail.Appointment.PetId != petId)
+                {
+                    listToReturn.Add(appointmentDetail);
+                }
+            }
 
+            return listToReturn;
+        }
 
     }
 }

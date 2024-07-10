@@ -16,6 +16,7 @@ namespace ServiceContracts
         Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync();
         Task<bool> RemoveAppointmentDetailAsync(int id);
         Task<AppointmentDetail?> GetAppointmentDetailByIdAsync(int id);
+        Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsByPetIdAsync(int petId);
 
     }
 }

@@ -17,11 +17,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
     {
         private readonly IPetService _petService;
         private readonly IRecordService _recordService;
+        private readonly IAppointmentDetailService _appointmentDetailService;
 
-        public RecordController(IPetService petService, IRecordService recordService)
+        public RecordController(IPetService petService, IRecordService recordService, IAppointmentDetailService appointmentDetailService)
         {
             _petService = petService;
             _recordService = recordService;
+            _appointmentDetailService = appointmentDetailService;
         }
 
         //Create
@@ -33,21 +35,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var recordModel = record.ToRecordFromAdd();
-            recordModel.Pet = await _petService.GetPetById((int)recordModel.PetId);
-            //var IsPetHasRecord = _petService.GetPetById((int)recordModel.PetId).Result.RecordId;
-            //if(IsPetHasRecord != null)
-            //{
-            //    return BadRequest(businessResult);
-            //}
-
-            if(RecordValidation.IsRecordValid(recordModel, _recordService, _petService) == false)
+            var IsPetHasRecord = await _recordService.GetRecordByPetIdAsync(record.PetId);
+            if (IsPetHasRecord != null)
             {
-                return BadRequest("Record not valid");
-            }   
+                return BadRequest("Pet already record");
+            }
+            var recordModel = record.ToRecordFromAdd(_appointmentDetailService);
+            recordModel.Pet = await _petService.GetPetById((int)recordModel.PetId);
+           
 
             var data = await _recordService.AddRecordAsync(recordModel);
-            return Ok(data.ToRecordDto());
+            return Ok(data.ToRecordDto(_appointmentDetailService));
         }
 
         //Read
@@ -56,7 +54,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         public async Task<IActionResult> GetRecords()
         {
             var recs = await _recordService.GetRecordsAsync();
-            var recDtos = recs.Select(x => x.ToRecordDto());
+            var recDtos = recs.Select(x => x.ToRecordDto(_appointmentDetailService));
+
             return Ok(recDtos);
         }
 
@@ -69,7 +68,12 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Record not found");
             }
-            return Ok(rec.ToRecordDto());
+            if(rec.PetId == null)
+            {
+                return BadRequest("Record doesn't assign to any pet");
+            }
+       
+            return Ok(rec.ToRecordDto(_appointmentDetailService));
         }
 
         [Authorize(Policy = "VetEmployeeAdminPolicy")]
@@ -86,7 +90,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest("Delete Fail");
             }
-            return Ok(record.ToRecordDto());
+            return Ok(record.ToRecordDto(_appointmentDetailService));
         }
 
         //Update
@@ -104,14 +108,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Record not found");
             }
-            var recordModel = record.ToRecordFromUpdate();
-            recordModel.RecordId = id;
-            var recordUpdated = await _recordService.UpdateRecordAsync(recordModel);
+            var recordModel = record.ToRecordFromUpdate(_appointmentDetailService);
+
+            existingRec.NumberOfVisits = recordModel.NumberOfVisits;
+            existingRec.PetId = recordModel.PetId;
+            
+            var recordUpdated = await _recordService.UpdateRecordAsync(existingRec);
             if (recordUpdated ==null)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(recordUpdated.ToRecordDto());
+            return Ok(recordUpdated.ToRecordDto(_appointmentDetailService));
         }
 
     }
