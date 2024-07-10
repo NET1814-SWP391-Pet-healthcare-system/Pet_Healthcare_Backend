@@ -15,7 +15,9 @@ namespace ServiceContracts.Mappers
             int NumOfVist = 0;
             if (request.PetId != null)
             {
-                NumOfVist = appointmentDetailService.GetAppointmentDetailsByPetIdAsync((int)request.PetId).Result.ToList().Count;
+                var list =  appointmentDetailService.GetAppointmentDetailsByPetIdAsync((int)request.PetId).Result.ToList();
+                NumOfVist = list.Count();
+  
             }
             return new RecordDto
             {
