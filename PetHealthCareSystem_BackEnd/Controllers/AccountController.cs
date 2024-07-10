@@ -169,7 +169,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     </body>
                     </html>
                     ";
-                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
+                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", htmlContent);
 
                         await _emailService.SendEmailAsync(message);
 
