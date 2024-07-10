@@ -10,29 +10,47 @@ namespace ServiceContracts.Mappers
 {
     public static class RecordMapper
     {
-        public static RecordDto ToRecordDto(this Record request)
+        public static RecordDto ToRecordDto(this Record request, IAppointmentDetailService appointmentDetailService)
         {
+            int NumOfVist = 0;
+            if (request.PetId != null)
+            {
+                var list =  appointmentDetailService.GetAppointmentDetailsByPetIdAsync((int)request.PetId).Result.ToList();
+                NumOfVist = list.Count();
+  
+            }
             return new RecordDto
             {
                 RecordId = request.RecordId,
                 PetName = request.Pet.Name,
-                NumberOfVisits = request.NumberOfVisits
+                NumberOfVisits = NumOfVist
             };
         }
-        public static Record ToRecordFromAdd(this RecordAddRequest request)
+        public static Record ToRecordFromAdd(this RecordAddRequest request, IAppointmentDetailService appointmentDetailService)
         {
+            int NumOfVist = 0;
+            if (request.PetId != null)
+            {
+                NumOfVist = appointmentDetailService.GetAppointmentDetailsByPetIdAsync((int)request.PetId).Result.ToList().Count;
+            }
             return new Record
             {
                 PetId = request.PetId,
-                NumberOfVisits = request.NumberOfVisits
+                NumberOfVisits = NumOfVist
             };
         }
-        public static Record ToRecordFromUpdate(this RecordUpdateRequest request)
+        public static Record ToRecordFromUpdate(this RecordUpdateRequest request,IAppointmentDetailService appointmentDetailService)
         {
+            int NumOfVist = 0;
+            if (request.PetId != null)
+            {
+                NumOfVist = appointmentDetailService.GetAppointmentDetailsByPetIdAsync((int)request.PetId).Result.ToList().Count;
+            }
+
             return new Record
             {
                 PetId = request.PetId,
-                NumberOfVisits = request.NumberOfVisits
+                NumberOfVisits = NumOfVist
             };
         }
     }

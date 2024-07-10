@@ -9,9 +9,8 @@ namespace ServiceContracts.DTO.RecordDTO
 {
     public class RecordUpdateRequest
     {
-        [Required]
         public int PetId { get; set; }
-        [Required]
+        public int AppointmentDetaId { get; set; }
         public int NumberOfVisits { get; set; }
     }
 }
