@@ -77,7 +77,7 @@ namespace Services
             var listToReturn = new List<AppointmentDetail>();   
             foreach(AppointmentDetail appointmentDetail in list)
             {
-                if(appointmentDetail.Appointment.PetId != petId)
+                if(appointmentDetail.Appointment.PetId == petId)
                 {
                     listToReturn.Add(appointmentDetail);
                 }
