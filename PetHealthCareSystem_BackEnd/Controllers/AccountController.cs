@@ -123,7 +123,53 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
                         var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = customer.Email }, Request.Scheme);
-                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", confirmationLink!);
+                        string htmlContent = $@"
+                <!DOCTYPE html>
+                    <html lang='en'>
+                    <head>
+                        <meta charset='UTF-8'>
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                        <title>Password Reset Request</title>
+                        <style>
+                            .overlay {{
+                                background-color: rgba(255, 255, 255, 0.7);
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                z-index: 1;
+                            }}
+                            .content-container {{
+                                position: relative;
+                                z-index: 2;
+                            }}
+                        </style>
+                    </head>
+                    <body style='margin: 0; font-family: Arial, sans-serif; background-color: #f9f9f9;'>
+                        <div style='max-width: 800px; margin: auto; background-color: white; padding: 20px'>
+                            <div style='text-align: center; padding: 20px; background-color: white;'>
+                                <div style='display: flex; justify-content: center; align-items: center; text-align: center; height: 80px;'>
+                                    <img src='https://res.cloudinary.com/dp34so8og/image/upload/v1719054992/hhvkqe55tvkcbf8zkkmj.png' alt='Paw' style='width: 80px; height: auto; margin-right: 16px;'>
+                                    <span style='font-size: 3.5rem; font-weight: 600; color: #DB2777;'>Pet88</span>
+                                </div>
+                            </div>
+                            <div class='overlay'></div>
+                            <div style='content-container padding: 20px;'>
+                                <h2 style='font-size: 2rem; font-weight: bold;'>Email Confirm Request</h2>
+                                <p style='font-size: 1rem;'>Dear User,</p>
+                                <p style='font-size: 1rem;'>Thanks for register to our website. Please click the button below to confirm your email:</p>
+                                <div style='text-align: center; margin: 20px 0;'>
+                                    <a href='{confirmationLink}' style='display: inline-block; background-color: #DB2777; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;'>Confirm Email</a>
+                                </div>
+                                <p style='font-size: 1rem;'>Thank you for using our services. We value your security and are here to help if you need any assistance.</p>
+                                <p style='font-size: 1rem;'>Best regards,<br>Your Company Support Team</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                    ";
+                        var message = new Message(new string[] { customer.Email! }, "Confirmation Email Link", htmlContent);
 
                         await _emailService.SendEmailAsync(message);
 
