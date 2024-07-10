@@ -91,7 +91,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var existingAccount = _userManager.FindByEmailAsync(registerDto.Email);
+                var existingAccount = await _userManager.FindByEmailAsync(registerDto.Email);
                 if(existingAccount is not null)
                 {
                     return BadRequest("Email is already registered");
