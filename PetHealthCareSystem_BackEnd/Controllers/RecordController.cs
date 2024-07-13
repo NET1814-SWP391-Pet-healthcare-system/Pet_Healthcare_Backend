@@ -109,7 +109,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
             try
             {
-                var isDeleted = await _recordService.RemoveRecordAsync(petId);
+                var isDeleted = await _recordService.RemoveRecordAsync(record.RecordId);
                 if (!isDeleted)
                 {
                     return BadRequest("Delete failed");
