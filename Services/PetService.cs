@@ -70,6 +70,13 @@ namespace Services
             var pet = await _petRepository.GetByIdAsync(id);
             return await _petRepository.RemoveAsync(pet);
         }
+
+        public async Task<IEnumerable<Pet>> GetCustomerPet(string customerId)
+        {
+            var pets = await _petRepository.GetAllAsync();
+            var customerPets = pets.Where(p => p.CustomerId.Equals(customerId));
+            return customerPets;
+        }
             
     }
 }
