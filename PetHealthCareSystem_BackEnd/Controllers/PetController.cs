@@ -104,12 +104,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
 
             var result = await _petService.AddPet(pet);
-            var record = new Record()
-            {
-                NumberOfVisits = 0,
-                PetId = pet.PetId
-            };
-            await _recordService.AddRecordAsync(record);
             return Ok(result.ToPetDto());
         }
 
