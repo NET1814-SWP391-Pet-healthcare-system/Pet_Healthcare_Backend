@@ -174,6 +174,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             BusinessResult businessResult = new BusinessResult();
             string paymentStatus = string.Empty;
             var gateway = _config.GetGateway();
+
+            #region Validation
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -191,9 +194,17 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 businessResult.Status = 404;
                 businessResult.Data = null;
-                businessResult.Message = "Appointment Already Paid";
+                businessResult.Message = "Appointment Already Done";
                 return BadRequest(businessResult);
             }
+            if(appointment.PaymentStatus == PaymentStatus.Refunded)
+            {
+                businessResult.Status = 404;
+                businessResult.Data = null;
+                businessResult.Message = "Appointment Already Refunded";
+                return BadRequest(businessResult);
+            }
+
 
 
             var customerName = _userService.GetUserName(this.User);
@@ -213,7 +224,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Customer Not Owner Of This Transaction";
                 return BadRequest(businessResult);
             }
-
+            #endregion
 
             var transactionList = await _transactionService.GetByUserIdAsync(customer.Id);
             var transactionId = transactionList.FirstOrDefault(t => t.AppointmentId == refundRequest.AppointmentId);
@@ -226,8 +237,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 businessResult.Message = "Transaction Not Found";
                 return BadRequest(businessResult);
             }
-
-           
 
             Result<Braintree.Transaction> result = gateway.Transaction.Refund(transactionId.TransactionId,(decimal)transactionId.Amount*CalculateRefundPercentage(appointment.Date));
             if (result.IsSuccess())
