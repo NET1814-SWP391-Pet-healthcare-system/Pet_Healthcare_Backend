@@ -51,6 +51,7 @@ namespace Repositories
                 .Include(a => a.Vet)
                 .Include(a => a.Slot)
                 .Include(a => a.Service)
+                .Include(a => a.AppointmentDetail)
                 .FirstOrDefaultAsync(a => a.AppointmentId == id);
         }
 

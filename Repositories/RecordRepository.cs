@@ -60,5 +60,10 @@ namespace Repositories
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<Record?> GetByPetIdAsync(int id)
+        {
+            return await _context.Records.Where(x => x.PetId == id).FirstOrDefaultAsync();
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace ServiceContracts
         Task<IEnumerable<Pet>> GetAllPets();
         Task<Pet?> UpdatePet(Pet pet);
         Task<bool> RemovePetById(int id);
+        Task<IEnumerable<Pet>> GetCustomerPet(string customerId);
     }
 }

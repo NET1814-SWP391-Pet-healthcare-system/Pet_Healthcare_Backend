@@ -44,16 +44,32 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return NotFound("Appointment not found");
             }
+            if (appointment.AppointmentDetail != null)
+            {
+                return BadRequest("This appointment already has an appointment detail");
+            }
             if (appointmentDetailModel == null)
             {
                 return NotFound("Please input data");
             }
+            var record = await _recordService.GetRecordByPetIdAsync((int)appointment.PetId);
+            if (record == null) 
+            {
+                return BadRequest("Pet doesn't have a record yet");
+            }
+            appointmentDetailModel.RecordId = record.RecordId;
+            record.NumberOfVisits++;
+            await _recordService.UpdateRecordAsync(record);
 
             var result = await _appointmentDetailService.AddAppointmentDetailAsync(appointmentDetailModel);
             return Ok(result.ToAppointDetailDto());
+        }
 
-
-
+        [HttpGet("record/{recordId}")]
+        public async Task<IActionResult> GetRecordAppointmentDetails([FromRoute] int recordId)
+        {
+            var recordAppointmentDetails = await _recordService.GetAppointmentDetailsAsync();
+            return Ok(recordAppointmentDetails.Where(x => x.RecordId == recordId));
         }
 
         //Read

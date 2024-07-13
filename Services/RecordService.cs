@@ -46,6 +46,11 @@ namespace Services
             return result;  
         }
 
+        public async Task<Record?> GetRecordByPetIdAsync(int id)
+        {
+            return await _recordRepository.GetByPetIdAsync(id);
+        }
+
         public async Task<IEnumerable<Record>?> GetRecordsAsync()
         {
             return await _recordRepository.GetAllAsync();

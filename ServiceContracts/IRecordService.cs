@@ -13,6 +13,7 @@ namespace ServiceContracts
     {
         Task<Record?> AddRecordAsync(Record? request);
         Task<Record?> GetRecordByIdAsync(int id);
+        Task<Record?> GetRecordByPetIdAsync(int id);
         Task<IEnumerable<AppointmentDetail>> GetAppointmentDetailsAsync();
         Task<IEnumerable<Record>> GetRecordsAsync();
         Task<Record?> UpdateRecordAsync(Record request);
