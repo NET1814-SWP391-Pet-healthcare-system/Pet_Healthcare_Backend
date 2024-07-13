@@ -95,7 +95,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         [HttpDelete("{petId}")]
         public async Task<IActionResult> RemoveRecordByPetId(int petId)
         {
-            var record = await _recordService.GetRecordByIdAsync(petId);
+            var record = await _recordService.GetRecordByPetIdAsync(petId);
             if (record is null)
             {
                 return NotFound ("Record not found");
