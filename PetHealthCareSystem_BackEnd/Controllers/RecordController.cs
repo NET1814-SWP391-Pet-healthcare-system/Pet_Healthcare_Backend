@@ -1,7 +1,9 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PetHealthCareSystem_BackEnd.Validations;
 using ServiceContracts;
 using ServiceContracts.DTO.RecordDTO;
@@ -18,16 +20,18 @@ namespace PetHealthCareSystem_BackEnd.Controllers
         private readonly IPetService _petService;
         private readonly IRecordService _recordService;
         private readonly IAppointmentDetailService _appointmentDetailService;
+        private readonly UserManager<User> _userManager;
 
-        public RecordController(IPetService petService, IRecordService recordService, IAppointmentDetailService appointmentDetailService)
+        public RecordController(IPetService petService, IRecordService recordService, IAppointmentDetailService appointmentDetailService, UserManager<User> userManager)
         {
             _petService = petService;
             _recordService = recordService;
             _appointmentDetailService = appointmentDetailService;
+            _userManager = userManager;
         }
 
         //Create
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddRecordAsync(RecordAddRequest? record)
         {
@@ -35,10 +39,21 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+
+            if (this.User.IsInRole("Customer"))
+            {
+                var petIdList = await CurrentCustomerPetIdList();
+                if (!petIdList.Contains(record.PetId))
+                {
+                    return NotFound("Customer doesn't have this pet");
+                }
+            }
+
             var IsPetHasRecord = await _recordService.GetRecordByPetIdAsync(record.PetId);
             if (IsPetHasRecord != null)
             {
-                return BadRequest("Pet already record");
+                return BadRequest("Pet already has a record");
             }
             var recordModel = record.ToRecordFromAdd(_appointmentDetailService);
             recordModel.Pet = await _petService.GetPetById((int)recordModel.PetId);
@@ -76,20 +91,39 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(rec.ToRecordDto(_appointmentDetailService));
         }
 
-        [Authorize(Policy = "VetEmployeeAdminPolicy")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveRecord(int id)
+        [Authorize]
+        [HttpDelete("{petId}")]
+        public async Task<IActionResult> RemoveRecordByPetId(int petId)
         {
-            var record = await _recordService.GetRecordByIdAsync(id);
-            if (record==null)
+            var record = await _recordService.GetRecordByIdAsync(petId);
+            if (record is null)
             {
                 return NotFound ("Record not found");
             }
-            var isDeleted = await _recordService.RemoveRecordAsync(id);
-            if (!isDeleted)
+
+            var petIdList = await CurrentCustomerPetIdList();
+            if (!petIdList.Contains(petId))
             {
-                return BadRequest("Delete Fail");
+                return NotFound("Customer doesn't have this pet");
             }
+
+            try
+            {
+                var isDeleted = await _recordService.RemoveRecordAsync(petId);
+                if (!isDeleted)
+                {
+                    return BadRequest("Delete failed");
+                }
+            }
+            catch (DbUpdateException dbe)
+            {
+                return BadRequest("There is an appointment using this record");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"{ex.Message}");
+            }
+            
             return Ok(record.ToRecordDto(_appointmentDetailService));
         }
 
@@ -120,6 +154,13 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             return Ok(recordUpdated.ToRecordDto(_appointmentDetailService));
         }
+        private async Task<IEnumerable<int>> CurrentCustomerPetIdList()
+        {
+            var currentCustomer = await _userManager.GetUserAsync(this.User);
 
+            var customerPets = await _petService.GetCustomerPet(currentCustomer?.Id);
+            var customerPetIds = customerPets.Select(p => p.PetId);
+            return customerPetIds;
+        }
     }
 }
