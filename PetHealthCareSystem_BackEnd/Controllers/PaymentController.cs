@@ -48,7 +48,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             TransactionStatus.SETTLEMENT_PENDING,
             TransactionStatus.SUBMITTED_FOR_SETTLEMENT
         };
-
+        [Authorize]
         [HttpGet, Route("GenerateToken")]
         public async Task<IActionResult> GenerateToken()
         {
@@ -71,6 +71,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
 
         }
+        [Authorize]
         [HttpPost("Checkout")]
         public async Task<IActionResult> Checkout(CheckoutRequest checkoutRequest)
         {
@@ -168,6 +169,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
 
            
         }
+        [Authorize]
         [HttpPost, Route("Refund")]
         public async Task<IActionResult> Refund(RefundRequest refundRequest)
         {
@@ -277,7 +279,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 return 0.0m; // No refund 
             }
         }
-
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet, Route("Revenue")]
         public async Task<IActionResult> Revenue()
         {
@@ -328,7 +330,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(businessResult);
 
         }
-
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpGet, Route("GetTransactions")]
         public async Task<IActionResult> GetTransactions()
         {
@@ -346,7 +348,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             businessResult.Message = "Transactions Found Successfully";
             return Ok(businessResult);
         }
-
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPost, Route("CashOut")]
         public async Task<IActionResult> CashOut(CashRequest cashRequest)
         {
@@ -386,7 +388,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             return Ok(result.ToCashOutDto());
 
         }
-
+        [Authorize(Policy = "AdminEmployeePolicy")]
         [HttpPost, Route("CashOutForAppointment")]
         public async Task<IActionResult> CashoutForAppointment(CashoutAppointRequest cashRequest)
         {
