@@ -403,14 +403,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var customer = await _userService.FindByNameAsync(cashRequest.customerId);
+            var customer = await _userService.FindByIdAsync(cashRequest.customerId);
 
             if (customer == null)
             {
                 return NotFound("Customer not found");
             }
             var appointment = await _appointmentService.GetAppointmentByIdAsync(cashRequest.appointmentId);
-            if (appointment != null && appointment.PaymentStatus == PaymentStatus.Pending)
+            if (appointment != null && (appointment.PaymentStatus == PaymentStatus.Pending || appointment.PaymentStatus == null))
             {
                 appointment.PaymentStatus = PaymentStatus.Paid;
                 await _appointmentService.UpdateAppointmentPaymentStatus(cashRequest.appointmentId, PaymentStatus.Paid);
@@ -423,7 +423,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             {
                 CustomerId = customer.Id,
                 Amount = cashRequest.ammount,
-                Date = DateTime.Now
+                Date = DateTime.Now,
+                AppointmentId = cashRequest.appointmentId
             };
             var result = await _transactionService.AddAsync(transaction);
             if (result == null)
