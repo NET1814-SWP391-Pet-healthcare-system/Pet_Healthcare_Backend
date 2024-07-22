@@ -51,7 +51,6 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
                 DateOnly adDate = DateOnly.Parse(hospitalizationAddRequest.AdmissionDate);
                 DateOnly disDate = DateOnly.Parse(hospitalizationAddRequest.DischargeDate); 
-                
 
                 bool isVetFree = await _hospitalizationService.IsVetFree(hospitalizationAddRequest.VetId, adDate, disDate);
                 if (isVetFree)
@@ -60,7 +59,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 }
 
 
-            var vet = await _userManager.FindByNameAsync(hospitalizationAddRequest.VetId);
+            var vet = await _userManager.FindByIdAsync(hospitalizationAddRequest.VetId);
             var kennel = await _kennelService.GetKennelById(hospitalizationAddRequest.KennelId);
             if (vet== null || await _userService.GetAvailableVetById(vet.Id) == null)
             {
@@ -84,7 +83,8 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             }
             var hospi = hospitalizationAddRequest.ToHospitalizationFromAdd();
             hospi.Kennel = kennel;
-            hospi.TotalCost = (disDate.DayNumber - adDate.DayNumber) * kennel.DailyCost;
+            int numberOfDays = disDate.DayNumber - adDate.DayNumber + 1;
+            hospi.TotalCost = numberOfDays * kennel.DailyCost;
             var result = await _hospitalizationService.AddHospitalization(hospi);
            return Ok(result.ToHospitalizationDto());
             

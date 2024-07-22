@@ -306,23 +306,34 @@ namespace PetHealthCareSystem_BackEnd.Controllers
             double weeklyRevenue = 0;
             double monthlyRevenue = 0;
             double yearlyRevenue = 0;
+            double appointmentRevenue = 0;
+            double hospitalizationRevenue = 0;
             foreach (var transaction in transactions)
             {
                 if(transaction.Date.Date == DateTime.Now.Date)
                 {
                     dailyRevenue += transaction.Amount;
                 }
-                if(transaction.Date.Date >= DateTime.Now.AddDays(-7).Date)
+                if (transaction.Date.Date >= DateTime.Now.Date.AddDays(-(int)DateTime.Now.DayOfWeek) &&
+                    transaction.Date.Date < DateTime.Now.Date.AddDays(-(int)DateTime.Now.DayOfWeek + 7))
                 {
-                     weeklyRevenue+= transaction.Amount;
+                    weeklyRevenue += transaction.Amount;
                 }
-                if (transaction.Date.Date >= DateTime.Now.AddMonths(-1).Date)
+                if (transaction.Date.Month == DateTime.Now.Month && transaction.Date.Year == DateTime.Now.Year)
                 {
                     monthlyRevenue += transaction.Amount;
                 }
-                if (transaction.Date.Date >= DateTime.Now.AddYears(-1).Date)
+                if (transaction.Date.Year == DateTime.Now.Year)
                 {
                     yearlyRevenue += transaction.Amount;
+                }
+                if(transaction.AppointmentId != null)
+                {
+                    appointmentRevenue += transaction.Amount;
+                }
+                if(transaction.HospitalizationId != null)
+                {
+                    hospitalizationRevenue += transaction.Amount;
                 }
                 totalRevenue += transaction.Amount;
             }
@@ -333,7 +344,9 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 DailyRevenue = dailyRevenue,
                 WeeklyRevenue = weeklyRevenue,
                 MonthlyRevenue = monthlyRevenue,
-                YearlyRevenue = yearlyRevenue
+                YearlyRevenue = yearlyRevenue,
+                AppointmentRevenue = appointmentRevenue,
+                HospitalizationRevenue = hospitalizationRevenue
             };
             businessResult.Message = "Revenue Calculated Successfully";
             return Ok(businessResult);
