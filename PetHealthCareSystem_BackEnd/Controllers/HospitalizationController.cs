@@ -130,7 +130,14 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                     return NotFound("Hospitalization not found");
                 }
                 var hospi = hospitalizationUpdateRequest.ToHospitalizationUpdate();
+            if (hospi.DischargeDate < existingHospitalization.AdmissionDate)
+            {
+                return BadRequest("Discharge date cannot be lower than admission date");
+            }
             hospi.Pet= await _petService.GetPetById((int)existingHospitalization.PetId);
+            int numberOfDays = hospi.DischargeDate.Value.DayNumber - existingHospitalization.AdmissionDate.Value.DayNumber + 1;
+
+            hospi.TotalCost = numberOfDays * existingHospitalization.Kennel.DailyCost;
             hospi.HospitalizationId = id;
             var isUpdated = await _hospitalizationService.UpdateHospitalization(hospi);
             if (isUpdated == null)
