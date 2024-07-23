@@ -2,7 +2,7 @@ namespace Entities.Enum
 {
     public enum AppointmentStatus
     {
-        Boooked,
+        Booked,
         Processing,
         Done,
         Cancelled
