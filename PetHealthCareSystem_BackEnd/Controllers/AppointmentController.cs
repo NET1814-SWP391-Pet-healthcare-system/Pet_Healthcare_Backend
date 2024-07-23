@@ -207,7 +207,7 @@ namespace PetHealthCareSystem_BackEnd.Controllers
                 appointmentModel.Slot = slot;
                 appointmentModel.Service = service;
                 appointmentModel.TotalCost = (double)appointmentModel.Service.Cost!;
-
+                appointmentModel.PaymentStatus = PaymentStatus.Pending;
                 await _appointmentService.AddAppointmentAsync(appointmentModel);
 
                 //var customer = await _userManager.FindByNameAsync(User.GetUsername());
