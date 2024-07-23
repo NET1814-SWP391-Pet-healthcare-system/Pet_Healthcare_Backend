@@ -45,7 +45,7 @@ namespace ServiceContracts.Mappers
                 SlotId = appointmentAddRequest.SlotId,
                 ServiceId = appointmentAddRequest.ServiceId,
                 Date = DateOnly.FromDateTime(appointmentAddRequest.Date),
-                Status = AppointmentStatus.Boooked,
+                Status = AppointmentStatus.Booked,
             };
         }
 

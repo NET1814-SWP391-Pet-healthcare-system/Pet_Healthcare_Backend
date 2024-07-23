@@ -63,7 +63,7 @@ namespace Services
         public async Task<Appointment?> CheckInAppointmentAsync(int id)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Boooked)
+            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Booked)
             {
                 return null;
             }
@@ -105,7 +105,7 @@ namespace Services
         public async Task<Appointment?> CancelAppointment(int id)
         {
             var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Boooked)
+            if(existingAppointment == null || existingAppointment.Status != AppointmentStatus.Booked)
             {
                 return null;
             }
