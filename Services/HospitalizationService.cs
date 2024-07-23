@@ -40,6 +40,7 @@ namespace Services
             }
             var hospitalization = await _hospitalizationRepository.GetById(request.HospitalizationId);
             hospitalization.DischargeDate = request.DischargeDate == null ? hospitalization.DischargeDate:request.DischargeDate;
+            hospitalization.TotalCost = request.TotalCost == null ? hospitalization.TotalCost : request.TotalCost;
             await _hospitalizationRepository.Update(hospitalization);
             return hospitalization;
 
